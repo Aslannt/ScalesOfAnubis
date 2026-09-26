@@ -1,7 +1,11 @@
 """Genera sprites de cultivos por etapa (billboards) e iconos de UI/inventario."""
 import os
+import sys
 from PIL import Image, ImageDraw
 from palette import c
+
+sys.path.insert(0, os.path.dirname(__file__))
+from postfx import add_outline
 
 OUT_CROPS = os.path.join("..", "assets", "sprites", "crops")
 OUT_ICONS = os.path.join("..", "assets", "sprites", "icons")
@@ -82,7 +86,7 @@ CROPS = {"trigo": draw_wheat, "lino": draw_lino, "papiro": draw_papiro}
 
 def build_crops():
     for name, fn in CROPS.items():
-        frames = [fn(s) for s in range(4)]
+        frames = [add_outline(fn(s)) for s in range(4)]
         sheet = Image.new("RGBA", (W * 4, H), (0, 0, 0, 0))
         for i, im in enumerate(frames):
             sheet.paste(im, (i * W, 0), im)

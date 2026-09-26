@@ -1,7 +1,11 @@
 """Genera sprites de enemigos (sombras, crias de Ammit) y de Thot (companero)."""
 import os
+import sys
 from PIL import Image, ImageDraw
 from palette import c
+
+sys.path.insert(0, os.path.dirname(__file__))
+from postfx import finish
 
 OUT_E = os.path.join("..", "assets", "sprites", "enemies")
 OUT_C = os.path.join("..", "assets", "sprites", "companion")
@@ -148,7 +152,7 @@ def build_sombra():
     frames, layout = [], []
     for kind, n in [("idle", 2), ("move", 4)]:
         for i in range(n):
-            frames.append(draw_sombra(kind, i))
+            frames.append(finish(draw_sombra(kind, i)))
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "sombra.png"))
@@ -161,7 +165,7 @@ def build_cria():
     frames, layout = [], []
     for kind, n in [("idle", 2), ("move", 4)]:
         for i in range(n):
-            frames.append(draw_cria(kind, i))
+            frames.append(finish(draw_cria(kind, i)))
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "cria.png"))
@@ -174,7 +178,7 @@ def build_heraldo():
     frames, layout = [], []
     for kind, n in [("idle", 2), ("attack", 3)]:
         for i in range(n):
-            frames.append(draw_heraldo(kind, i))
+            frames.append(finish(draw_heraldo(kind, i)))
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "heraldo.png"))
@@ -187,7 +191,7 @@ def build_thot():
     frames, layout = [], []
     for kind, n in [("idle", 2), ("fly", 4)]:
         for i in range(n):
-            frames.append(draw_thot(kind, i))
+            frames.append(finish(draw_thot(kind, i)))
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_C, "thot.png"))

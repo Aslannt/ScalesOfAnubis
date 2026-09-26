@@ -69,8 +69,13 @@ static func house(rng_seed: int = 0) -> Node3D:
 	root.add_child(_box(Vector3(w + 0.4, 0.25, d + 0.4), _mat("wood", Vector3(2, 1, 1)), Vector3(0, h + 0.12, 0)))
 	# entrada (hueco oscuro)
 	root.add_child(_box(Vector3(1.0, 1.7, 0.1), _solid_mat(Color(0.05, 0.04, 0.04)), Vector3(0, 0.85, d * 0.5 + 0.02)))
+	# ventana pequena
+	root.add_child(_box(Vector3(0.5, 0.5, 0.1), _solid_mat(Color(0.05, 0.04, 0.04)), Vector3(w * 0.5 - 0.9, h * 0.6, d * 0.5 + 0.02)))
 	var body := _collision_box(Vector3(w, h, d))
 	root.add_child(body)
+	var torch := Torch.new()
+	torch.position = Vector3(w * 0.5 - 0.1, 0, d * 0.5 + 0.3)
+	root.add_child(torch)
 	return root
 
 
@@ -102,6 +107,10 @@ static func temple() -> Node3D:
 	# acento dorado sobre la entrada
 	root.add_child(_box(Vector3(2.4, 0.5, 0.2), _solid_mat(Color(0.91, 0.73, 0.14)), Vector3(0, h + body_h + 0.1, d * 0.5)))
 	root.add_child(_collision_box(Vector3(w - 1.5, body_h + h, d - 1.5)))
+	for side in [-1, 1]:
+		var torch := Torch.new()
+		torch.position = Vector3(side * (w * 0.5 - 0.3), h, d * 0.5 + 0.4)
+		root.add_child(torch)
 	return root
 
 
@@ -219,6 +228,9 @@ static func altar() -> Node3D:
 	bowl.position = Vector3(0, 1.0, 0)
 	root.add_child(bowl)
 	root.add_child(_collision_box(Vector3(1.4, 0.9, 1.0)))
+	var torch := Torch.new()
+	torch.position = Vector3(1.3, 0, 0)
+	root.add_child(torch)
 	return root
 
 
