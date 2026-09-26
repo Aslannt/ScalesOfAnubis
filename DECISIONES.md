@@ -57,6 +57,23 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Generación de sprites: Python 3.12 + Pillow + numpy (ya presentes/instalados).
 - Audio: síntesis propia con Python (numpy → WAV) estilo sfxr, sin dependencias de pago.
 
+## Punto 2 (parcial): mapa con props, camino, dunas y parcelas visibles
+- `tools/gen_map_props.py` esparce 125 props deterministas (junco/papiro
+  denso en la orilla, vasijas/cestas/pasto/flores en la aldea, puesto de
+  mercado + pozo + cercas, rocas en necrópolis/desierto, un shaduf) y agrega
+  una franja de camino de tierra granja→aldea, más un anillo de dunas en los
+  bordes norte/sur/este (el oeste ya es el río) y pirámides lejanas más allá
+  del anillo. Todo en `data/map_layout.json`, sin tocar código de Godot.
+- Palmera rehecha con penacho de hojas caídas en dos segmentos (antes era un
+  palo con un splat verde).
+- Parcelas de cultivo ahora muestran un marco visible aunque no estén aradas
+  (`farm_plot.gd` + `assets/textures/plot_marker.png`), así se nota que es
+  tierra de labranza desde el primer vistazo.
+- Verificado con capturas reales: la granja ahora se ve como una granja
+  (rejilla de parcelas), la orilla se ve poblada, y se ven dunas en el
+  horizonte. Quedó pendiente confirmar visualmente que las pirámides
+  lejanas se vean bien (sesión cortada por límite de tiempo, ver PROGRESS.md).
+
 ## Punto 4 resuelto: la noche roja no era de paleta, era del fog (PROMPT_PULIDO.md)
 - Causa raíz real, encontrada imprimiendo los valores de luz/ambiente en
   plena captura y comparándolos contra el píxel final: los colores de

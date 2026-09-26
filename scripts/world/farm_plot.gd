@@ -15,6 +15,7 @@ var is_orilla: bool = false
 var tile_size: float = 2.0
 
 var _soil_mesh: MeshInstance3D
+var _marker_mesh: MeshInstance3D
 var _crop_sprite: Sprite3D
 var _mat_dry: StandardMaterial3D
 var _mat_wet: StandardMaterial3D
@@ -35,6 +36,21 @@ func _ready() -> void:
 	_soil_mesh.visible = false
 	add_child(_soil_mesh)
 
+	# Marco visible aunque no este arada, para que se note que es tierra de
+	# cultivo (PROMPT_PULIDO.md punto 2: "el mapa se ve vacio y plano").
+	_marker_mesh = MeshInstance3D.new()
+	var marker_plane := PlaneMesh.new()
+	marker_plane.size = Vector2(tile_size, tile_size)
+	_marker_mesh.mesh = marker_plane
+	var marker_mat := StandardMaterial3D.new()
+	marker_mat.albedo_texture = load("res://assets/textures/plot_marker.png")
+	marker_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	marker_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	marker_mat.albedo_color = Color(1, 1, 1, 0.85)
+	_marker_mesh.material_override = marker_mat
+	_marker_mesh.position = Vector3(0, 0.015, 0)
+	add_child(_marker_mesh)
+
 	_crop_sprite = Sprite3D.new()
 	_crop_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_crop_sprite.pixel_size = 0.09
@@ -53,6 +69,7 @@ func till() -> bool:
 	state = State.TILLED
 	_soil_mesh.visible = true
 	_soil_mesh.material_override = _mat_dry
+	_marker_mesh.visible = false
 	SFX.play("till")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.15, 0), Color(0.37, 0.24, 0.15))
 	return true

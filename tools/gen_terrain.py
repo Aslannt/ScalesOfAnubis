@@ -212,6 +212,28 @@ def make_wall_papyrus():
     return img
 
 
+def make_plot_marker():
+    """Marco de parcela sin arar (PROMPT_PULIDO.md punto 2): para que se
+    note que es tierra de cultivo aunque el jugador todavia no haya arado."""
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    px = img.load()
+    border_col = c("soil_dark")
+    inset = 3
+    thick = 2
+    for y in range(SIZE):
+        for x in range(SIZE):
+            on_border = (
+                (inset <= x < inset + thick or SIZE - inset - thick <= x < SIZE - inset)
+                and inset <= y < SIZE - inset
+            ) or (
+                (inset <= y < inset + thick or SIZE - inset - thick <= y < SIZE - inset)
+                and inset <= x < SIZE - inset
+            )
+            if on_border:
+                px[x, y] = border_col
+    return img
+
+
 def make_necropolis_sand():
     img = organic_patches(["soil_dark", "sand_dark", "bone_dark"], seed=11)
     img = add_sparse_detail(img, "anubis_black", seed=11, count=8)
@@ -230,6 +252,7 @@ TEXTURES = {
     "wood": make_wood,
     "wall_papyrus": make_wall_papyrus,
     "necropolis_sand": make_necropolis_sand,
+    "plot_marker": make_plot_marker,
 }
 
 if __name__ == "__main__":
