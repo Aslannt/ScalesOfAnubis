@@ -56,3 +56,13 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Godot 4.7.2 (estable, vía winget) — última estable disponible al momento de empezar.
 - Generación de sprites: Python 3.12 + Pillow + numpy (ya presentes/instalados).
 - Audio: síntesis propia con Python (numpy → WAV) estilo sfxr, sin dependencias de pago.
+
+## Exportación a Windows
+- Instalé las plantillas de exportación oficiales de Godot 4.7.2 (descarga
+  desde GitHub Releases del propio motor, gratis) y armé un
+  `export_presets.cfg` mínimo para "Windows Desktop" (arquitectura x86_64,
+  PCK embebido). `build/ScalesOfAnubis.exe` queda commiteado fuera de git
+  (`.gitignore`) porque es un binario de ~100MB regenerable con
+  `godot --headless --export-release "Windows Desktop" build/ScalesOfAnubis.exe`;
+  lo importante es que el archivo exista en el disco para que abras el
+  juego mañana con doble clic, no que viva en el historial de git.

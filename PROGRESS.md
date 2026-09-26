@@ -6,24 +6,29 @@ _Última actualización: sesión nocturna autónoma, 2026-09-26._
 Trabajé toda la noche solo, tomando decisiones sin poder preguntarte (ver
 `DECISIONES.md` para el detalle de cada una). Prioricé dejar **sólido y sin
 errores el loop central** (mundo + movimiento + ciclo día/noche + granja +
-combate) con arte propio desde el minuto uno, en vez de repartirme entre los
-11 hitos y dejar todo a medias. Ver la sección "Qué falta" abajo para el plan
-recomendado de continuación.
+combate + aldeanos + audio) con arte propio desde el minuto uno, en vez de
+repartirme entre los 11 hitos y dejar todo a medias. Ver "Qué falta" abajo
+para el plan recomendado de continuación. **Hay un .exe jugable en `build/
+ScalesOfAnubis.exe`**, ya exportado y probado.
 
 ## Cómo ejecutar
-1. Abre el proyecto con Godot 4.7.2 (`project.godot` en la raíz), o instala
-   Godot si hace falta (`winget install GodotEngine.GodotEngine --version 4.7.2`).
-2. Play (F5). Arranca en el menú principal → "Nueva partida".
-3. También puedes correr `Godot_v4.7.2...console.exe --path . --headless res://scenes/world/Farm.tscn --quit-after 300` para un chequeo rápido sin ventana.
+- **Lo más rápido**: doble clic en `build\ScalesOfAnubis.exe`. Ya está
+  exportado y probado (headless) sin errores.
+- **Desde el editor**: abre el proyecto con Godot 4.7.2 (`project.godot` en
+  la raíz; si no está instalado, `winget install GodotEngine.GodotEngine
+  --version 4.7.2`) y dale a Play (F5). Arranca en el menú principal →
+  "Nueva partida".
+- Chequeo rápido sin ventana: `Godot_v4.7.2...console.exe --path . --headless
+  res://scenes/world/Farm.tscn --quit-after 300`.
 
 ## Controles
 - WASD: moverte · Mouse: apuntar (para el ángulo de ataque) · Clic izq.:
   atacar (de noche, con el arma equipada) · Espacio: esquivar (con i-frames) ·
-  **E: interactuar con la parcela de tierra frente a ti** (arar → sembrar →
-  regar → cosechar, todo contextual con una sola tecla — ver Decisiones) ·
-  1/2: cambiar arma equipada de noche (khopesh / martillo) · Esc: pausa.
-- Tab (códice) y Q (amuleto) están mapeados en el input map pero **sin UI
-  todavía** (ver "Qué falta").
+  **E: interactuar** — con un aldeano abre diálogo; con la parcela de tierra
+  frente a ti hace arar → sembrar → regar → cosechar, todo contextual con una
+  sola tecla (ver Decisiones) · 1/2: cambiar arma equipada de noche (khopesh
+  / martillo) · Q: equipar/ciclar amuleto (Anj / Escarabajo del corazón) ·
+  Tab: códice (Libro de los Muertos) · Esc: pausa.
 
 ## Qué está hecho (jugable ahora mismo)
 - **M0 — Base**: Godot 4.7.2 instalado, proyecto con render a 480×270 escalado
@@ -63,43 +68,54 @@ recomendado de continuación.
 - **UI base**: HUD (deben, reloj/fase/día, vida, peso del corazón con texto
   flotante +Isfet/−Maat), menú principal con opciones (volumen por bus,
   pantalla completa), pausa in-game.
-- **Datos centralizados**: `data/textos_es.json` (textos en español para
-  traducir después), `data/crops.json`, `data/codex.json` (10 entradas de
-  lore verificado, listas para mostrarse — falta la UI del códice),
-  `data/map_layout.json`.
-- Verificado headless con Godot (`--headless ... --quit-after N`) corriendo
-  el ciclo completo día→noche con enemigos spawneando: **sin errores ni
-  warnings** en consola.
+- **Códice (Tab)**: ventana con las 10 entradas de `data/codex.json`,
+  bloqueadas ("???") hasta desbloquearse por progreso real (matar un
+  enemigo, cosechar, empezar una noche, sobrevivir a un día, hablar con
+  Iry/Meret, arrancar la partida).
+- **Amuletos (Q)**: Anj (regenera vida con el tiempo) y Escarabajo del
+  corazón (revive una vez por noche) equipables y funcionando.
+- **Balanza del corazón animada**: viga dorada que se inclina con
+  suavizado (tween) según `GameState.heart_weight`, corazón y pluma en
+  cada extremo, con el texto flotante +Isfet/−Maat ya existente.
+- **Aldeanos con diálogo** (M6 parcial): Meret (misión de 3 cosechas para
+  el templo, −8 peso), Ptahmose (compra toda la cosecha del inventario al
+  precio de `data/crops.json`), Iry (diálogo con comentarios de Thot).
+  Diálogo con máquina de escribir, pausa el juego mientras habla.
+- **Audio (M10 parcial)**: 12 SFX y 3 loops musicales (día/noche/jefe — el
+  de jefe generado pero sin usar todavía, ver "Qué falta"), **toda síntesis
+  propia** (`tools/gen_sfx.py`, `tools/gen_music.py`, numpy → WAV). Crossfade
+  de música día/noche automático.
+- **Exportado a Windows** (M11 parcial): plantillas de exportación
+  instaladas y `build/ScalesOfAnubis.exe` generado y probado.
+- **Datos centralizados**: `data/textos_es.json`, `data/crops.json`,
+  `data/codex.json`, `data/dialogues.json`, `data/map_layout.json`.
+- Verificado headless con Godot (`--headless ... --quit-after N`) después de
+  **cada** cambio importante: ciclo día→noche completo con enemigos
+  spawneando, las 3 conversaciones de NPC (incluida la misión de Meret y la
+  venta a Ptahmose) y el `.exe` exportado — todo **sin errores ni
+  warnings** en consola. Un warning real y un error real de GDScript
+  aparecieron durante la sesión y se corrigieron en el momento gracias a
+  este chequeo (ver historial de commits).
 
 ## Qué falta (próximos pasos recomendados, en orden)
-1. **UI del códice (Tab)** y **UI/lógica de amuletos (Q)**: los datos ya
-   existen (`Codex` autoload, `data/codex.json`), falta la ventana. Es la
-   forma más rápida de sumar valor: los datos ya están.
-2. **NPCs de la aldea con diálogo** (Meret, Ptahmose, Iry): sprites y
-   posiciones en el mapa faltan (no están en `map_layout.json` props todavía);
-   falta sistema de diálogo (retrato + máquina de escribir) y las 3 misiones
-   /2 decisiones morales del GDD 6.7. Esto es la mayor pieza de contenido que
-   falta y es prerequisito de la venta de cosechas.
-3. **Balanza del corazón con UI animada** (M5): el dato (`GameState.heart_weight`,
-   señal `heart_weight_changed`) y el texto flotante en el HUD ya funcionan;
-   falta la balanza visual (ícono corazón/pluma inclinándose) — hoy es una
-   barra simple.
-4. **Altar de ofrendas y defensas** (estatua de chacal, brasero): no
+1. **Las 2 decisiones morales del GDD 6.7** (robar ofrendas del altar día 2,
+   defender aldea vs. cultivos noche 2): no implementadas. Es lo más valioso
+   que falta de la aldea — Meret/Ptahmose/Iry ya están, pero las decisiones
+   con peso narrativo real (el pilar 3 del GDD) todavía no.
+2. **Altar de ofrendas y defensas** (estatua de chacal, brasero): no
    implementado.
-5. **Heraldo de Ammit (jefe)**: sprite ya generado (`assets/sprites/enemies/heraldo.png`)
-   pero sin escena/IA de jefe todavía.
-6. **Estructura narrativa de 3 días completa** (intro del juicio, resumen del
+3. **Heraldo de Ammit (jefe)**: sprite ya generado
+   (`assets/sprites/enemies/heraldo.png`) y tema musical listo
+   (`assets/audio/music/jefe.wav`), pero sin escena/IA de jefe todavía.
+4. **Estructura narrativa de 3 días completa** (intro del juicio, resumen del
    amanecer con cultivos perdidos/enemigos derrotados —el dato ya se cuenta
    en `GameState.crops_lost_tonight`/`enemies_defeated_tonight`—, pesaje
    final, recuerdo del ba, pantalla de gracias): no implementado.
-7. **Audio (M10)**: no hay nada todavía, ni SFX ni música. Es lo único que
-   no se tocó en absoluto. Recomiendo síntesis por script (numpy → WAV)
-   como pide el CLAUDE.md.
-8. **Cayado/bastón, muro de adobe, soporte de mando, guardado de partida**:
+5. **Cayado/bastón, muro de adobe, soporte de mando, guardado de partida**:
    quedan para después, como indica el CLAUDE.md.
-9. **Exportar .exe** (M11): falta configurar `export_presets.cfg` e instalar
-   las plantillas de exportación de Godot (`winget`/editor → Export Templates
-   Manager) — no se hizo esta noche por falta de tiempo, no por dificultad.
+6. **Pase de arte (M9)**: reemplazar el pixel art generado proceduralmente
+   por arte pulido a mano, fuente pixel-perfect propia (hoy es la fuente por
+   defecto de Godot), retratos de diálogo (hoy solo hay nombre + texto).
 
 ## Simplificaciones y decisiones tomadas (detalle completo en DECISIONES.md)
 - **Sembrar es automático**: la tecla E hace todo el ciclo de la parcela de
@@ -120,10 +136,14 @@ recomendado de continuación.
   área de granja donde ocurren las oleadas.
 
 ## Problemas conocidos
-- No hay plantillas de exportación instaladas todavía → no existe un `.exe`
-  en `build/` esta noche. Ver punto 9 arriba.
 - El menú de pausa y el de opciones son funcionales pero sin pase de arte
   (fuente por defecto de Godot, sin fondo propio en pausa).
-- Sin música ni SFX: el juego es silencioso.
-- Sin NPCs ni diálogos: se puede jugar el loop granja+combate pero no hay
-  historia ni misiones todavía.
+- No hay retratos de diálogo (solo nombre + texto).
+- Enemigos usan persecución directa sin pathfinding (ver Decisiones): en el
+  campo abierto de la granja no se nota, pero si un spawn los manda cerca de
+  un edificio de la aldea/necrópolis podrían trabarse contra la geometría.
+- El tema musical de jefe (`jefe.wav`) está generado pero no se activa
+  todavía (no hay jefe implementado aún).
+- Lino no es plantable por el jugador (ver Decisiones: simplificación del
+  sistema de semillas). Meret acepta trigo/papiro en su lugar y el propio
+  diálogo lo comenta con humor.
