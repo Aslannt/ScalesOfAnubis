@@ -12,7 +12,7 @@
     "titulo": "Thot",
     "texto": "Dios de la escritura, la sabiduría y la luna. Se le representa como un ibis, o como un hombre con cabeza de ibis. Anotó el resultado de tu pesaje.",
     "thot": "Yo escribí esa entrada. Con toda humildad, es la mejor del libro.",
-    "icono": "res://assets/sprites/companion/thot.png",
+    "icono": "res://assets/sprites/portraits/thot.png",
     "desbloqueada": false
   },
   {
@@ -28,7 +28,7 @@
     "titulo": "Ammit",
     "texto": "La devoradora de corazones: cabeza de cocodrilo, parte delantera de león, trasera de hipopótamo. Devora los corazones que pesan demasiado en el juicio.",
     "thot": "No la invites a cenar. Es literalmente lo único que hace.",
-    "icono": "res://assets/sprites/enemies/heraldo.png",
+    "icono": "res://assets/sprites/icons/codex_heraldo.png",
     "desbloqueada": false
   },
   {
@@ -44,7 +44,7 @@
     "titulo": "Aaru",
     "texto": "El Campo de Juncos, gobernado por Osiris: el paraíso de los justos. Una versión eterna y abundante de los campos de Egipto, donde también se cultivaba.",
     "thot": "Sí, incluso en el paraíso se sigue arando. Los egipcios amaban su tierra hasta después de la muerte.",
-    "icono": "res://assets/sprites/crops/trigo.png",
+    "icono": "res://assets/sprites/icons/codex_trigo.png",
     "desbloqueada": false
   },
   {
@@ -52,7 +52,7 @@
     "titulo": "Ba",
     "texto": "Una de las partes del alma egipcia, representada como un pájaro con cabeza humana.",
     "thot": "Tu ba anda por ahí guardando recuerdos que ni tú recuerdas. Práctico y algo perturbador.",
-    "icono": "res://assets/sprites/companion/thot.png",
+    "icono": "res://assets/sprites/portraits/thot.png",
     "desbloqueada": false
   },
   {
@@ -60,7 +60,7 @@
     "titulo": "Sheut",
     "texto": "La sombra, otra de las partes que componen a la persona según la creencia egipcia.",
     "thot": "No confundas tu sheut con las criaturas que te persiguen de noche. Aunque, para ser justos, la confusión es comprensible.",
-    "icono": "res://assets/sprites/enemies/sombra.png",
+    "icono": "res://assets/sprites/icons/codex_sombra.png",
     "desbloqueada": false
   },
   {
@@ -68,7 +68,7 @@
     "titulo": "Cultivos del Nilo",
     "texto": "El trigo emmer era la base del pan y la cerveza. El lino servía para la ropa y las vendas de momificación. El papiro crecía en los pantanos del Nilo y de él salía el material de escritura.",
     "thot": "Tres plantas, una civilización entera encima. No está mal para simples tallos verdes.",
-    "icono": "res://assets/sprites/crops/papiro.png",
+    "icono": "res://assets/sprites/icons/codex_papiro.png",
     "desbloqueada": false
   },
   {

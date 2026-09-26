@@ -34,6 +34,13 @@ window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 window/vsync/vsync_mode=1
 
+[gui]
+
+theme/custom_font="res://assets/fonts/Silkscreen-Regular.ttf"
+theme/default_font_antialiasing=0
+theme/default_font_hinting=0
+theme/default_font_subpixel_positioning=0
+
 [input]
 
 move_up={

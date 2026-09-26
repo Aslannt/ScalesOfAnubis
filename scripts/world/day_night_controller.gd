@@ -56,3 +56,4 @@ func _apply(v: Array, _unused: float) -> void:
 		e.sky.sky_material.set("sky_horizon_color", v[3])
 		e.sky.sky_material.set("ground_bottom_color", v[3] * 0.6)
 		e.ambient_light_energy = v[4]
+		e.fog_light_color = v[3]

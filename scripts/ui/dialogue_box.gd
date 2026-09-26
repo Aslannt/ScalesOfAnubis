@@ -14,7 +14,16 @@ const CHAR_SPEED := 0.025
 var _panel: Panel
 var _lbl_nombre: Label
 var _lbl_texto: Label
+var _retrato: TextureRect
 var _on_finished: Callable = Callable()
+
+const PORTRAITS := {
+	"nakht": "res://assets/sprites/portraits/player.png",
+	"meret": "res://assets/sprites/portraits/meret.png",
+	"ptahmose": "res://assets/sprites/portraits/ptahmose.png",
+	"iry": "res://assets/sprites/portraits/iry.png",
+	"thot": "res://assets/sprites/portraits/thot.png",
+}
 
 
 func _ready() -> void:
@@ -31,15 +40,23 @@ func _ready() -> void:
 	_panel.offset_bottom = -10
 	add_child(_panel)
 
+	_retrato = TextureRect.new()
+	_retrato.position = Vector2(6, 4)
+	_retrato.size = Vector2(36, 54)
+	_retrato.texture_filter = TextureRect.TEXTURE_FILTER_NEAREST
+	_retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_panel.add_child(_retrato)
+
 	_lbl_nombre = Label.new()
-	_lbl_nombre.position = Vector2(10, 4)
+	_lbl_nombre.position = Vector2(50, 4)
 	_lbl_nombre.add_theme_font_size_override("font_size", 13)
 	_lbl_nombre.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
 	_panel.add_child(_lbl_nombre)
 
 	_lbl_texto = Label.new()
-	_lbl_texto.position = Vector2(10, 24)
-	_lbl_texto.size = Vector2(420, 36)
+	_lbl_texto.position = Vector2(50, 24)
+	_lbl_texto.size = Vector2(380, 36)
 	_lbl_texto.autowrap_mode = TextServer.AUTOWRAP_WORD
 	_panel.add_child(_lbl_texto)
 
@@ -65,10 +82,20 @@ func _start_line() -> void:
 		_lbl_nombre.text = parts[0]
 		_lbl_texto.text = ""
 		_full_text = parts[1]
+		_update_retrato(parts[0])
 	else:
 		_lbl_nombre.text = ""
 		_lbl_texto.text = ""
 		_full_text = parts[0]
+		_retrato.texture = null
+
+
+func _update_retrato(hablante: String) -> void:
+	var key := hablante.to_lower().strip_edges()
+	if PORTRAITS.has(key):
+		_retrato.texture = load(PORTRAITS[key])
+	else:
+		_retrato.texture = null
 
 
 var _full_text: String = ""

@@ -19,9 +19,11 @@
   de terceros.
 
 ## Fuentes
-- Se usa la fuente por defecto de Godot (Noto Sans provisto por el motor)
-  como marcador de posición. Sustituir por una fuente pixel-perfect CC0/OFL
-  en el pase de arte (M9) y anotarla aquí.
+- **Silkscreen** (Jason Kottke), licencia SIL Open Font License 1.1
+  (`assets/fonts/OFL.txt`). Descargada del repositorio oficial de Google
+  Fonts (github.com/google/fonts, carpeta `ofl/silkscreen`). Cubre los
+  caracteres del español (áéíóúñ¿¡). Usada como fuente por defecto de toda
+  la interfaz (`project.godot` → `gui/theme/custom_font`).
 
 ## Software usado para generar contenido
 - Python 3.12, Pillow, numpy (generación de sprites y texturas).

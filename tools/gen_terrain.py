@@ -7,20 +7,32 @@ from palette import c
 OUT = os.path.join("..", "assets", "textures")
 os.makedirs(OUT, exist_ok=True)
 
-SIZE = 32
+SIZE = 48
 
 
-def speckle(base, dark, light, seed, density=0.12, size=SIZE):
+def _blob(px, size, cx, cy, w, h, color):
+    """Pinta un blob rectangular pequeno con wraparound (para que el tile
+    siga siendo perfectamente seamless al repetirse)."""
+    for oy in range(h):
+        for ox in range(w):
+            x = (cx + ox) % size
+            y = (cy + oy) % size
+            px[x, y] = color
+
+
+def speckle(base, dark, light, seed, density=0.10, size=SIZE):
+    """Ruido en 'grumos' (blobs de 2x2/3x2) en vez de grano fino uniforme:
+    se lee mas como tierra/arena pintada a mano y menos como estatica."""
     rng = np.random.RandomState(seed)
     img = Image.new("RGBA", (size, size), c(base))
     px = img.load()
-    for y in range(size):
-        for x in range(size):
-            r = rng.random()
-            if r < density * 0.5:
-                px[x, y] = c(dark)
-            elif r < density:
-                px[x, y] = c(light)
+    n_blobs = int(size * size * density / 4)
+    for _ in range(n_blobs):
+        cx, cy = rng.randint(0, size), rng.randint(0, size)
+        w = rng.choice([1, 2, 2, 3])
+        h = rng.choice([1, 2, 2])
+        color = c(dark) if rng.random() < 0.5 else c(light)
+        _blob(px, size, cx, cy, int(w), int(h), color)
     return img
 
 
@@ -106,7 +118,7 @@ def make_stone():
     px = img.load()
     for y in range(SIZE):
         for x in range(SIZE):
-            if x % 16 == 0 or y % 10 == 0:
+            if x % 16 == 0 or y % 12 == 0:
                 r, g, b, a = px[x, y]
                 px[x, y] = (max(r - 30, 0), max(g - 30, 0), max(b - 30, 0), a)
     return img

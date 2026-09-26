@@ -46,6 +46,8 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 
 		if zone.get("farmland", false):
 			_build_farmland(rect, bool(zone.get("orilla", false)))
+		elif zone.get("textura") == "grass_nile":
+			_scatter_foliage(rect, data.get("zones", []))
 
 	var props_node := Node3D.new()
 	props_node.name = "Props"
@@ -96,6 +98,50 @@ func _build_farmland(rect: Array, orilla: bool) -> void:
 			plot.position = _tile_to_world(tx + 0.5, tz + 0.5)
 			plots_node.add_child(plot)
 			farm_plots.append(plot)
+
+
+const _TUFT_TEXTURES := [
+	"res://assets/sprites/fx/grass_tuft_0.png",
+	"res://assets/sprites/fx/grass_tuft_1.png",
+]
+
+
+func _scatter_foliage(rect: Array, all_zones: Array) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1337
+	var foliage_node := Node3D.new()
+	foliage_node.name = "Vegetacion"
+	add_child(foliage_node)
+
+	var area: float = float(rect[2]) - float(rect[0])
+	area *= float(rect[3]) - float(rect[1])
+	var count: int = int(area * 0.35)
+	var textures := [load(_TUFT_TEXTURES[0]), load(_TUFT_TEXTURES[1])]
+
+	for i in range(count):
+		var tx: float = rng.randf_range(rect[0], rect[2])
+		var tz: float = rng.randf_range(rect[1], rect[3])
+		if _inside_any_farmland(tx, tz, all_zones):
+			continue
+		var sprite := Sprite3D.new()
+		sprite.texture = textures[rng.randi_range(0, 1)]
+		sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		sprite.pixel_size = 0.05 * rng.randf_range(0.8, 1.3)
+		sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		sprite.shaded = true
+		sprite.position = _tile_to_world(tx, tz)
+		sprite.position.y = 0.02
+		foliage_node.add_child(sprite)
+
+
+func _inside_any_farmland(tx: float, tz: float, all_zones: Array) -> bool:
+	for z in all_zones:
+		if not z.get("farmland", false):
+			continue
+		var r: Array = z["rect"]
+		if tx >= r[0] and tx < r[2] and tz >= r[1] and tz < r[3]:
+			return true
+	return false
 
 
 func _build_ground_collision() -> void:

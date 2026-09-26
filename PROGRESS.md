@@ -99,6 +99,44 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   aparecieron durante la sesión y se corrigieron en el momento gracias a
   este chequeo (ver historial de commits).
 
+## Pase de pulido visual (después de que Deivid pidió seguir mejorando el aspecto)
+- **Sprites con contorno y sombreado** (`tools/postfx.py`): todos los
+  personajes, enemigos, Thot y cultivos ahora tienen un contorno oscuro de
+  1px y un sombreado vertical suave — ya no son bloques de color plano.
+- **Siluetas distintas por personaje**: Meret (tocado + cuello dorado),
+  Ptahmose (turbante + panza de comerciante), Iry (proporciones de niño,
+  reescalado y anclado al suelo, no solo un adulto encogido a la fuerza).
+- **Antorchas con luz cálida parpadeante** (`scripts/world/torch.gd`) en
+  casas, templo y altar — de noche la aldea ahora tiene puntos de luz real,
+  no solo la luna. Casas con ventana añadida.
+- **Vegetación dispersa**: matojos de pasto esparcidos por la franja verde
+  (fuera de las parcelas de cultivo) para que el mapa no se vea vacío.
+- **Ambiente**: niebla de distancia, SSAO, glow y ajuste de
+  contraste/saturación en el `WorldEnvironment`, con el color de la niebla
+  siguiendo el ciclo día/noche.
+- **Tipografía propia**: fuente pixel "Silkscreen" (OFL, Google Fonts,
+  ver CREDITS.md) en toda la interfaz en vez de la fuente por defecto de
+  Godot. Cubre los caracteres del español.
+- **Retratos de diálogo**: cada línea de diálogo muestra el retrato de
+  quien habla (jugador, Meret, Ptahmose, Iry, Thot), detectado
+  automáticamente por el nombre al inicio de la línea.
+- **Iconos del códice corregidos**: varias entradas mostraban la hoja de
+  sprites entera encogida (se veía como ruido); ahora usan un solo frame
+  recortado (`tools/gen_portraits.py` → `crop_codex_icons`).
+- Terreno regenerado a mayor resolución (48×48) con ruido en grumos en vez
+  de grano fino uniforme, y patrones ajustados para que sigan siendo
+  perfectamente tileables.
+- Todo esto verificado headless en cada paso (incluida una prueba forzada
+  del códice con las 10 entradas desbloqueadas y otra de los 3 diálogos con
+  retrato), y dos errores reales de GDScript se encontraron y corrigieron
+  en el momento (inferencia de tipo en `world_builder.gd` con datos de
+  JSON sin tipar).
+- **Pendiente de que Deivid lo vea en pantalla**: no pude verificar
+  visualmente en una ventana real (solo con capturas de los sprites sueltos
+  y chequeos headless sin errores). Si algún texto se ve muy chico/grande
+  con la fuente nueva, o algún panel se ve corrido, es lo primero a ajustar
+  — son casi seguro solo números de tamaño/posición, no bugs de lógica.
+
 ## Qué falta (próximos pasos recomendados, en orden)
 1. **Decisión moral 2** (defender aldea vs. cultivos, noche 2): no
    implementada — requiere un evento de noche con dos amenazas simultáneas,
