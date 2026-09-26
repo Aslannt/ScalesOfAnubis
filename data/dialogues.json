@@ -1,0 +1,45 @@
+{
+  "meret": {
+    "intro": [
+      "Meret: ¿Tú... caminas? Los muertos no deberían caminar.",
+      "Meret: Y sin embargo Maat pesa los actos, no el aliento. Quizá haya algo bueno en ti todavía.",
+      "Meret: El templo necesita fibra para tejer vendas. Tráeme tres cosechas y lo sabremos con certeza."
+    ],
+    "recordatorio": [
+      "Meret: El templo sigue esperando tu ofrenda. Tres cosechas, lo que sea que crezca en tu tierra."
+    ],
+    "mision_completa": [
+      "Meret: Con esto alcanza para las vendas. No es lino, pero Maat no es quisquillosa esta semana.",
+      "Meret: Empiezo a pensar que no eres una amenaza, campesino. Empiezo, dije."
+    ],
+    "repeat": [
+      "Meret: Que Maat te encuentre en equilibrio."
+    ]
+  },
+  "ptahmose": {
+    "intro": [
+      "Ptahmose: ¡Ah, un rostro nuevo en el muelle! Vendo semillas, compro cosechas, y si me invitas cerveza, cuento rumores.",
+      "Ptahmose: Tráeme lo que cultives y te pagaré en deben, como manda la costumbre."
+    ],
+    "repeat": [
+      "Ptahmose: ¿Traes algo para vender hoy?"
+    ],
+    "vender_vacio": [
+      "Ptahmose: Vuelve cuando tengas la bolsa llena de algo más que arena."
+    ],
+    "vender_exito": [
+      "Ptahmose: Buen trato. El río siempre da a quien sabe esperar."
+    ]
+  },
+  "iry": {
+    "intro": [
+      "Iry: ¡Oye! ¿Es cierto que estuviste muerto? Thot dice que sí pero Thot exagera todo.",
+      "Thot: No exagero. Documento.",
+      "Iry: ¿Y Anubis de verdad tiene cabeza de chacal? ¿Ladra?",
+      "Thot: Anubis es el dios de la momificación y protector de las necrópolis. No ladra. Que yo sepa."
+    ],
+    "repeat": [
+      "Iry: Cuando crezca quiero cuidar cultivos como tú. O ser escriba. Aún no decido."
+    ]
+  }
+}

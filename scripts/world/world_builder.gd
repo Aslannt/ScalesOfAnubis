@@ -9,6 +9,7 @@ var world_h: int = 28
 var player_spawn_world: Vector3 = Vector3.ZERO
 
 var farm_plots: Array = []
+var npcs: Array = []
 
 
 func build(layout_path: String = "res://data/map_layout.json") -> void:
@@ -56,6 +57,20 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		node.rotation_degrees.y = float(prop.get("rot", 0))
 		props_node.add_child(node)
 
+	var npcs_node := Node3D.new()
+	npcs_node.name = "NPCs"
+	add_child(npcs_node)
+	for npc_data in data.get("npcs", []):
+		var tile: Array = npc_data["tile"]
+		var npc := NPC.new()
+		npc.npc_id = npc_data["id"]
+		var sheet: String = npc_data["sheet"]
+		npc.sheet_path = "res://assets/sprites/characters/%s.png" % sheet
+		npc.layout_path = "res://assets/sprites/characters/%s_layout.txt" % sheet
+		npc.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
+		npcs_node.add_child(npc)
+		npcs.append(npc)
+
 	var spawn: Array = data.get("player_spawn_tile", [world_w / 2, world_h / 2])
 	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)
 
@@ -100,4 +115,15 @@ func plot_at_world(pos: Vector3, max_dist: float = 3.0) -> FarmPlot:
 		if d < best:
 			best = d
 			closest = p
+	return closest
+
+
+func npc_at_world(pos: Vector3, max_dist: float = 2.4) -> NPC:
+	var closest: NPC = null
+	var best := max_dist
+	for n in npcs:
+		var d: float = n.position.distance_to(pos)
+		if d < best:
+			best = d
+			closest = n
 	return closest

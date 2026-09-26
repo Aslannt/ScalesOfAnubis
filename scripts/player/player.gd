@@ -80,7 +80,7 @@ func _physics_process(delta: float) -> void:
 		_start_attack()
 
 	if Input.is_action_just_pressed("interact"):
-		_try_farm_interact()
+		_try_interact()
 
 	if Input.is_action_just_pressed("tool_1"):
 		GameState.equipped_weapon = "khopesh"
@@ -139,10 +139,14 @@ func _resolve_attack_hits(stats: Dictionary) -> void:
 			body.take_hit(int(stats["dano"]), dir * float(stats["empuje"]))
 
 
-func _try_farm_interact() -> void:
-	if GameTime.is_night():
-		return
+func _try_interact() -> void:
 	if world_builder == null:
+		return
+	var npc := world_builder.npc_at_world(global_position, 2.4)
+	if npc:
+		npc.interact()
+		return
+	if GameTime.is_night():
 		return
 	var target_pos := global_position + _facing_vector() * 1.2
 	var plot: FarmPlot = world_builder.plot_at_world(target_pos, interact_range)

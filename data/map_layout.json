@@ -33,5 +33,10 @@
     { "tipo": "reed", "tile": [5, 21], "rot": 0 },
     { "tipo": "reed", "tile": [5, 25], "rot": 0 }
   ],
+  "npcs": [
+    { "id": "meret", "tile": [24, 8], "sheet": "meret" },
+    { "id": "ptahmose", "tile": [6, 5], "sheet": "ptahmose" },
+    { "id": "iry", "tile": [8, 22], "sheet": "iry" }
+  ],
   "player_spawn_tile": [12, 14]
 }

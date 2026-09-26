@@ -22,6 +22,13 @@ var equipped_weapon: String = "khopesh"  # khopesh | martillo
 var escarabajo_usado_esta_noche: bool = false
 var decisiones: Dictionary = {}  # id_decision -> valor elegido
 
+# progreso de dialogo con NPCs (GDD 6.7)
+var meret_intro_shown: bool = false
+var meret_mission_done: bool = false
+var ptahmose_intro_shown: bool = false
+var iry_intro_shown: bool = false
+const MERET_CROPS_NEEDED := 3
+
 var crops: Dictionary = {}
 var current_tool_index: int = 0  # 0=agricola/1=arma, ver Player
 
