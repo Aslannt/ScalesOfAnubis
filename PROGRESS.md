@@ -99,6 +99,19 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   aparecieron durante la sesión y se corrigieron en el momento gracias a
   este chequeo (ver historial de commits).
 
+## Sensación de combate (GDD 6.3: "feedback obligatorio")
+- **Hit-stop** real (breve congelamiento de `Engine.time_scale` al conectar
+  un golpe), **sacudida de cámara** (`camera_rig.gd::shake()`), **números
+  de daño flotantes** y **partículas de impacto** (`scripts/fx/combat_fx.gd`),
+  tanto cuando el jugador golpea como cuando lo golpean a él (número rojo).
+  Antes solo había flash blanco + empuje + sonido; ahora están los 5
+  elementos que pide el GDD.
+- **El ataque ahora apunta hacia el mouse** (`_aim_at_mouse()`), no hacia la
+  última dirección en la que caminaste — así lo pide el GDD 6.3/10 y antes
+  no se respetaba (usaba la dirección de movimiento).
+- Probado headless forzando la noche e invocando el ataque directamente:
+  el daño se aplica, el `time_scale` se restaura solo a 1.0, sin errores.
+
 ## Pase de pulido visual (después de que Deivid pidió seguir mejorando el aspecto)
 - **Sprites con contorno y sombreado** (`tools/postfx.py`): todos los
   personajes, enemigos, Thot y cultivos ahora tienen un contorno oscuro de

@@ -119,6 +119,7 @@ func _start_dodge() -> void:
 
 func _start_attack() -> void:
 	_attacking = true
+	_aim_at_mouse()
 	var stats: Dictionary = WEAPON_STATS[GameState.equipped_weapon]
 	_attack_t = float(stats["cooldown"])
 	_combo_index = (_combo_index + 1) % int(stats["golpes"])
@@ -131,13 +132,50 @@ func _start_attack() -> void:
 	_resolve_attack_hits(stats)
 
 
+## Ataque hacia la direccion del mouse (GDD 6.3 / 10), no hacia donde
+## caminas: proyecta el rayo de camara sobre el plano del suelo (y=0).
+func _aim_at_mouse() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	var mouse_pos := get_viewport().get_mouse_position()
+	var from := cam.project_ray_origin(mouse_pos)
+	var ray_dir := cam.project_ray_normal(mouse_pos)
+	if absf(ray_dir.y) < 0.0001:
+		return
+	var t := -from.y / ray_dir.y
+	if t <= 0.0:
+		return
+	var world_point := from + ray_dir * t
+	var aim := world_point - global_position
+	aim.y = 0
+	if aim.length() > 0.05:
+		_update_facing(Vector2(aim.x, aim.z))
+
+
 func _resolve_attack_hits(stats: Dictionary) -> void:
+	var hit_any := false
 	for body in attack_area.get_overlapping_bodies():
 		if body.has_method("take_hit"):
+			hit_any = true
 			var dir: Vector3 = (body.global_position - global_position)
 			dir.y = 0
 			dir = dir.normalized() if dir.length() > 0.01 else _facing_vector()
 			body.take_hit(int(stats["dano"]), dir * float(stats["empuje"]))
+			var fx_root := get_tree().current_scene
+			CombatFX.spawn_damage_number(fx_root, body.global_position + Vector3(0, 1.0, 0), int(stats["dano"]))
+			CombatFX.spawn_hit_particles(fx_root, body.global_position + Vector3(0, 0.9, 0))
+	if hit_any:
+		_hitstop(0.05)
+		var cam := get_viewport().get_camera_3d()
+		if cam and cam.has_method("shake"):
+			cam.shake(0.12, 0.15)
+
+
+func _hitstop(duration: float) -> void:
+	Engine.time_scale = 0.05
+	await get_tree().create_timer(duration, true, false, true).timeout
+	Engine.time_scale = 1.0
 
 
 func _try_interact() -> void:
@@ -239,6 +277,10 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:
 	GameState.take_damage(amount)
 	velocity += knockback
 	SFX.play("hit_player")
+	CombatFX.spawn_damage_number(get_tree().current_scene, global_position + Vector3(0, 1.4, 0), amount, Color(1.0, 0.35, 0.3))
+	var cam := get_viewport().get_camera_3d()
+	if cam and cam.has_method("shake"):
+		cam.shake(0.2, 0.2)
 	sprite.modulate = Color(3, 3, 3)
 	await get_tree().create_timer(0.08).timeout
 	sprite.modulate = Color(1, 1, 1)
