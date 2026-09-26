@@ -76,6 +76,7 @@ func _check_contact() -> void:
 func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:
 	health -= amount
 	velocity += knockback
+	SFX.play("hit_enemy")
 	if sprite:
 		sprite.modulate = Color(3, 3, 3)
 		await get_tree().create_timer(0.06).timeout
@@ -88,4 +89,5 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:
 func die() -> void:
 	GameState.enemies_defeated_tonight += 1
 	Codex.unlock("ammit")
+	SFX.play("enemy_death")
 	queue_free()

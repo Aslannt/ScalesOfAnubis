@@ -69,6 +69,8 @@ func _cargar_crops() -> void:
 func add_deben(cantidad: int) -> void:
 	deben = max(0, deben + cantidad)
 	deben_changed.emit(deben)
+	if cantidad > 0:
+		SFX.play("coin")
 
 
 func can_afford(cantidad: int) -> bool:
@@ -97,6 +99,8 @@ func item_count(item_id: String) -> int:
 func shift_heart(delta: float, motivo: String = "") -> void:
 	heart_weight = clampf(heart_weight + delta, HEART_MIN, HEART_MAX)
 	heart_weight_changed.emit(heart_weight, delta, motivo)
+	if absf(delta) > 0.01:
+		SFX.play("heart_shift")
 
 
 func register_decision(id: String, valor: String) -> void:

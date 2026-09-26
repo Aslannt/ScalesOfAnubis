@@ -16,11 +16,12 @@ func _ready() -> void:
 	btn_opciones.text = Textos.t("menu_opciones")
 	btn_salir.text = Textos.t("menu_salir")
 	btn_nueva.pressed.connect(_on_nueva)
-	btn_opciones.pressed.connect(func(): opciones.visible = not opciones.visible)
-	btn_salir.pressed.connect(func(): get_tree().quit())
+	btn_opciones.pressed.connect(func(): SFX.play("ui_select"); opciones.visible = not opciones.visible)
+	btn_salir.pressed.connect(func(): SFX.play("ui_select"); get_tree().quit())
 	opciones.visible = false
 	btn_nueva.grab_focus()
 
 
 func _on_nueva() -> void:
+	SFX.play("ui_select")
 	get_tree().change_scene_to_file("res://scenes/world/Farm.tscn")

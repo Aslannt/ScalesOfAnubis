@@ -114,6 +114,7 @@ func _start_dodge() -> void:
 	_invulnerable = true
 	_dodge_t = dodge_duration
 	_dodge_cd_t = dodge_cooldown
+	SFX.play("dodge")
 
 
 func _start_attack() -> void:
@@ -237,6 +238,7 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:
 		return
 	GameState.take_damage(amount)
 	velocity += knockback
+	SFX.play("hit_player")
 	sprite.modulate = Color(3, 3, 3)
 	await get_tree().create_timer(0.08).timeout
 	sprite.modulate = Color(1, 1, 1)

@@ -60,6 +60,8 @@ func _update_phase() -> void:
 			day_started.emit()
 		elif phase == Phase.DAWN:
 			dawn_summary_ready.emit()
+		elif phase == Phase.DUSK:
+			SFX.play("dusk_transform")
 
 
 ## Progreso 0..1 dentro de la fase actual.

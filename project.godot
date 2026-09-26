@@ -15,6 +15,7 @@ config/icon="res://icon.svg"
 
 Textos="*res://scripts/autoload/textos.gd"
 Dialogos="*res://scripts/autoload/dialogos.gd"
+SFX="*res://scripts/autoload/sfx.gd"
 GameTime="*res://scripts/autoload/game_time.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 Codex="*res://scripts/autoload/codex.gd"

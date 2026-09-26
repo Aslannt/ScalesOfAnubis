@@ -12,8 +12,11 @@
   rocas, palmeras) generada por código en `scripts/world/building_factory.gd`.
 
 ## Audio
-- Pendiente (ver PROGRESS.md, hito M10). Cuando se generen SFX/música se
-  documentarán aquí (síntesis propia, sin dependencias de pago).
+- Todos los SFX (`assets/audio/sfx/`) y los loops musicales de día/noche/jefe
+  (`assets/audio/music/`) son **síntesis propia** generada con
+  `tools/gen_sfx.py` y `tools/gen_music.py` (numpy → WAV, ondas
+  cuadradas/sierra/seno con envolventes ADSR, estilo sfxr). No se usó audio
+  de terceros.
 
 ## Fuentes
 - Se usa la fuente por defecto de Godot (Noto Sans provisto por el motor)

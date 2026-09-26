@@ -53,6 +53,7 @@ func till() -> bool:
 	state = State.TILLED
 	_soil_mesh.visible = true
 	_soil_mesh.material_override = _mat_dry
+	SFX.play("till")
 	return true
 
 
@@ -85,6 +86,7 @@ func water() -> bool:
 		return false
 	watered_today = true
 	_soil_mesh.material_override = _mat_wet
+	SFX.play("water")
 	return true
 
 
@@ -101,6 +103,7 @@ func harvest() -> String:
 	var id := crop_id
 	GameState.add_item(id, 1)
 	Codex.unlock("cultivos")
+	SFX.play("harvest")
 	crop_id = ""
 	growth_day = 0
 	watered_today = false

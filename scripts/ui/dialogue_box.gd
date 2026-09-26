@@ -59,6 +59,7 @@ func _start_line() -> void:
 	_char_i = 0
 	_typing = true
 	_timer = 0.0
+	SFX.play("dialogue_blip")
 	var parts: PackedStringArray = String(_lines[_idx]).split(": ", true, 1)
 	if parts.size() == 2:
 		_lbl_nombre.text = parts[0]

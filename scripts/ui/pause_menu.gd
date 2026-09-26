@@ -59,6 +59,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func toggle() -> void:
+	SFX.play("ui_select")
 	visible = not visible
 	get_tree().paused = visible
 	if not visible:
