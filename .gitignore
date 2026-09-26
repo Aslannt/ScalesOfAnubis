@@ -2,6 +2,7 @@
 .godot/
 .import/
 build/
+shots/
 
 # Python
 __pycache__/

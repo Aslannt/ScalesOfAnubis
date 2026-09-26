@@ -57,6 +57,21 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Generación de sprites: Python 3.12 + Pillow + numpy (ya presentes/instalados).
 - Audio: síntesis propia con Python (numpy → WAV) estilo sfxr, sin dependencias de pago.
 
+## Herramienta de captura visual (obligatoria desde PROMPT_PULIDO.md)
+- `tools/capture.gd`/`capture.tscn` cargan Farm.tscn de verdad (con ventana,
+  sin `--headless`), teletransportan al jugador a 8 puntos del mapa (granja,
+  aldea, necrópolis, orilla, vista general) fijando la fase del día, y
+  guardan PNG en `shots/` (fuera de git). `capture_menu.tscn` hace lo mismo
+  con el menú principal. A partir de ahora, todo cambio visual se verifica
+  así antes de commitear — el chequeo headless sigue para errores de script,
+  pero ya no es la única verificación.
+- La primera tanda de capturas confirmó un bug real de fondo, no solo cosas
+  "feas": el crossfade día/noche interpola a lo largo de **toda** la fase
+  (hasta 150s de día, 100s de noche) en vez de una transición corta, así
+  que "noche" se veía con los colores de "atardecer" (rojo/naranja) durante
+  buena parte de la noche real jugada, no rojo por error de paleta sino por
+  velocidad de transición. Se corrige en el punto 4 del pase de pulido.
+
 ## Exportación a Windows
 - Instalé las plantillas de exportación oficiales de Godot 4.7.2 (descarga
   desde GitHub Releases del propio motor, gratis) y armé un
