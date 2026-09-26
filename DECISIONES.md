@@ -57,6 +57,44 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Generación de sprites: Python 3.12 + Pillow + numpy (ya presentes/instalados).
 - Audio: síntesis propia con Python (numpy → WAV) estilo sfxr, sin dependencias de pago.
 
+## Bug critico encontrado por Deivid probando el .exe: personaje invisible
+- Reporte real: "no veo ni siquiera al personaje" al abrir el .exe exportado.
+- Causa raiz confirmada (no adivinada): lancé el .exe real con
+  PowerShell redirigiendo stdout/stderr a un log, y encontré miles de
+  `ERROR: SpritesheetLoader: no se pudo cargar ... _layout.txt` — **todos**
+  los personajes, enemigos, NPCs y hasta las antorchas fallaban en
+  silencio. `SpritesheetLoader.build()` devolvía un `SpriteFrames` vacío
+  sin ninguna animación, así que el `AnimatedSprite3D` no renderizaba nada.
+- El motivo: los `_layout.txt` (un archivo de texto plano junto a cada hoja
+  de sprites, con el ancho/alto de frame y el orden de animaciones) NO se
+  empaquetan en un build `--export-release` con `export_filter=all_resources`
+  tal como yo lo configuré — a diferencia de los `.json` de `data/`, que sí
+  se empaquetan siempre (se demuestra porque los textos en español SÍ
+  aparecían bien en el HUD, prueba de que `data/textos_es.json` cargó ok).
+  Nunca había verificado el juego EXPORTADO cargando la escena real de
+  juego con logs — solo lo probaba headless corriendo desde el código
+  fuente, que sí encuentra los `.txt` sin problema (por eso nunca until
+  ahora había señales de este bug).
+- Arreglo: `scripts/util/spritesheet_loader.gd` ahora lee un `.json`
+  (`{"frame_w":W,"frame_h":H,"frames":[...]}`) en vez de un `.txt` con
+  formato casero. Los 3 generadores Python (`gen_characters.py`,
+  `gen_enemies.py`, `gen_fx.py`) escriben `.json` vía el helper
+  `pixel_draw.save_layout()`. Todas las referencias en `.gd`/`.tscn`
+  actualizadas de `_layout.txt` a `_layout.json`. Los `.txt` viejos se
+  borraron.
+- Verificado relanzando el .exe real (no solo headless) con stdout/stderr
+  redirigidos a archivo: el log de errores quedó completamente vacío
+  (antes tenía miles de líneas de error). Este es el chequeo que voy a
+  repetir de ahora en más antes de decir "arreglado" en algo que toque
+  como se cargan assets: `--export-release` + relanzar el .exe real +
+  mirar el log, no solo correr desde el código fuente.
+- Nota para mí: evité seguir automatizando clicks/teclas sobre la ventana
+  real del juego vía PowerShell — es impreciso (el foco de ventana no
+  se roba de forma confiable por políticas de Windows) y en un intento
+  de simular Alt+Tab terminé mandando un Escape que probablemente pausó
+  el juego de Deivid mientras lo probaba él mismo. No volver a hacerlo
+  mientras el usuario esté probando en vivo.
+
 ## Punto 2 (parcial): mapa con props, camino, dunas y parcelas visibles
 - `tools/gen_map_props.py` esparce 125 props deterministas (junco/papiro
   denso en la orilla, vasijas/cestas/pasto/flores en la aldea, puesto de

@@ -77,7 +77,7 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		npc.npc_id = npc_data["id"]
 		var sheet: String = npc_data["sheet"]
 		npc.sheet_path = "res://assets/sprites/characters/%s.png" % sheet
-		npc.layout_path = "res://assets/sprites/characters/%s_layout.txt" % sheet
+		npc.layout_path = "res://assets/sprites/characters/%s_layout.json" % sheet
 		npc.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
 		npcs_node.add_child(npc)
 		npcs.append(npc)

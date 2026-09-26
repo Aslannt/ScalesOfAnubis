@@ -42,7 +42,7 @@ func _ready() -> void:
 	add_to_group("player")
 	var frames := SpritesheetLoader.build(
 		"res://assets/sprites/characters/player.png",
-		"res://assets/sprites/characters/player_layout.txt")
+		"res://assets/sprites/characters/player_layout.json")
 	sprite.sprite_frames = frames
 	sprite.play("south_idle")
 	attack_area.monitoring = false

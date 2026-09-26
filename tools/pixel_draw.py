@@ -2,6 +2,7 @@
 una paleta fija. Cada grid es una lista de strings de igual largo; cada caracter
 mapea a un color via un dict {char: color_name_en_paleta}.
 """
+import json
 from PIL import Image
 from palette import c
 
@@ -39,3 +40,12 @@ def hstrip(images):
 def save(img, path):
     img.save(path)
     print("wrote", path, img.size)
+
+
+def save_layout(path, frame_w, frame_h, frame_names):
+    """Guarda el layout en JSON (NO .txt: un .txt suelto no se empaqueta en
+    el build exportado --export-release y deja los sprites invisibles en
+    el juego real; el json si, ver DECISIONES.md)."""
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"frame_w": frame_w, "frame_h": frame_h, "frames": frame_names}, f)
+    print("wrote", path)

@@ -38,7 +38,7 @@ func _ready() -> void:
 	flame.position = Vector3(0, 0.76, 0)
 	add_child(flame)
 	flame.sprite_frames = SpritesheetLoader.build(
-		"res://assets/sprites/fx/flame.png", "res://assets/sprites/fx/flame_layout.txt", 6.0)
+		"res://assets/sprites/fx/flame.png", "res://assets/sprites/fx/flame_layout.json", 6.0)
 	flame.play("burn")
 
 	_light = OmniLight3D.new()

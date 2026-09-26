@@ -7,6 +7,7 @@ from palette import c
 
 sys.path.insert(0, os.path.dirname(__file__))
 from postfx import add_outline
+from pixel_draw import save_layout
 
 OUT = os.path.join("..", "assets", "sprites", "fx")
 os.makedirs(OUT, exist_ok=True)
@@ -34,8 +35,7 @@ def build_flame():
     for i, im in enumerate(frames):
         sheet.paste(im, (i * W, 0), im)
     sheet.save(os.path.join(OUT, "flame.png"))
-    with open(os.path.join(OUT, "flame_layout.txt"), "w") as f:
-        f.write(f"frame_w={W} frame_h={H}\n" + "\n".join(f"burn_{i}" for i in range(4)))
+    save_layout(os.path.join(OUT, "flame_layout.json"), W, H, [f"burn_{i}" for i in range(4)])
     print("wrote flame.png", sheet.size)
 
 

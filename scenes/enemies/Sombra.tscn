@@ -16,7 +16,7 @@ contact_damage = 6
 contact_range = 1.3
 contact_cooldown = 1.1
 sheet_path = "res://assets/sprites/enemies/sombra.png"
-layout_path = "res://assets/sprites/enemies/sombra_layout.txt"
+layout_path = "res://assets/sprites/enemies/sombra_layout.json"
 idle_anim = "idle"
 move_anim = "move"
 

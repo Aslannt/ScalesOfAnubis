@@ -25,7 +25,7 @@ func _ready() -> void:
 	add_child(sprite)
 	sprite.sprite_frames = SpritesheetLoader.build(
 		"res://assets/sprites/companion/thot.png",
-		"res://assets/sprites/companion/thot_layout.txt", 5.0)
+		"res://assets/sprites/companion/thot_layout.json", 5.0)
 	sprite.play("idle")
 
 	_moon_light = OmniLight3D.new()

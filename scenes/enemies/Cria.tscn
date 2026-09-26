@@ -16,7 +16,7 @@ contact_damage = 10
 contact_range = 1.0
 contact_cooldown = 0.9
 sheet_path = "res://assets/sprites/enemies/cria.png"
-layout_path = "res://assets/sprites/enemies/cria_layout.txt"
+layout_path = "res://assets/sprites/enemies/cria_layout.json"
 idle_anim = "idle"
 move_anim = "move"
 

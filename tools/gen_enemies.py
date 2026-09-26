@@ -6,6 +6,7 @@ from palette import c
 
 sys.path.insert(0, os.path.dirname(__file__))
 from postfx import finish
+from pixel_draw import save_layout
 
 OUT_E = os.path.join("..", "assets", "sprites", "enemies")
 OUT_C = os.path.join("..", "assets", "sprites", "companion")
@@ -156,8 +157,7 @@ def build_sombra():
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "sombra.png"))
-    with open(os.path.join(OUT_E, "sombra_layout.txt"), "w") as f:
-        f.write(f"frame_w={W} frame_h={H}\n" + "\n".join(layout))
+    save_layout(os.path.join(OUT_E, "sombra_layout.json"), W, H, layout)
     print("sombra ok", sheet.size)
 
 
@@ -169,8 +169,7 @@ def build_cria():
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "cria.png"))
-    with open(os.path.join(OUT_E, "cria_layout.txt"), "w") as f:
-        f.write(f"frame_w={W} frame_h={H}\n" + "\n".join(layout))
+    save_layout(os.path.join(OUT_E, "cria_layout.json"), W, H, layout)
     print("cria ok", sheet.size)
 
 
@@ -182,8 +181,7 @@ def build_heraldo():
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_E, "heraldo.png"))
-    with open(os.path.join(OUT_E, "heraldo_layout.txt"), "w") as f:
-        f.write("frame_w=48 frame_h=48\n" + "\n".join(layout))
+    save_layout(os.path.join(OUT_E, "heraldo_layout.json"), 48, 48, layout)
     print("heraldo ok", sheet.size)
 
 
@@ -195,8 +193,7 @@ def build_thot():
             layout.append(f"{kind}_{i}")
     sheet = hstrip(frames)
     sheet.save(os.path.join(OUT_C, "thot.png"))
-    with open(os.path.join(OUT_C, "thot_layout.txt"), "w") as f:
-        f.write(f"frame_w={W} frame_h={H}\n" + "\n".join(layout))
+    save_layout(os.path.join(OUT_C, "thot_layout.json"), W, H, layout)
     print("thot ok", sheet.size)
 
 

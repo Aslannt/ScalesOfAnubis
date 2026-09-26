@@ -12,6 +12,7 @@ from palette import c
 
 sys.path.insert(0, os.path.dirname(__file__))
 from postfx import finish
+from pixel_draw import save_layout
 
 OUT = os.path.join("..", "assets", "sprites", "characters")
 os.makedirs(OUT, exist_ok=True)
@@ -260,9 +261,7 @@ def build_spritesheet(name, scheme):
     path = os.path.join(OUT, f"{name}.png")
     sheet.save(path)
     print("wrote", path, sheet.size, "frames:", len(frames))
-    with open(os.path.join(OUT, f"{name}_layout.txt"), "w") as f:
-        f.write(f"frame_w={W} frame_h={H}\n")
-        f.write("\n".join(layout))
+    save_layout(os.path.join(OUT, f"{name}_layout.json"), W, H, layout)
 
 
 if __name__ == "__main__":
