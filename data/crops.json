@@ -1,0 +1,29 @@
+{
+  "trigo": {
+    "nombre": "Trigo (emmer)",
+    "dias_para_crecer": 1,
+    "precio_venta": 6,
+    "precio_semilla": 2,
+    "sprite": "res://assets/sprites/crops/trigo.png",
+    "solo_orilla": false,
+    "dato_mitologico": "Base del pan y la cerveza egipcios."
+  },
+  "lino": {
+    "nombre": "Lino",
+    "dias_para_crecer": 2,
+    "precio_venta": 10,
+    "precio_semilla": 3,
+    "sprite": "res://assets/sprites/crops/lino.png",
+    "solo_orilla": false,
+    "dato_mitologico": "Con lino se hacían la ropa y las vendas de momificación."
+  },
+  "papiro": {
+    "nombre": "Papiro",
+    "dias_para_crecer": 2,
+    "precio_venta": 14,
+    "precio_semilla": 4,
+    "sprite": "res://assets/sprites/crops/papiro.png",
+    "solo_orilla": true,
+    "dato_mitologico": "Crecía en los pantanos del Nilo; de él salía el material de escritura."
+  }
+}

@@ -1,0 +1,103 @@
+class_name WorldBuilder
+extends Node3D
+## Construye el mapa (terreno + edificios + parcelas de cultivo) leyendo
+## data/map_layout.json. Nada de geometria quemada a mano: todo sale de datos.
+
+var tile_size: float = 2.0
+var world_w: int = 36
+var world_h: int = 28
+var player_spawn_world: Vector3 = Vector3.ZERO
+
+var farm_plots: Array = []
+
+
+func build(layout_path: String = "res://data/map_layout.json") -> void:
+	var f := FileAccess.open(layout_path, FileAccess.READ)
+	if f == null:
+		push_error("No se pudo abrir %s" % layout_path)
+		return
+	var data: Dictionary = JSON.parse_string(f.get_as_text())
+
+	tile_size = float(data.get("tile_size", 2.0))
+	world_w = int(data["world_tiles"]["w"])
+	world_h = int(data["world_tiles"]["h"])
+
+	_build_ground_collision()
+
+	var zones_node := Node3D.new()
+	zones_node.name = "Terreno"
+	add_child(zones_node)
+
+	var y_offset := 0.0
+	for zone in data["zones"]:
+		var rect: Array = zone["rect"]
+		var x0: float = rect[0]
+		var z0: float = rect[1]
+		var x1: float = rect[2]
+		var z1: float = rect[3]
+		var tiles := Vector2(x1 - x0, z1 - z0)
+		var center_tile := Vector2((x0 + x1) * 0.5, (z0 + z1) * 0.5)
+		var plane := BuildingFactory.ground_plane(tiles * tile_size, zone["textura"], tiles)
+		plane.position = _tile_to_world(center_tile.x, center_tile.y)
+		plane.position.y = y_offset
+		zones_node.add_child(plane)
+		y_offset += 0.002
+
+		if zone.get("farmland", false):
+			_build_farmland(rect, bool(zone.get("orilla", false)))
+
+	var props_node := Node3D.new()
+	props_node.name = "Props"
+	add_child(props_node)
+	for prop in data["props"]:
+		var tile: Array = prop["tile"]
+		var node := BuildingFactory.build(prop["tipo"])
+		node.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
+		node.rotation_degrees.y = float(prop.get("rot", 0))
+		props_node.add_child(node)
+
+	var spawn: Array = data.get("player_spawn_tile", [world_w / 2, world_h / 2])
+	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)
+
+
+func _build_farmland(rect: Array, orilla: bool) -> void:
+	var plots_node := Node3D.new()
+	plots_node.name = "Parcelas"
+	add_child(plots_node)
+	for tx in range(int(rect[0]), int(rect[2])):
+		for tz in range(int(rect[1]), int(rect[3])):
+			var plot := FarmPlot.new()
+			plot.tile_size = tile_size
+			plot.is_orilla = orilla
+			plot.position = _tile_to_world(tx + 0.5, tz + 0.5)
+			plots_node.add_child(plot)
+			farm_plots.append(plot)
+
+
+func _build_ground_collision() -> void:
+	var body := StaticBody3D.new()
+	body.name = "SueloColision"
+	var col := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(world_w * tile_size, 0.2, world_h * tile_size)
+	col.shape = shape
+	col.position = Vector3(0, -0.1, 0)
+	body.add_child(col)
+	add_child(body)
+
+
+func _tile_to_world(tx: float, tz: float) -> Vector3:
+	var x := tx * tile_size - (world_w * tile_size) * 0.5
+	var z := tz * tile_size - (world_h * tile_size) * 0.5
+	return Vector3(x, 0, z)
+
+
+func plot_at_world(pos: Vector3, max_dist: float = 3.0) -> FarmPlot:
+	var closest: FarmPlot = null
+	var best := max_dist
+	for p in farm_plots:
+		var d: float = p.position.distance_to(pos)
+		if d < best:
+			best = d
+			closest = p
+	return closest

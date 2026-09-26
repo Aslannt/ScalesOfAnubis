@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0cria12345"]
+
+[ext_resource type="Script" path="res://scripts/enemies/cria.gd" id="1_cria"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 0.8
+
+[node name="Cria" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_cria")
+max_health = 10
+speed = 3.4
+contact_damage = 10
+contact_range = 1.0
+contact_cooldown = 0.9
+sheet_path = "res://assets/sprites/enemies/cria.png"
+layout_path = "res://assets/sprites/enemies/cria_layout.txt"
+idle_anim = "idle"
+move_anim = "move"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+pixel_size = 0.055
+billboard = 2
+shaded = true
+texture_filter = 0
+alpha_cut = 1

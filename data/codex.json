@@ -1,0 +1,82 @@
+[
+  {
+    "id": "anubis",
+    "titulo": "Anubis",
+    "texto": "Dios con cabeza de chacal, protector de las necrópolis y patrón de la momificación. Es quien realiza el pesaje del corazón del difunto contra la pluma de Maat.",
+    "thot": "Solemne, sí. Pero deberías verlo intentar bailar en un festival. Ni una palabra más.",
+    "icono": "res://assets/sprites/icons/anj.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "thot",
+    "titulo": "Thot",
+    "texto": "Dios de la escritura, la sabiduría y la luna. Se le representa como un ibis, o como un hombre con cabeza de ibis. Anotó el resultado de tu pesaje.",
+    "thot": "Yo escribí esa entrada. Con toda humildad, es la mejor del libro.",
+    "icono": "res://assets/sprites/companion/thot.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "maat",
+    "titulo": "Maat y la pluma",
+    "texto": "Maat es la diosa y el concepto de la verdad, el orden y la justicia. Su símbolo es la pluma de avestruz. Lo opuesto a Maat es Isfet, el caos.",
+    "thot": "Un corazón más liviano que su pluma. Suena poético hasta que es literalmente tu vida en juego.",
+    "icono": "res://assets/sprites/icons/feather.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "ammit",
+    "titulo": "Ammit",
+    "texto": "La devoradora de corazones: cabeza de cocodrilo, parte delantera de león, trasera de hipopótamo. Devora los corazones que pesan demasiado en el juicio.",
+    "thot": "No la invites a cenar. Es literalmente lo único que hace.",
+    "icono": "res://assets/sprites/enemies/heraldo.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "duat",
+    "titulo": "Duat",
+    "texto": "El inframundo egipcio que recorren los muertos en su viaje hacia el juicio final.",
+    "thot": "Frío, oscuro, y con una fila de espera francamente indignante.",
+    "icono": "res://assets/sprites/icons/scarab.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "aaru",
+    "titulo": "Aaru",
+    "texto": "El Campo de Juncos, gobernado por Osiris: el paraíso de los justos. Una versión eterna y abundante de los campos de Egipto, donde también se cultivaba.",
+    "thot": "Sí, incluso en el paraíso se sigue arando. Los egipcios amaban su tierra hasta después de la muerte.",
+    "icono": "res://assets/sprites/crops/trigo.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "ba",
+    "titulo": "Ba",
+    "texto": "Una de las partes del alma egipcia, representada como un pájaro con cabeza humana.",
+    "thot": "Tu ba anda por ahí guardando recuerdos que ni tú recuerdas. Práctico y algo perturbador.",
+    "icono": "res://assets/sprites/companion/thot.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "sheut",
+    "titulo": "Sheut",
+    "texto": "La sombra, otra de las partes que componen a la persona según la creencia egipcia.",
+    "thot": "No confundas tu sheut con las criaturas que te persiguen de noche. Aunque, para ser justos, la confusión es comprensible.",
+    "icono": "res://assets/sprites/enemies/sombra.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "cultivos",
+    "titulo": "Cultivos del Nilo",
+    "texto": "El trigo emmer era la base del pan y la cerveza. El lino servía para la ropa y las vendas de momificación. El papiro crecía en los pantanos del Nilo y de él salía el material de escritura.",
+    "thot": "Tres plantas, una civilización entera encima. No está mal para simples tallos verdes.",
+    "icono": "res://assets/sprites/crops/papiro.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "amuletos",
+    "titulo": "Anj y Escarabajo del corazón",
+    "texto": "El anj es el símbolo de la vida. El escarabajo del corazón se colocaba sobre el pecho de la momia para que el corazón no hablara en contra del difunto durante el juicio.",
+    "thot": "Un amuleto que le tapa la boca a tu propio corazón. Los egipcios pensaban en todo.",
+    "icono": "res://assets/sprites/icons/scarab.png",
+    "desbloqueada": false
+  }
+]

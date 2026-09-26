@@ -1,0 +1,7 @@
+frame_w=20 frame_h=24
+idle_0
+idle_1
+fly_0
+fly_1
+fly_2
+fly_3

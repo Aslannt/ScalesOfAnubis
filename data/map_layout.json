@@ -1,0 +1,37 @@
+{
+  "tile_size": 2.0,
+  "world_tiles": { "w": 36, "h": 28 },
+  "zones": [
+    { "nombre": "desierto", "rect": [0, 0, 36, 28], "textura": "sand" },
+    { "nombre": "franja_verde", "rect": [5, 0, 20, 28], "textura": "grass_nile" },
+    { "nombre": "orilla_papiro", "rect": [5, 6, 7, 22], "textura": "grass_nile", "orilla": true, "farmland": true },
+    { "nombre": "campo_principal", "rect": [7, 8, 19, 20], "textura": "grass_nile", "orilla": false, "farmland": true },
+    { "nombre": "rio_nilo", "rect": [0, 0, 5, 28], "textura": "water", "impasable": true },
+    { "nombre": "aldea", "rect": [20, 2, 32, 14], "textura": "path" },
+    { "nombre": "necropolis", "rect": [20, 15, 33, 28], "textura": "necropolis_sand" }
+  ],
+  "props": [
+    { "tipo": "temple", "tile": [24, 5], "rot": 180 },
+    { "tipo": "column", "tile": [22, 6], "rot": 0 },
+    { "tipo": "column", "tile": [26, 6], "rot": 0 },
+    { "tipo": "house", "tile": [25, 9], "rot": 20 },
+    { "tipo": "house", "tile": [28, 7], "rot": -30 },
+    { "tipo": "house", "tile": [23, 10], "rot": 200 },
+    { "tipo": "dock", "tile": [4, 5], "rot": 90 },
+    { "tipo": "obelisk", "tile": [26, 20], "rot": 0 },
+    { "tipo": "tomb", "tile": [22, 23], "rot": 15 },
+    { "tipo": "tomb", "tile": [30, 24], "rot": -10 },
+    { "tipo": "rock", "tile": [34, 6], "rot": 0 },
+    { "tipo": "rock", "tile": [33, 20], "rot": 45 },
+    { "tipo": "rock", "tile": [35, 12], "rot": 90 },
+    { "tipo": "palm", "tile": [6, 9], "rot": 0 },
+    { "tipo": "palm", "tile": [6, 13], "rot": 0 },
+    { "tipo": "palm", "tile": [6, 17], "rot": 0 },
+    { "tipo": "reed", "tile": [5, 4], "rot": 0 },
+    { "tipo": "reed", "tile": [5, 10], "rot": 0 },
+    { "tipo": "reed", "tile": [5, 15], "rot": 0 },
+    { "tipo": "reed", "tile": [5, 21], "rot": 0 },
+    { "tipo": "reed", "tile": [5, 25], "rot": 0 }
+  ],
+  "player_spawn_tile": [12, 14]
+}
