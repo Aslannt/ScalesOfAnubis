@@ -57,6 +57,25 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Generación de sprites: Python 3.12 + Pillow + numpy (ya presentes/instalados).
 - Audio: síntesis propia con Python (numpy → WAV) estilo sfxr, sin dependencias de pago.
 
+## Punto 4 resuelto: la noche roja no era de paleta, era del fog (PROMPT_PULIDO.md)
+- Causa raíz real, encontrada imprimiendo los valores de luz/ambiente en
+  plena captura y comparándolos contra el píxel final: los colores de
+  `day_night_controller.gd` SÍ eran azul/violeta correctos en todo momento,
+  pero `Environment.fog_aerial_perspective` y `fog_sky_affect` (que hacen
+  que la niebla "respire" el color del cielo/sol como en una atmósfera
+  real) estaban tomando el disco del sol/cielo y mezclándolo con demasiada
+  fuerza, inyectando un cálido/rojizo por encima de todo lo demás sin que
+  se notara en los valores de `fog_light_color` (que sí eran correctos).
+  Puesto ambos en 0 en `scenes/world/Farm.tscn`: la niebla ahora solo usa
+  el color plano que le da `fog_light_color` (correcto, sigue el ciclo),
+  sin "broma" atmosférica extra. Además se agregó un transition timer fijo
+  de 4s en vez de animar a lo largo de toda la fase (ver nota anterior) y
+  se cambió `tonemap_mode` de Filmic a Linear (los tonemappers cinemático
+  tienden a "calentar" las sombras muy oscuras, otro contribuyente menor).
+- `day_night_controller.gd::snap_to_current_phase()` nuevo, usado por
+  `tools/capture.gd` para que las capturas muestren el look ya asentado de
+  cada fase en vez de a mitad de transición.
+
 ## Herramienta de captura visual (obligatoria desde PROMPT_PULIDO.md)
 - `tools/capture.gd`/`capture.tscn` cargan Farm.tscn de verdad (con ventana,
   sin `--headless`), teletransportan al jugador a 8 puntos del mapa (granja,
