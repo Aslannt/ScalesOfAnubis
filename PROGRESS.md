@@ -126,6 +126,17 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
 - Probado headless con el ciclo arar→sembrar→regar→cosechar completo, el
   desvanecido al esquivar y la muerte de un enemigo: todo sin errores.
 
+## Fix crítico: personaje invisible en el .exe (reporte real de Deivid)
+Deivid probó el `.exe` y no veía al personaje. Causa real, confirmada
+relanzando el `.exe` con logs: los `_layout.txt` de los sprites (dicen qué
+frame es cada animación) no se empaquetan en un build `--export-release`,
+así que **todos** los personajes/enemigos/antorchas quedaban con un
+`SpriteFrames` vacío y no se dibujaban — fallaba en silencio porque una
+build release no muestra consola. Cambié el formato a `.json` (que sí se
+empaqueta, igual que `data/*.json`). Verificado: el log de errores del
+`.exe` real quedó en cero. El `build/ScalesOfAnubis.exe` actual ya tiene
+este fix. Detalle completo en DECISIONES.md.
+
 ## PROMPT_PULIDO.md — en curso, sesión cortada por límite de tiempo
 Deivid renderizó el juego y encontró problemas reales que el chequeo
 headless no podía ver. Regla nueva ya aplicada: `tools/capture.gd` +
