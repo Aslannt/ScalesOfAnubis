@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://efarm00001"]
+[gd_scene load_steps=12 format=3 uid="uid://efarm00001"]
 
 [ext_resource type="Script" path="res://scripts/world/farm.gd" id="1_farm"]
 [ext_resource type="Script" path="res://scripts/world/world_builder.gd" id="2_wb"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/world/camera_rig.gd" id="5_cam"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="7_pause"]
+[ext_resource type="Script" path="res://scripts/ui/codex_menu.gd" id="8_codex"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.16, 0.29, 0.55, 1)
@@ -61,3 +62,6 @@ smoothing = 4.0
 
 [node name="PauseMenu" type="CanvasLayer" parent="."]
 script = ExtResource("7_pause")
+
+[node name="CodexMenu" type="CanvasLayer" parent="."]
+script = ExtResource("8_codex")

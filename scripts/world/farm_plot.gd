@@ -100,6 +100,7 @@ func harvest() -> String:
 		return ""
 	var id := crop_id
 	GameState.add_item(id, 1)
+	Codex.unlock("cultivos")
 	crop_id = ""
 	growth_day = 0
 	watered_today = false

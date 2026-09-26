@@ -148,5 +148,6 @@ func _on_day_changed(_d: int) -> void:
 	pass
 
 
-func set_weapon_label(text: String) -> void:
-	_lbl_arma.text = text
+func _process(_delta: float) -> void:
+	var amuleto := GameState.equipped_amulet.capitalize() if GameState.equipped_amulet != "" else "—"
+	_lbl_arma.text = "%s | Amuleto: %s" % [GameState.equipped_weapon.capitalize(), amuleto]

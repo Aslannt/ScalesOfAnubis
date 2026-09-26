@@ -22,7 +22,9 @@ var _attacking := false
 var _attack_t := 0.0
 var _combo_index := 0
 
-var equipped_weapon: String = "khopesh"  # khopesh | martillo
+var _anj_timer: float = 0.0
+const ANJ_INTERVAL := 6.0
+const ANJ_HEAL := 15
 
 var world_builder: WorldBuilder = null
 
@@ -44,7 +46,7 @@ func _ready() -> void:
 	sprite.sprite_frames = frames
 	sprite.play("south_idle")
 	attack_area.monitoring = false
-	GameState.health_changed.connect(func(h, _m): if h <= 0: died.emit())
+	GameState.health_changed.connect(_on_health_changed)
 
 
 func _physics_process(delta: float) -> void:
@@ -81,10 +83,14 @@ func _physics_process(delta: float) -> void:
 		_try_farm_interact()
 
 	if Input.is_action_just_pressed("tool_1"):
-		equipped_weapon = "khopesh"
+		GameState.equipped_weapon = "khopesh"
 	if Input.is_action_just_pressed("tool_2"):
-		equipped_weapon = "martillo"
+		GameState.equipped_weapon = "martillo"
 
+	if Input.is_action_just_pressed("amulet"):
+		_cycle_amulet()
+
+	_update_amulet_passive(delta)
 	_update_animation()
 
 
@@ -112,7 +118,7 @@ func _start_dodge() -> void:
 
 func _start_attack() -> void:
 	_attacking = true
-	var stats: Dictionary = WEAPON_STATS[equipped_weapon]
+	var stats: Dictionary = WEAPON_STATS[GameState.equipped_weapon]
 	_attack_t = float(stats["cooldown"])
 	_combo_index = (_combo_index + 1) % int(stats["golpes"])
 	var shape: SphereShape3D = attack_shape.shape
@@ -183,6 +189,43 @@ func _update_animation() -> void:
 		sprite.play("%s_walk" % group)
 	else:
 		sprite.play("%s_idle" % group)
+
+
+func _cycle_amulet() -> void:
+	var owned: Array = GameState.owned_amulets
+	if owned.is_empty():
+		return
+	if GameState.equipped_amulet == "":
+		GameState.equipped_amulet = owned[0]
+	else:
+		var idx := owned.find(GameState.equipped_amulet)
+		if idx == -1 or idx == owned.size() - 1:
+			GameState.equipped_amulet = ""
+		else:
+			GameState.equipped_amulet = owned[idx + 1]
+	Codex.unlock("amuletos")
+
+
+func _update_amulet_passive(delta: float) -> void:
+	if GameState.equipped_amulet != "anj":
+		return
+	if GameState.health >= GameState.max_health:
+		_anj_timer = 0.0
+		return
+	_anj_timer += delta
+	if _anj_timer >= ANJ_INTERVAL:
+		_anj_timer = 0.0
+		GameState.heal(ANJ_HEAL)
+
+
+func _on_health_changed(h: int, _m: int) -> void:
+	if h <= 0:
+		if GameState.equipped_amulet == "escarabajo" and not GameState.escarabajo_usado_esta_noche:
+			GameState.escarabajo_usado_esta_noche = true
+			GameState.health = int(GameState.max_health * 0.5)
+			GameState.health_changed.emit(GameState.health, GameState.max_health)
+			return
+		died.emit()
 
 
 func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:

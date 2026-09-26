@@ -16,7 +16,10 @@ var deben: int = 15
 var heart_weight: float = HEART_START
 var current_day: int = 1
 var inventory: Dictionary = {}  # item_id -> cantidad
+var owned_amulets: Array = ["anj", "escarabajo"]
 var equipped_amulet: String = ""
+var equipped_weapon: String = "khopesh"  # khopesh | martillo
+var escarabajo_usado_esta_noche: bool = false
 var decisiones: Dictionary = {}  # id_decision -> valor elegido
 
 var crops: Dictionary = {}
@@ -34,7 +37,16 @@ var enemies_defeated_tonight: int = 0
 
 func _ready() -> void:
 	_cargar_crops()
-	GameTime.night_started.connect(func(): crops_lost_tonight = 0; enemies_defeated_tonight = 0)
+	GameTime.night_started.connect(func():
+		crops_lost_tonight = 0
+		enemies_defeated_tonight = 0
+		escarabajo_usado_esta_noche = false
+		Codex.unlock("sheut")
+		Codex.unlock("duat")
+	)
+	GameTime.day_started.connect(func(): Codex.unlock("maat"))
+	Codex.unlock("anubis")
+	Codex.unlock("thot")
 
 
 func _cargar_crops() -> void:

@@ -87,4 +87,5 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO) -> void:
 
 func die() -> void:
 	GameState.enemies_defeated_tonight += 1
+	Codex.unlock("ammit")
 	queue_free()
