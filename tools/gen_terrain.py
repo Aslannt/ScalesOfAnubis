@@ -20,6 +20,63 @@ def _blob(px, size, cx, cy, w, h, color):
             px[x, y] = color
 
 
+def _seamless_noise_field(seed, size=SIZE, low_res=6):
+    """Campo de ruido suave (0..1) y perfectamente tileable: genera una
+    grilla de baja resolucion, la mosaiquea 3x3 y la escala con interpolacion
+    bicubica, recortando el tile central. Da 'manchas' organicas en vez de
+    grano de television."""
+    rng = np.random.RandomState(seed)
+    low = (rng.random((low_res, low_res)) * 255).astype(np.uint8)
+    low_img = Image.fromarray(low, mode="L")
+    tiled = Image.new("L", (low_res * 3, low_res * 3))
+    for ty in range(3):
+        for tx in range(3):
+            tiled.paste(low_img, (tx * low_res, ty * low_res))
+    big = tiled.resize((size * 3, size * 3), Image.BICUBIC)
+    center = big.crop((size, size, size * 2, size * 2))
+    return np.asarray(center).astype(np.float32) / 255.0
+
+
+def organic_patches(tones, seed, size=SIZE, low_res=6):
+    """Mezcla 2-4 tonos CERCANOS entre si en manchas suaves y grandes (sin
+    puntos sueltos de alto contraste). `tones` son nombres de paleta,
+    ordenados de mas oscuro a mas claro."""
+    field = _seamless_noise_field(seed, size, low_res)
+    n = len(tones)
+    colors = [np.array(c(t)[:3], dtype=np.float32) for t in tones]
+    out = np.zeros((size, size, 3), dtype=np.float32)
+    scaled = field * (n - 1)
+    idx = np.clip(scaled.astype(int), 0, n - 2)
+    frac = scaled - idx
+    for y in range(size):
+        for x in range(size):
+            i = idx[y, x]
+            t = frac[y, x]
+            out[y, x] = colors[i] * (1 - t) + colors[i + 1] * t
+    img = Image.new("RGBA", (size, size))
+    px = img.load()
+    for y in range(size):
+        for x in range(size):
+            r, g, b = out[y, x]
+            px[x, y] = (int(r), int(g), int(b), 255)
+    return img
+
+
+def add_sparse_detail(img, color, seed, count=14, blob_w=(1, 2), blob_h=(1, 2)):
+    """Unos pocos blobs chiquitos de detalle (piedritas, briznas, ceniza),
+    bien espaciados: da textura sin volver a la estatica de TV."""
+    rng = np.random.RandomState(seed + 500)
+    size = img.size[0]
+    px = img.load()
+    col = c(color)
+    for _ in range(count):
+        cx, cy = rng.randint(0, size), rng.randint(0, size)
+        w = rng.randint(blob_w[0], blob_w[1] + 1)
+        h = rng.randint(blob_h[0], blob_h[1] + 1)
+        _blob(px, size, cx, cy, w, h, col)
+    return img
+
+
 def speckle(base, dark, light, seed, density=0.10, size=SIZE):
     """Ruido en 'grumos' (blobs de 2x2/3x2) en vez de grano fino uniforme:
     se lee mas como tierra/arena pintada a mano y menos como estatica."""
@@ -47,15 +104,19 @@ def grid_lines(img, color, step=8):
 
 
 def make_sand():
-    return speckle("sand", "sand_dark", "sand_light", seed=1, density=0.18)
+    img = organic_patches(["sand_dark", "sand", "sand_light"], seed=1)
+    img = add_sparse_detail(img, "sand_dark", seed=1, count=10)
+    return img
 
 
 def make_grass():
-    return speckle("nile_green", "nile_green_dark", "sand_light", seed=2, density=0.14)
+    img = organic_patches(["nile_green_dark", "nile_green", "nile_green_light"], seed=2)
+    img = add_sparse_detail(img, "nile_green_dark", seed=2, count=16, blob_w=(1, 1), blob_h=(2, 3))
+    return img
 
 
 def make_soil_dry():
-    img = speckle("soil", "soil_dark", "ochre", seed=3, density=0.16)
+    img = organic_patches(["soil_dark", "soil", "ochre_dark"], seed=3)
     px = img.load()
     for y in range(SIZE):
         for x in range(SIZE):
@@ -66,7 +127,7 @@ def make_soil_dry():
 
 
 def make_soil_wet():
-    img = speckle("soil_wet", "soil_dark", "soil", seed=4, density=0.10)
+    img = organic_patches(["soil_dark", "soil_wet", "soil"], seed=4)
     px = img.load()
     for y in range(SIZE):
         for x in range(SIZE):
@@ -77,7 +138,9 @@ def make_soil_wet():
 
 
 def make_path():
-    return speckle("sand_dark", "ochre_dark", "sand", seed=5, density=0.15)
+    img = organic_patches(["ochre_dark", "sand_dark", "sand"], seed=5)
+    img = add_sparse_detail(img, "ochre_dark", seed=5, count=10)
+    return img
 
 
 def make_water():
@@ -150,7 +213,9 @@ def make_wall_papyrus():
 
 
 def make_necropolis_sand():
-    return speckle("sand_dark", "anubis_black", "bone_dark", seed=11, density=0.08)
+    img = organic_patches(["soil_dark", "sand_dark", "bone_dark"], seed=11)
+    img = add_sparse_detail(img, "anubis_black", seed=11, count=8)
+    return img
 
 
 TEXTURES = {

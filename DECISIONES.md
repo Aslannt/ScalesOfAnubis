@@ -72,6 +72,20 @@ recomendados, con la base técnica ya lista para construirlos encima.
   buena parte de la noche real jugada, no rojo por error de paleta sino por
   velocidad de transición. Se corrige en el punto 4 del pase de pulido.
 
+## Texturas de terreno: manchas suaves en vez de ruido (punto 1 de PROMPT_PULIDO.md)
+- El "ruido de estática de TV" en pasto/arena/necrópolis venía de mezclar un
+  color base con un color "claro" casi blanco (`sand_light`) en puntos
+  sueltos de alto contraste. Rehecho con un campo de ruido de baja
+  resolución (grilla 6x6) mosaiqueado 3x3 y escalado con interpolación
+  bicúbica (`tools/gen_terrain.py::organic_patches`), que da manchas
+  orgánicas y grandes en vez de grano; encima solo un puñado de detalles
+  sueltos (piedritas/briznas) muy espaciados, nunca por todo el tile.
+- Se ve un patrón hexagonal muy sutil al repetir el tile varias veces (es
+  el artefacto típico de escalar una grilla 6x6 con bicúbica); a la escala
+  real del juego (tile de 2m visto en perspectiva) no se nota como
+  problema, pero si hiciera falta más adelante, subir `low_res` de 6 a 8-10
+  lo suaviza más a costa de manchas más chicas.
+
 ## Exportación a Windows
 - Instalé las plantillas de exportación oficiales de Godot 4.7.2 (descarga
   desde GitHub Releases del propio motor, gratis) y armé un

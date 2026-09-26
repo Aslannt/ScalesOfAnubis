@@ -24,6 +24,7 @@ PALETTE = {
     "lapis_dark": (27, 47, 92, 255),
     # Verde del Nilo
     "nile_green": (62, 122, 76, 255),
+    "nile_green_light": (86, 148, 96, 255),
     "nile_green_dark": (36, 81, 47, 255),
     "nile_water": (41, 98, 105, 255),
     "nile_water_dark": (24, 66, 72, 255),
