@@ -18,3 +18,7 @@ func _ready() -> void:
 
 	camera_rig.current = true
 	camera_rig.set_target(player)
+
+	var thot := ThotCompanion.new()
+	add_child(thot)
+	thot.set_target(player)

@@ -99,6 +99,22 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   aparecieron durante la sesión y se corrigieron en el momento gracias a
   este chequeo (ver historial de commits).
 
+## Thot te acompaña de verdad (GDD 4)
+- Antes Thot solo existía como sprite, retrato y líneas de diálogo dentro de
+  las conversaciones. Ahora es un **compañero visible que te sigue** todo el
+  tiempo (`scripts/npc/thot_companion.gd`), orbitando suavemente alrededor
+  tuyo con su propia animación de vuelo/reposo.
+- De noche, su disco lunar **ilumina alrededor del jugador** con una luz
+  fría que se enciende/apaga con una transición suave según la fase del
+  día — tal como pide el GDD ("de noche el disco brilla e ilumina
+  alrededor del jugador").
+- Probado headless corriendo varios ciclos día/noche seguidos: la luz de
+  Thot se enciende y apaga en cada transición sin errores. (Nota: en una
+  prueba de estrés con ciclos de días muy acelerados y combate simulado
+  encontré un aviso benigno de "recursos aún en uso al salir" — es un sonido
+  a mitad de reproducción justo cuando `--quit-after` mata el proceso a la
+  fuerza, no un leak que crezca durante el juego real; no requiere arreglo.)
+
 ## Más "jugo" (juice) en granja y combate
 - Esquivar ahora se ve (el sprite se vuelve semitransparente mientras dura
   la invulnerabilidad), no solo se siente.
