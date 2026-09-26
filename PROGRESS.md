@@ -81,6 +81,8 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   el templo, −8 peso), Ptahmose (compra toda la cosecha del inventario al
   precio de `data/crops.json`), Iry (diálogo con comentarios de Thot).
   Diálogo con máquina de escribir, pausa el juego mientras habla.
+- **Decisión moral 1** (GDD 6.7): altar de ofrendas junto al templo, robable
+  desde el día 2 con E (+20 deben, +10 peso del corazón, una sola vez).
 - **Audio (M10 parcial)**: 12 SFX y 3 loops musicales (día/noche/jefe — el
   de jefe generado pero sin usar todavía, ver "Qué falta"), **toda síntesis
   propia** (`tools/gen_sfx.py`, `tools/gen_music.py`, numpy → WAV). Crossfade
@@ -98,12 +100,15 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   este chequeo (ver historial de commits).
 
 ## Qué falta (próximos pasos recomendados, en orden)
-1. **Las 2 decisiones morales del GDD 6.7** (robar ofrendas del altar día 2,
-   defender aldea vs. cultivos noche 2): no implementadas. Es lo más valioso
-   que falta de la aldea — Meret/Ptahmose/Iry ya están, pero las decisiones
-   con peso narrativo real (el pilar 3 del GDD) todavía no.
-2. **Altar de ofrendas y defensas** (estatua de chacal, brasero): no
-   implementado.
+1. **Decisión moral 2** (defender aldea vs. cultivos, noche 2): no
+   implementada — requiere un evento de noche con dos amenazas simultáneas,
+   más ambicioso que la decisión 1. La **decisión moral 1 ya está
+   implementada**: altar de ofrendas cerca del templo (`scripts/world/altar.gd`),
+   robable con E desde el día 2 (+20 deben, +10 peso del corazón, una sola
+   vez; antes del día 2 Thot te lo impide con un comentario). Probado
+   headless: día 1 bloqueado, día 2 roba correctamente, segundo intento no
+   hace nada.
+2. **Defensas** (estatua de chacal, brasero): no implementadas.
 3. **Heraldo de Ammit (jefe)**: sprite ya generado
    (`assets/sprites/enemies/heraldo.png`) y tema musical listo
    (`assets/audio/music/jefe.wav`), pero sin escena/IA de jefe todavía.

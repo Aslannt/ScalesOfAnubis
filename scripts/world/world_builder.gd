@@ -60,6 +60,15 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 	var npcs_node := Node3D.new()
 	npcs_node.name = "NPCs"
 	add_child(npcs_node)
+
+	for altar_data in data.get("altares", []):
+		var tile_a: Array = altar_data["tile"]
+		var altar := Altar.new()
+		altar.position = _tile_to_world(float(tile_a[0]) + 0.5, float(tile_a[1]) + 0.5)
+		altar.rotation_degrees.y = float(altar_data.get("rot", 0))
+		npcs_node.add_child(altar)
+		npcs.append(altar)
+
 	for npc_data in data.get("npcs", []):
 		var tile: Array = npc_data["tile"]
 		var npc := NPC.new()
@@ -118,8 +127,10 @@ func plot_at_world(pos: Vector3, max_dist: float = 3.0) -> FarmPlot:
 	return closest
 
 
-func npc_at_world(pos: Vector3, max_dist: float = 2.4) -> NPC:
-	var closest: NPC = null
+## Devuelve NPC o Altar (ambos exponen interact()); sin tipo estricto a
+## proposito para permitir duck typing entre las dos clases.
+func npc_at_world(pos: Vector3, max_dist: float = 2.4):
+	var closest = null
 	var best := max_dist
 	for n in npcs:
 		var d: float = n.position.distance_to(pos)

@@ -143,7 +143,7 @@ func _resolve_attack_hits(stats: Dictionary) -> void:
 func _try_interact() -> void:
 	if world_builder == null:
 		return
-	var npc := world_builder.npc_at_world(global_position, 2.4)
+	var npc = world_builder.npc_at_world(global_position, 2.4)
 	if npc:
 		npc.interact()
 		return

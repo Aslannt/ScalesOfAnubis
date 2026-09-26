@@ -205,6 +205,23 @@ static func palm() -> Node3D:
 	return root
 
 
+static func altar() -> Node3D:
+	var root := Node3D.new()
+	root.name = "AltarDeOfrendas"
+	root.add_child(_box(Vector3(1.4, 0.9, 1.0), _mat("stone", Vector3(1, 1, 1)), Vector3(0, 0.45, 0)))
+	var bowl := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.35
+	cyl.bottom_radius = 0.25
+	cyl.height = 0.2
+	bowl.mesh = cyl
+	bowl.material_override = _solid_mat(Color(0.91, 0.73, 0.14))
+	bowl.position = Vector3(0, 1.0, 0)
+	root.add_child(bowl)
+	root.add_child(_collision_box(Vector3(1.4, 0.9, 1.0)))
+	return root
+
+
 static func reed() -> Node3D:
 	var root := Node3D.new()
 	var mat := _solid_mat(Color(0.30, 0.55, 0.38))
@@ -225,4 +242,5 @@ static func build(tipo: String) -> Node3D:
 		"rock": return rock()
 		"palm": return palm()
 		"reed": return reed()
+		"altar": return altar()
 	return Node3D.new()
