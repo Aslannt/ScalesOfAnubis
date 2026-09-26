@@ -90,4 +90,12 @@ func die() -> void:
 	GameState.enemies_defeated_tonight += 1
 	Codex.unlock("ammit")
 	SFX.play("enemy_death")
-	queue_free()
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.6, 0), Color(0.5, 0.3, 0.7))
+	set_physics_process(false)
+	set_process(false)
+	collision_layer = 0
+	collision_mask = 0
+	var tw := create_tween()
+	tw.tween_property(sprite, "modulate:a", 0.0, 0.25)
+	tw.parallel().tween_property(sprite, "position:y", sprite.position.y + 0.4, 0.25).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(queue_free)

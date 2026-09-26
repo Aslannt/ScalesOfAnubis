@@ -54,6 +54,7 @@ func till() -> bool:
 	_soil_mesh.visible = true
 	_soil_mesh.material_override = _mat_dry
 	SFX.play("till")
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.15, 0), Color(0.37, 0.24, 0.15))
 	return true
 
 
@@ -87,6 +88,7 @@ func water() -> bool:
 	watered_today = true
 	_soil_mesh.material_override = _mat_wet
 	SFX.play("water")
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.2, 0), Color(0.3, 0.7, 0.75))
 	return true
 
 
@@ -104,6 +106,7 @@ func harvest() -> String:
 	GameState.add_item(id, 1)
 	Codex.unlock("cultivos")
 	SFX.play("harvest")
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.9, 0.75, 0.2))
 	crop_id = ""
 	growth_day = 0
 	watered_today = false
@@ -123,6 +126,7 @@ func damage() -> void:
 	_crop_sprite.visible = false
 	_soil_mesh.material_override = _mat_dry
 	GameState.crops_lost_tonight += 1
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.2, 0.45, 0.25))
 
 
 func _update_crop_frame() -> void:

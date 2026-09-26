@@ -99,6 +99,17 @@ ScalesOfAnubis.exe`**, ya exportado y probado.
   aparecieron durante la sesión y se corrigieron en el momento gracias a
   este chequeo (ver historial de commits).
 
+## Más "jugo" (juice) en granja y combate
+- Esquivar ahora se ve (el sprite se vuelve semitransparente mientras dura
+  la invulnerabilidad), no solo se siente.
+- Los enemigos ya no desaparecen de golpe al morir: se desvanecen y flotan
+  un poco antes de irse, con una pequeña explosión de partículas.
+- Arar, regar, cosechar y que te destruyan un cultivo ahora sueltan un
+  estallido de partículas del color correspondiente (tierra, agua, oro,
+  hojas), además del sonido que ya tenían.
+- Probado headless con el ciclo arar→sembrar→regar→cosechar completo, el
+  desvanecido al esquivar y la muerte de un enemigo: todo sin errores.
+
 ## Sensación de combate (GDD 6.3: "feedback obligatorio")
 - **Hit-stop** real (breve congelamiento de `Engine.time_scale` al conectar
   un golpe), **sacudida de cámara** (`camera_rig.gd::shake()`), **números

@@ -99,9 +99,11 @@ func _update_timers(delta: float) -> void:
 		_dodge_cd_t -= delta
 	if _dodging:
 		_dodge_t -= delta
+		sprite.modulate.a = 0.55
 		if _dodge_t <= 0.0:
 			_dodging = false
 			_invulnerable = false
+			sprite.modulate.a = 1.0
 	if _attacking:
 		_attack_t -= delta
 		if _attack_t <= 0.0:
