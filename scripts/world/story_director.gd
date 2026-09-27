@@ -206,9 +206,7 @@ func _on_player_died() -> void:
 		for e in get_tree().get_nodes_in_group("enemies"):
 			if e != boss and e.has_method("vanish"):
 				e.vanish()
-		boss.health = boss.max_health
-		boss.health_changed_boss.emit(boss.health, boss.max_health)
-		boss.global_position = night_director.spawn_point("necropolis")
+		boss.reset_for_retry(night_director.spawn_point("necropolis"))
 		GameTime.paused = false
 	else:
 		GameTime.paused = false

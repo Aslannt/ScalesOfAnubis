@@ -264,6 +264,23 @@ func vanish() -> void:
 	pass  # el jefe no se va con el amanecer: la noche lo espera
 
 
+## Reintento tras una derrota del jugador: vida llena, sin avisos colgando.
+func reset_for_retry(pos: Vector3) -> void:
+	health = max_health
+	_enraged = false
+	sprite.modulate = Color.WHITE
+	sprite.position.x = 0
+	global_position = pos
+	health_changed_boss.emit(health, max_health)
+	_decide_t = 2.5
+	_roar_t = 10.0
+	_enter(S.CHASE)
+
+
+func _exit_tree() -> void:
+	_clear_telegraph()
+
+
 # --------------------------------------------------------- telegrafos
 func _telegraph_mat() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()

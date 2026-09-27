@@ -137,44 +137,120 @@ static func house(rng_seed: int = 0) -> Node3D:
 
 
 static func temple() -> Node3D:
+	## Templo de Maat: pilono de entrada (dos torres en talud con bandas
+	## pintadas y cornisa dorada), disco solar alado sobre la puerta, patio
+	## con columnas papiriformes y santuario al fondo. La entrada mira a +Z.
 	var root := Node3D.new()
 	root.name = "TemploMaat"
-	var w := 9.0
-	var d := 7.0
-	var h := 0.6
-	# plataforma
-	root.add_child(_box(Vector3(w, h, d), _mat("stone", Vector3(3, 2, 1)), Vector3(0, h * 0.5, 0)))
-	# cuerpo
-	var body_h := 3.2
-	root.add_child(_box(Vector3(w - 1.5, body_h, d - 1.5), _mat("wall_papyrus", Vector3(2, 1, 1)), Vector3(0, h + body_h * 0.5, 0)))
-	# techo
-	root.add_child(_box(Vector3(w, 0.4, d), _mat("stone", Vector3(3, 2, 1)), Vector3(0, h + body_h + 0.2, 0)))
-	# columnas de entrada
+	var plaster := _mat("plaster", Vector3(2, 1, 1))
+	var stone := _mat("stone", Vector3(3, 2, 1))
+	var gold := _solid_mat(Color(0.91, 0.73, 0.14))
+	var lapis := _solid_mat(Color(0.16, 0.3, 0.6))
+	var turq := _solid_mat(Color(0.16, 0.6, 0.55))
+	var red := _solid_mat(Color(0.62, 0.2, 0.14))
+	var dark := _solid_mat(Color(0.06, 0.05, 0.05))
+	# plataforma baja (caminable)
+	root.add_child(_box(Vector3(10, 0.15, 8.5), stone, Vector3(0, 0.075, 0)))
+	# --- pilono ---
+	var ph := 4.6
 	for side in [-1, 1]:
-		for i in range(3):
+		var tower := _tapered_box(Vector2(1.7, 0.8), Vector2(1.3, 0.55), ph, plaster)
+		tower.position = Vector3(side * 2.35, 0.15, 3.4)
+		root.add_child(tower)
+		# bandas pintadas en el frente de cada torre (azul, turquesa, rojo)
+		var bands := [[lapis, 3.5], [turq, 3.25], [red, 3.0]]
+		for bnd in bands:
+			var y: float = bnd[1]
+			var k := 1.0 - (y / ph) * (1.0 - 0.55 / 0.8)
+			root.add_child(_box(Vector3(2.7 * (1.0 - y / ph * 0.23), 0.16, 0.05), bnd[0], Vector3(side * 2.35, 0.15 + y, 3.4 + 0.8 * k + 0.02)))
+		# cornisa dorada
+		root.add_child(_box(Vector3(2.8, 0.22, 1.3), gold, Vector3(side * 2.35, 0.15 + ph + 0.11, 3.4)))
+		# relieve de Maat (pluma) pintado en la torre
+		root.add_child(_box(Vector3(0.18, 1.1, 0.04), _solid_mat(Color(0.95, 0.92, 0.8)), Vector3(side * 2.35, 1.6, 3.4 + 0.72)))
+	# puerta entre las torres
+	root.add_child(_box(Vector3(1.9, 3.3, 0.5), dark, Vector3(0, 1.8, 3.2)))
+	root.add_child(_box(Vector3(2.6, 0.5, 1.0), plaster, Vector3(0, 3.6, 3.4)))
+	root.add_child(_box(Vector3(2.7, 0.12, 1.1), gold, Vector3(0, 3.91, 3.4)))
+	# disco solar alado sobre la puerta
+	var disk := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.26
+	cyl.bottom_radius = 0.26
+	cyl.height = 0.08
+	disk.mesh = cyl
+	disk.material_override = gold
+	disk.rotation_degrees.x = 90
+	disk.position = Vector3(0, 3.6, 3.93)
+	root.add_child(disk)
+	for side in [-1, 1]:
+		var wing := _box(Vector3(0.9, 0.16, 0.05), lapis, Vector3(side * 0.7, 3.62, 3.92))
+		wing.rotation.z = side * 0.12
+		root.add_child(wing)
+	# --- patio con columnas papiriformes ---
+	for side in [-1, 1]:
+		for i in range(2):
+			var z := 1.6 - i * 1.7
 			var col := MeshInstance3D.new()
-			var cyl := CylinderMesh.new()
-			cyl.top_radius = 0.35
-			cyl.bottom_radius = 0.4
-			cyl.height = body_h
-			col.mesh = cyl
-			col.material_override = _mat("stone", Vector3(1, 1, 1))
-			col.position = Vector3(side * (w * 0.5 - 0.6), h + body_h * 0.5, d * 0.5 - 0.8 - i * 1.8)
+			var c := CylinderMesh.new()
+			c.top_radius = 0.26
+			c.bottom_radius = 0.32
+			c.height = 3.0
+			col.mesh = c
+			col.material_override = plaster
+			col.position = Vector3(side * 2.4, 1.65, z)
 			root.add_child(col)
-	# acento dorado sobre la entrada
-	root.add_child(_box(Vector3(2.4, 0.5, 0.2), _solid_mat(Color(0.91, 0.73, 0.14)), Vector3(0, h + body_h + 0.1, d * 0.5)))
-	# pilonos egipcios flanqueando la entrada (torres trapezoidales
-	# simplificadas como losas anchas, con banda turquesa y remate dorado)
-	var pylon_h := body_h + 1.6
+			var cap := MeshInstance3D.new()
+			var cc := CylinderMesh.new()
+			cc.top_radius = 0.5
+			cc.bottom_radius = 0.28
+			cc.height = 0.45
+			cap.mesh = cc
+			cap.material_override = turq
+			cap.position = Vector3(side * 2.4, 3.35, z)
+			root.add_child(cap)
+			root.add_child(_box(Vector3(0.8, 0.12, 0.8), gold, Vector3(side * 2.4, 3.62, z)))
+	# vigas del patio
 	for side in [-1, 1]:
-		var pylon := _box(Vector3(1.8, pylon_h, 0.7), _mat("stone", Vector3(1, 2, 1)), Vector3(side * (w * 0.5 + 1.0), h + pylon_h * 0.5, d * 0.5 - 0.2))
-		root.add_child(pylon)
-		root.add_child(_box(Vector3(1.9, 0.5, 0.8), _solid_mat(Color(0.16, 0.55, 0.52)), Vector3(side * (w * 0.5 + 1.0), h + pylon_h - 0.6, d * 0.5 - 0.2)))
-		root.add_child(_box(Vector3(1.9, 0.12, 0.8), _solid_mat(Color(0.91, 0.73, 0.14)), Vector3(side * (w * 0.5 + 1.0), h + pylon_h - 0.1, d * 0.5 - 0.2)))
-	root.add_child(_collision_box(Vector3(w - 1.5, body_h + h, d - 1.5)))
+		root.add_child(_box(Vector3(0.5, 0.3, 4.2), plaster, Vector3(side * 2.4, 3.8, 0.6)))
+	# --- santuario ---
+	var sh := 3.4
+	root.add_child(_box(Vector3(6.4, sh, 3.0), plaster, Vector3(0, 0.15 + sh * 0.5, -2.6)))
+	root.add_child(_box(Vector3(6.7, 0.25, 3.3), gold, Vector3(0, 0.15 + sh + 0.12, -2.6)))
+	root.add_child(_box(Vector3(6.6, 0.18, 3.2), lapis, Vector3(0, 0.15 + sh - 0.25, -2.6)))
+	root.add_child(_box(Vector3(1.1, 2.0, 0.1), dark, Vector3(0, 1.15, -1.08)))
+	# obeliscos pequenos flanqueando la entrada
+	for side in [-1, 1]:
+		root.add_child(_box(Vector3(0.6, 0.3, 0.6), stone, Vector3(side * 4.3, 0.3, 4.2)))
+		root.add_child(_tapered_box(Vector2(0.22, 0.22), Vector2(0.15, 0.15), 2.8, stone))
+		root.get_child(root.get_child_count() - 1).position = Vector3(side * 4.3, 0.45, 4.2)
+		var tip := MeshInstance3D.new()
+		var pm := PrismMesh.new()
+		pm.size = Vector3(0.3, 0.35, 0.3)
+		tip.mesh = pm
+		tip.material_override = gold
+		tip.position = Vector3(side * 4.3, 3.42, 4.2)
+		root.add_child(tip)
+	# colisiones: torres, santuario, columnas y obeliscos (el patio se camina)
+	for side in [-1, 1]:
+		var t := _collision_box(Vector3(3.2, ph, 1.6))
+		t.position = Vector3(side * 2.35, 0, 3.4)
+		root.add_child(t)
+		var o := _collision_box(Vector3(0.7, 3.0, 0.7))
+		o.position = Vector3(side * 4.3, 0, 4.2)
+		root.add_child(o)
+		for i in range(2):
+			var cb := _collision_box(Vector3(0.6, 3.0, 0.6))
+			cb.position = Vector3(side * 2.4, 0, 1.6 - i * 1.7)
+			root.add_child(cb)
+	var san := _collision_box(Vector3(6.4, sh, 3.0))
+	san.position = Vector3(0, 0, -2.6)
+	root.add_child(san)
+	var door := _collision_box(Vector3(1.9, 3.3, 0.5))
+	door.position = Vector3(0, 0, 3.2)
+	root.add_child(door)
 	for side in [-1, 1]:
 		var torch := Torch.new()
-		torch.position = Vector3(side * (w * 0.5 - 0.3), h, d * 0.5 + 0.4)
+		torch.position = Vector3(side * 1.35, 0.15, 4.5)
 		root.add_child(torch)
 	return root
 

@@ -18,12 +18,12 @@ const SCENARIOS := [
 	{"name": "08_vista_general_dia", "tile": Vector2(14, 12), "phase": 1, "wide": true},
 	{"name": "12_anim_orilla", "tile": Vector2(8, 13), "phase": 1, "wide": false, "frames": 4, "ambient": true},
 	{"name": "13_anim_noche", "tile": Vector2(12, 18), "phase": 3, "wide": false, "frames": 3},
-	{"name": "14_jefe", "tile": Vector2(24, 20), "phase": 3, "wide": false, "setup": "jefe"},
+	{"name": "14_jefe", "tile": Vector2(14, 22), "phase": 3, "wide": false, "setup": "jefe", "bark": true},
 	{"name": "15_defensas_noche", "tile": Vector2(16, 14), "phase": 3, "wide": false, "setup": "defensas"},
 	{"name": "16_ptahmose_menu", "tile": Vector2(6, 5.8), "phase": 1, "wide": false, "setup": "ptahmose"},
 	{"name": "17_resumen_amanecer", "tile": Vector2(13, 14), "phase": 0, "wide": false, "setup": "amanecer"},
-	{"name": "18_combate_noche", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "combate"},
-	{"name": "19_dialogo_meret", "tile": Vector2(24, 9.2), "phase": 1, "wide": false, "setup": "dialogo"},
+	{"name": "18_combate_noche", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "combate", "bark": true},
+	{"name": "19_dialogo_meret", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "dialogo"},
 	{"name": "25_codice", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "codice"},
 	{"name": "26_templo_dia", "tile": Vector2(24, 8.5), "phase": 1, "wide": true},
 	{"name": "27_necropolis_dia", "tile": Vector2(26, 23), "phase": 1, "wide": true},
@@ -72,6 +72,17 @@ func _run_scenario(s: Dictionary) -> void:
 	player.global_position = world_builder._tile_to_world(s["tile"].x, s["tile"].y) + Vector3(0, 0.2, 0)
 	camera_rig.set_target(player)
 	camera_rig.rotation_degrees.x = s.get("pitch", _base_pitch)
+	# los comentarios de Thot tapan la escena en las capturas: solo se
+	# muestran en los escenarios marcados con "bark"
+	var bark = get_tree().get_first_node_in_group("thot_bark")
+	bark.clear()
+	bark._showing = false
+	bark._panel.visible = false
+	var want_bark: bool = s.get("bark", false)
+	if want_bark and not GameState.thot_says.is_connected(bark.say):
+		GameState.thot_says.connect(bark.say)
+	elif not want_bark and GameState.thot_says.is_connected(bark.say):
+		GameState.thot_says.disconnect(bark.say)
 	for i in range(12):
 		await get_tree().process_frame
 	await _setup(s.get("setup", ""))
@@ -89,6 +100,11 @@ func _run_scenario(s: Dictionary) -> void:
 		get_viewport().get_texture().get_image().save_png("res://shots/%s_pez.png" % s["name"])
 		amb._spawn_flock()
 		await get_tree().create_timer(3.2).timeout
+	if not s.get("bark", false):
+		var bk = get_tree().get_first_node_in_group("thot_bark")
+		bk.clear()
+		bk._showing = false
+		bk._panel.visible = false
 	var n: int = s.get("frames", 1)
 	for f in range(n):
 		var img := get_viewport().get_texture().get_image()
@@ -121,7 +137,7 @@ func _setup(kind: String) -> void:
 	var nd = farm.get_node("NightDirector")
 	match kind:
 		"jefe":
-			var b = nd.spawn("jefe", "", "", player.global_position + Vector3(4.0, 0, -1.5))
+			var b = nd.spawn("jefe", "", "", player.global_position + Vector3(4.0, 0, -2.0))
 			await get_tree().create_timer(2.2).timeout
 			b._enter(Heraldo.S.CHARGE_WINDUP)
 			await get_tree().create_timer(0.4).timeout
@@ -169,6 +185,7 @@ func _setup(kind: String) -> void:
 
 func _cleanup() -> void:
 	get_tree().paused = false
+	farm.get_node("HUD")._boss_panel.visible = false
 	for e in get_tree().get_nodes_in_group("enemies"):
 		e.queue_free()
 	var dsum = farm.get_node("DawnSummary")
