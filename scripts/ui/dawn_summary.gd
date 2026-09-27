@@ -81,7 +81,7 @@ func show_summary(day: int, extra_lines: Array = []) -> void:
 	_open = true
 	_t = 0.0
 	get_tree().paused = true
-	SFX.play("heart_shift")
+	SFX.play("jingle_amanecer", 0.0, 0.0)
 	# las lineas aparecen una por una
 	var i := 0
 	for l in _lines.get_children():

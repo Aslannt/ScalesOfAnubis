@@ -26,6 +26,11 @@ var _amb_dia: AudioStreamPlayer
 var _amb_noche: AudioStreamPlayer
 var _boss := false
 const AMB_ON := -6.0
+## Capa de la estacion (modo libre, fase 6): arpa en Peret, riq y palmas en
+## Shemu, agua y ney grave en Akhet. Mismo largo que el groove: se suma
+## encima sin cortes. Volumen por fase: amanecer, dia, atardecer, noche.
+const SEASON_MIX := [-6.0, -1.0, -9.0, OFF]
+var _seasons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -41,8 +46,10 @@ func _ready() -> void:
 	_base.volume_db = mix[0]
 	_dia.volume_db = mix[1]
 	_noche.volume_db = mix[2]
-	# las tres capas arrancan en el mismo instante: quedan en fase
-	for p in [_base, _dia, _noche, _amb_dia, _amb_noche]:
+	for s in ["peret", "shemu", "akhet"]:
+		_seasons[s] = _make_player("estacion_%s.wav" % s, "Music")
+	# todas las capas arrancan en el mismo instante: quedan en fase
+	for p in [_base, _dia, _noche, _amb_dia, _amb_noche] + _seasons.values():
 		p.play()
 
 
@@ -72,6 +79,10 @@ func _process(delta: float) -> void:
 	_dia.volume_db = move_toward(_dia.volume_db, maxf(OFF, mix[1] + groove_mul), step)
 	_noche.volume_db = move_toward(_noche.volume_db, maxf(OFF, mix[2] + groove_mul), step)
 	_jefe.volume_db = move_toward(_jefe.volume_db, 0.0 if _boss else OFF, step)
+	for s in _seasons:
+		var on: bool = GameState.modo_libre and GameState.season() == s and not _boss
+		var target: float = SEASON_MIX[GameTime.phase] if on else OFF
+		_seasons[s].volume_db = move_toward(_seasons[s].volume_db, target, step)
 	if not _boss and _jefe.playing and _jefe.volume_db <= OFF + 0.1:
 		_jefe.stop()
 	var night := GameTime.is_night()

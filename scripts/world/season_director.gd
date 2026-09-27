@@ -64,7 +64,7 @@ func _apply_season(anunciar: bool) -> void:
 		var banner = get_tree().get_first_node_in_group("combat_banner")
 		if banner:
 			banner.announce(Textos.t("estacion_llega", {"n": Textos.t("estacion_" + s)}), Textos.t("estacion_desc_" + s), Color(0.6, 0.9, 1.0) if s == "akhet" else Color(1.0, 0.82, 0.35), 3.5)
-		SFX.play("heart_shift", 0.0, 0.0)
+		SFX.play("jingle_estacion", 0.0, 0.0)
 		GameState.thot(Dialogos.thot("estacion_" + s), true)
 
 

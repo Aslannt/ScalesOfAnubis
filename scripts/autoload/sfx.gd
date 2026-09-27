@@ -10,6 +10,7 @@ const NOMBRES := [
 	"ui_select", "dusk_transform", "coin", "heart_shift", "dodge", "dialogue_blip", "plant",
 	"swing", "swing_heavy", "slam", "roar", "charge_windup", "charge", "build", "bolt", "alarm", "crop_lost", "drum_hit",
 	"hit_hammer", "hit_staff", "hit_crit", "soul_release",
+	"jingle_amanecer", "jingle_logro", "jingle_estacion",
 ]
 
 

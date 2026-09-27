@@ -340,8 +340,7 @@ func _sumar_amistad(pts: int, lines: Array) -> void:
 	_dialogue.show_lines(lines, func():
 		if subio:
 			GameState.apply_friend_reward(npc_id, lv)
-			SFX.play("heart_shift", 0.0, 0.0)
-			SFX.play("coin", -4.0)
+			SFX.play("jingle_logro", 0.0, 0.0)
 			var banner = get_tree().get_first_node_in_group("combat_banner")
 			if banner:
 				banner.announce(Textos.t("amistad_sube", {"n": Textos.t("nombre_" + npc_id), "l": lv}), "", Color(1.0, 0.6, 0.7)))
@@ -425,6 +424,7 @@ func _templo_menu() -> void:
 			SFX.play("hit_player", -10.0)
 			return
 		SFX.play("build")
+		SFX.play("jingle_logro", 0.0, 0.0)
 		var banner = get_tree().get_first_node_in_group("combat_banner")
 		if banner:
 			banner.announce(Textos.t("templo_hecho", {"n": Textos.t("pieza_" + p["id"])}), Textos.t("bendicion_" + p["id"]), Color(0.55, 0.9, 1.0), 3.0)
@@ -461,7 +461,7 @@ func _upgrades_menu() -> void:
 			_dialogue.show_lines(Dialogos.lines("ptahmose", "sin_dinero"))
 			return
 		SFX.play("coin")
-		SFX.play("build", -6.0)
+		SFX.play("jingle_logro", -2.0, 0.0)
 		var banner = get_tree().get_first_node_in_group("combat_banner")
 		if banner:
 			banner.announce(Textos.t("mejora_comprada", {"n": Textos.t("mejora_" + u["id"])}), Textos.t("mejora_desc_" + u["id"]), Color(1.0, 0.85, 0.4), 2.4)

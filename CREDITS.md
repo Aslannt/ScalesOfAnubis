@@ -19,6 +19,11 @@
   arpa por Karplus-Strong, flauta ney con vibrato y soplo, darbuka (doum/tek),
   sistro, bordón, grillos, viento y pájaros sintetizados. Escala doble
   armónica. No se usó audio de terceros.
+- Capas de las estaciones del Nilo y jingles (`tools/gen_seasons_music.py`):
+  arpa con cuerpo, ney con aire, riq, palmas y pads de agua, todo sintetizado.
+- Retratos con expresiones (`tools/gen_portraits_hd.py`), animales de la aldea
+  (`tools/gen_animals.py`) y ataques de martillo y cayado del jugador
+  (`tools/gen_people.py`): pixel art generado por script con la paleta fija.
 
 ## Fuentes
 - **Silkscreen** (Jason Kottke), licencia SIL Open Font License 1.1
