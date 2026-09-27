@@ -29,6 +29,7 @@ const PORTRAITS := {
 
 func _ready() -> void:
 	add_to_group("dialogue_box")
+	add_to_group("modal")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 12
 	visible = false

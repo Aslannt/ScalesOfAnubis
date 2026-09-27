@@ -14,6 +14,7 @@ var _t := 0.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("modal")
 	layer = 14
 	visible = false
 	var dim := ColorRect.new()

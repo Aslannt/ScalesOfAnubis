@@ -247,9 +247,10 @@ func die() -> void:
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.6, 0), Color(0.5, 0.3, 0.7))
 	CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), 8, Color(0.25, 0.15, 0.35, 0.9))
 	CoinPickup.burst(get_tree().current_scene, global_position, coin_value)
+	var pl := get_tree().get_first_node_in_group("player") as Node3D
 	var cam := get_viewport().get_camera_3d()
-	if cam and cam.has_method("shake"):
-		cam.shake(0.1, 0.12)
+	if pl and cam and cam.has_method("shake") and pl.global_position.distance_to(global_position) < 4.0:
+		cam.shake(0.06, 0.1)
 	_fade_out()
 
 

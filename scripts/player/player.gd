@@ -96,7 +96,9 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, speed * delta * 6) + _knock.z * 0.2
 
 	velocity.y = -9.8 if not is_on_floor() else -0.1
+	var before := global_position
 	move_and_slide()
+	_check_stuck(delta, before)
 
 	if Input.is_action_just_pressed("dodge") and not _dodging and _dodge_cd_t <= 0.0 and _move_dir.length_squared() > 0.01:
 		_start_dodge()
@@ -146,6 +148,44 @@ func _current_slot() -> int:
 func _pad_aim() -> Vector2:
 	var v := Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X), Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
 	return v if v.length() > 0.35 else Vector2.ZERO
+
+
+# --- desatascador (reporte de Deivid: a veces quedaba sin poder moverse) ---
+var _stuck_t: float = 0.0
+
+
+func _check_stuck(delta: float, before: Vector3) -> void:
+	var wants := Vector2(
+		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
+		Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+	).length() > 0.5
+	var moved := Vector2(global_position.x - before.x, global_position.z - before.z).length()
+	if wants and not _attacking and not _dodging and moved < speed * delta * 0.1:
+		_stuck_t += delta
+		if _stuck_t > 1.2:
+			_stuck_t = 0.0
+			_unstick()
+	else:
+		_stuck_t = 0.0
+
+
+## Busca el lugar libre mas cercano (anillos de 0.6 a 3 m) y se mueve ahi.
+func _unstick() -> void:
+	var space := get_world_3d().direct_space_state
+	var params := PhysicsShapeQueryParameters3D.new()
+	var shape_node: CollisionShape3D = $CollisionShape3D
+	params.shape = shape_node.shape
+	params.collision_mask = 1
+	params.exclude = [get_rid()]
+	for r in [0.6, 1.0, 1.6, 2.2, 3.0]:
+		for k in range(12):
+			var a := TAU * k / 12.0
+			var pos := global_position + Vector3(cos(a) * r, 0, sin(a) * r)
+			params.transform = Transform3D(Basis(), pos + shape_node.position)
+			if space.intersect_shape(params, 1).is_empty():
+				global_position = pos
+				CharacterFX.dust_puff(get_tree().current_scene, pos + Vector3(0, 0.1, 0), 6)
+				return
 
 
 func _select_slot(i: int) -> void:
@@ -341,7 +381,7 @@ func _hammer_impact(fv: Vector3) -> void:
 	CharacterFX.dust_puff(get_tree().current_scene, pos + Vector3(0, 0.1, 0), 12, Color(0.8, 0.65, 0.45, 0.9))
 	var cam := get_viewport().get_camera_3d()
 	if cam and cam.has_method("shake"):
-		cam.shake(0.14, 0.18)
+		cam.shake(0.08, 0.12)
 	SFX.play("slam", -8.0)
 
 
@@ -387,7 +427,7 @@ func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool) 
 			CombatFX.spawn_damage_number(fx_root, body.global_position + Vector3(0, 1.0, 0), dano, Color(1.0, 0.85, 0.35) if heavy else Color.WHITE)
 			CombatFX.spawn_hit_particles(fx_root, body.global_position + Vector3(0, 0.9, 0))
 	if hit_any:
-		_hitstop(0.08 if heavy else 0.045)
+		_hitstop(0.05 if heavy else 0.035)
 		var cam := get_viewport().get_camera_3d()
 		if cam and cam.has_method("shake"):
 			cam.shake(0.2 if heavy else 0.1, 0.15)
@@ -609,8 +649,8 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, _stun: float = 0.0
 	CombatFX.spawn_damage_number(get_tree().current_scene, global_position + Vector3(0, 1.4, 0), amount, Color(1.0, 0.35, 0.3))
 	var cam := get_viewport().get_camera_3d()
 	if cam and cam.has_method("shake"):
-		cam.shake(0.22, 0.22)
-	sprite.modulate = Color(3, 1.2, 1.2)
+		cam.shake(0.14, 0.15)
+	sprite.modulate = Color(2.2, 1.1, 1.1)
 	await get_tree().create_timer(0.1).timeout
 	if not dead:
 		sprite.modulate = Color(1, 1, 1)

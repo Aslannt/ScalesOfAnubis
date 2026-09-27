@@ -14,6 +14,7 @@ var _idx: int = 0
 
 func _ready() -> void:
 	add_to_group("choice_box")
+	add_to_group("modal")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 13
 	visible = false

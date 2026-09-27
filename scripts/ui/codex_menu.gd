@@ -21,6 +21,7 @@ var _ids_visibles: Array = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("modal")
 	layer = 15
 	visible = false
 

@@ -215,7 +215,47 @@ func village_sacked() -> bool:
 	return village_damage >= VILLAGE_SACK_LIMIT
 
 
+# --- vigilante anti-congelamiento (reporte de Deivid: quedo sin poder
+# moverse de noche, con el texto de Thot detenido a medias) ---
+# Si el juego queda en pausa sin ningun menu/dialogo visible, o el tiempo
+# queda frenado (hit-stop) mas de lo normal, se repara solo.
+var _stuck_pause_ms: int = 0
+var _slow_since_ms: int = 0
+var allow_slowmo_until_ms: int = 0
+
+
+func _process(_delta: float) -> void:
+	var now := Time.get_ticks_msec()
+	var tree := get_tree()
+	if tree.paused:
+		var any_modal := false
+		for m in tree.get_nodes_in_group("modal"):
+			if m.visible:
+				any_modal = true
+				break
+		if any_modal or tree.get_nodes_in_group("modal").is_empty():
+			_stuck_pause_ms = 0
+		elif _stuck_pause_ms == 0:
+			_stuck_pause_ms = now
+		elif now - _stuck_pause_ms > 600:
+			push_warning("Vigilante: pausa sin menu visible, se reanuda el juego")
+			tree.paused = false
+			_stuck_pause_ms = 0
+	else:
+		_stuck_pause_ms = 0
+	if Engine.time_scale < 0.99:
+		if _slow_since_ms == 0:
+			_slow_since_ms = now
+		elif now - _slow_since_ms > 900 and now > allow_slowmo_until_ms:
+			push_warning("Vigilante: tiempo frenado demasiado, se restaura")
+			Engine.time_scale = 1.0
+			_slow_since_ms = 0
+	else:
+		_slow_since_ms = 0
+
+
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	inventory = {"semilla_trigo": 8, "semilla_lino": 3, "semilla_papiro": 2}
 	_cargar_crops()
 	GameTime.night_started.connect(func():

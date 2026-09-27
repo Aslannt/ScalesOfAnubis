@@ -242,6 +242,7 @@ func die() -> void:
 	sprite.play("hurt")
 	SFX.play("roar", -2.0)
 	_shake(0.5, 1.2)
+	GameState.allow_slowmo_until_ms = Time.get_ticks_msec() + 2500
 	Engine.time_scale = 0.3
 	var root := get_tree().current_scene
 	for k in range(6):

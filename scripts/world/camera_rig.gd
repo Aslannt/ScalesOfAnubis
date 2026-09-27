@@ -25,6 +25,8 @@ func set_target(node: Node3D) -> void:
 
 
 func shake(amount: float = 0.15, duration: float = 0.2) -> void:
+	# todo se suaviza a la mitad y con tope (antes mareaba)
+	amount = minf(amount * 0.5, 0.12)
 	_shake_amount = maxf(_shake_amount, amount)
 	_shake_t = maxf(_shake_t, duration)
 

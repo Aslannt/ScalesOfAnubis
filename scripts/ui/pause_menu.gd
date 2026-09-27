@@ -9,6 +9,7 @@ var _opciones: PanelContainer
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("modal")
 	layer = 20
 	visible = false
 
