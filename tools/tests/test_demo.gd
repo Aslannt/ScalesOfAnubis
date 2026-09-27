@@ -73,7 +73,10 @@ func _ready() -> void:
 	spots[1].interact()
 	await _frames(3)
 	choice._choose(1)
-	check(spots[0].built == "estatua" and spots[1].built == "brasero", "estatua y brasero construidos")
+	spots[2].interact()
+	await _frames(3)
+	choice._choose(2)
+	check(spots[0].built == "estatua" and spots[1].built == "brasero" and spots[2].built == "muro", "estatua, brasero y muro construidos")
 
 	print("NOCHE 1")
 	await _go_night()
@@ -87,6 +90,22 @@ func _ready() -> void:
 	var hp0: int = e0.health
 	await _secs(2.0)
 	check(not is_instance_valid(e0) or e0.health < hp0, "la estatua de chacal dispara")
+	# baston: el proyectil hiere a distancia
+	var e1 = null
+	for e in get_tree().get_nodes_in_group("enemies"):
+		e1 = e
+	if e1:
+		player.global_position = e1.global_position + Vector3(-5, 0, 0)
+		player._select_slot(2)
+		var hp1: int = e1.health
+		var b := Player.StaffBolt.new()
+		b.dir = Vector3.RIGHT
+		b.damage = 7
+		farm.add_child(b)
+		b.global_position = player.global_position + Vector3(0.6, 0.9, 0)
+		await _secs(0.6)
+		check(GameState.equipped_weapon == "baston" and (not is_instance_valid(e1) or e1.health < hp1), "el baston dispara y hiere a distancia")
+		player._select_slot(0)
 	_kill_all()
 	await _secs(0.8)
 	await _go_dawn()

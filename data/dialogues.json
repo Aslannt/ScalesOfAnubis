@@ -96,7 +96,7 @@
     "regado": "Bien. Crecerá al amanecer. El trigo tarda un día; el lino y el papiro, dos.",
     "aldeanos": "La aldea queda al noreste. Meret, Ptahmose e Iry. Sé amable: los aldeanos notan cómo pesa tu corazón.",
     "atardecer": "El sol se va. Ammit no perdona ni un crepúsculo: tus herramientas despertarán como armas.",
-    "noche1": "¡Ahí vienen! Clic para atacar hacia el ratón, Espacio para esquivar. 1 khopesh, 2 martillo.",
+    "noche1": "¡Ahí vienen! Clic para atacar hacia el ratón, Espacio para esquivar. 1 khopesh, 2 martillo, 3 bastón.",
     "primer_kill": "Una sombra menos. El sheut es parte del alma, pero estas no tienen dueño.",
     "cultivo_perdido": "¡Las crías de Ammit van por tus cultivos! Protégelos.",
     "vida_baja": "Tu vida se apaga. Esquiva, retrocede, o equipa el Anj con Q.",
@@ -117,7 +117,8 @@
     "estatua": "Una estatua de Anubis. Él protege las necrópolis; hoy protege tu trigo.",
     "brasero": "Fuego sagrado. A las sombras no les gusta la luz. A nadie le gusta quemarse, en realidad.",
     "escarabajo_uso": "El escarabajo te devolvió el aliento. No cuentes con él dos veces esta noche.",
-    "robo": "Lo anoté. Todo queda anotado."
+    "robo": "Lo anoté. Todo queda anotado.",
+    "muro": "Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar."
   },
   "anubis": {
     "intro": [

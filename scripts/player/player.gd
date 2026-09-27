@@ -42,6 +42,8 @@ var _step_t: float = 0.0
 const WEAPON_STATS := {
 	"khopesh": {"dano": [8, 8, 13], "alcance": 1.7, "cooldown": 0.26, "golpes": 3, "empuje": [2.5, 2.5, 6.0], "aturde": 0.0, "arco": 1.0},
 	"martillo": {"dano": [22], "alcance": 2.3, "cooldown": 0.7, "golpes": 1, "empuje": [7.0], "aturde": 0.9, "arco": 1.6},
+	# baston (cayado de dia): proyectil de energia a distancia (GDD 6.3)
+	"baston": {"dano": [7], "alcance": 0.0, "cooldown": 0.42, "golpes": 1, "empuje": [2.0], "aturde": 0.0, "arco": 0.0},
 }
 const SLASH_TEX := preload("res://assets/sprites/fx/slash.png")
 
@@ -122,7 +124,7 @@ func _physics_process(delta: float) -> void:
 
 func _select_slot(i: int) -> void:
 	if GameTime.is_night():
-		var w := "khopesh" if i == 0 else ("martillo" if i == 1 else "")
+		var w: String = ["khopesh", "martillo", "baston"][i]
 		if w != "" and w != GameState.equipped_weapon:
 			GameState.equipped_weapon = w
 			SFX.play("ui_select", -6.0)
@@ -177,6 +179,9 @@ func _start_attack() -> void:
 	var dano: int = stats["dano"][hit]
 	var empuje: float = stats["empuje"][hit]
 	var is_finisher := weapon == "khopesh" and hit == 2
+	if weapon == "baston":
+		_fire_staff(dano)
+		return
 	_attack_t = float(stats["cooldown"]) * (1.4 if is_finisher else 1.0)
 	_combo_index = hit + 1
 	_combo_reset_t = 0.7
@@ -194,6 +199,77 @@ func _start_attack() -> void:
 	if weapon == "martillo":
 		_hammer_impact(fv)
 	_resolve_attack_hits(dano, empuje, float(stats["aturde"]), is_finisher or weapon == "martillo")
+
+
+func _fire_staff(dano: int) -> void:
+	_attack_t = float(WEAPON_STATS["baston"]["cooldown"])
+	sprite.play("%s_attack" % _facing_group())
+	var dir := _aim_dir_to_mouse()
+	SFX.play("bolt", -2.0)
+	var b := StaffBolt.new()
+	b.damage = dano
+	b.dir = dir
+	get_tree().current_scene.add_child(b)
+	b.global_position = global_position + dir * 0.6 + Vector3(0, 0.9, 0)
+
+
+func _aim_dir_to_mouse() -> Vector3:
+	var cam := get_viewport().get_camera_3d()
+	var fv := _facing_vector()
+	if cam == null:
+		return fv
+	var mp := get_viewport().get_mouse_position()
+	var from := cam.project_ray_origin(mp)
+	var rd := cam.project_ray_normal(mp)
+	if absf(rd.y) < 0.0001:
+		return fv
+	var p := from + rd * (-from.y / rd.y)
+	var d := p - global_position
+	d.y = 0
+	return d.normalized() if d.length() > 0.2 else fv
+
+
+## Proyectil del baston: vuela recto, atraviesa hasta 2 criaturas.
+class StaffBolt extends Node3D:
+	var dir := Vector3.FORWARD
+	var damage := 7
+	var speed := 15.0
+	var _life := 0.75
+	var _hits: Array = []
+
+	func _ready() -> void:
+		var s := Sprite3D.new()
+		s.texture = preload("res://assets/sprites/fx/bolt.png")
+		s.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		s.pixel_size = 0.06
+		s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		s.shaded = false
+		s.modulate = Color(0.6, 0.85, 1.0)
+		add_child(s)
+		var l := OmniLight3D.new()
+		l.light_color = Color(0.55, 0.75, 1.0)
+		l.light_energy = 1.5
+		l.omni_range = 2.5
+		add_child(l)
+
+	func _process(delta: float) -> void:
+		_life -= delta
+		if _life <= 0.0:
+			queue_free()
+			return
+		global_position += dir * speed * delta
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if _hits.has(e):
+				continue
+			var d: Vector3 = e.global_position + Vector3(0, 0.8, 0) - global_position
+			if d.length() < 0.9:
+				_hits.append(e)
+				e.take_hit(damage, dir * 2.0)
+				CombatFX.spawn_damage_number(get_tree().current_scene, e.global_position + Vector3(0, 1.0, 0), damage, Color(0.6, 0.85, 1.0))
+				CombatFX.spawn_hit_particles(get_tree().current_scene, global_position, Color(0.6, 0.85, 1.0))
+				if _hits.size() >= 2:
+					queue_free()
+					return
 
 
 func _spawn_slash(fv: Vector3, weapon: String, hit: int) -> void:

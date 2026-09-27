@@ -5,6 +5,7 @@ extends Node3D
 
 const COSTO_ESTATUA := 30
 const COSTO_BRASERO := 18
+const COSTO_MURO := 10
 
 var npc_id: String = "defensa"
 var built: String = ""  # "" | "estatua" | "brasero"
@@ -54,7 +55,7 @@ func _process(delta: float) -> void:
 
 func interact() -> void:
 	if built != "":
-		GameState.thot(Dialogos.thot("estatua" if built == "estatua" else "brasero"))
+		GameState.thot(Dialogos.thot(built))
 		return
 	if GameTime.is_night():
 		return
@@ -64,6 +65,7 @@ func interact() -> void:
 	box.ask(Textos.t("defensa_titulo", {"d": GameState.deben}), [
 		Textos.t("defensa_estatua", {"p": COSTO_ESTATUA}),
 		Textos.t("defensa_brasero", {"p": COSTO_BRASERO}),
+		Textos.t("defensa_muro", {"p": COSTO_MURO}),
 		Textos.t("cancelar"),
 	], _on_choice)
 
@@ -77,6 +79,9 @@ func _on_choice(i: int) -> void:
 	elif i == 1:
 		kind = "brasero"
 		cost = COSTO_BRASERO
+	elif i == 2:
+		kind = "muro"
+		cost = COSTO_MURO
 	else:
 		return
 	if not GameState.can_afford(cost):
@@ -90,8 +95,14 @@ func _on_choice(i: int) -> void:
 func build(kind: String) -> void:
 	built = kind
 	_ring.visible = false
-	var d: Node3D = JackalStatue.new() if kind == "estatua" else Brazier.new()
-	d.position.y = 0.3
+	var d: Node3D
+	match kind:
+		"estatua": d = JackalStatue.new()
+		"brasero": d = Brazier.new()
+		_: d = _make_wall()
+	d.position.y = 0.3 if kind != "muro" else 0.0
+	if kind == "muro":
+		_base.visible = false
 	add_child(d)
 	SFX.play("build")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.6, 0), Color(1.0, 0.85, 0.4))
@@ -102,4 +113,21 @@ func build(kind: String) -> void:
 	d.scale = Vector3(1, 0.1, 1)
 	create_tween().tween_property(d, "scale", Vector3.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	GameState.register_decision("defensa_" + str(get_index()), kind)
-	GameState.thot_once("thot_" + kind, Dialogos.thot("estatua" if kind == "estatua" else "brasero"))
+	GameState.thot_once("thot_" + kind, Dialogos.thot(kind if kind != "estatua" else "estatua"))
+
+
+## Muro de adobe (GDD 6.5, opcional): bloquea y canaliza. Se orienta
+## perpendicular al lado del campo por donde llegan las criaturas.
+func _make_wall() -> Node3D:
+	var root := Node3D.new()
+	var farm_center := Vector3(-11, 0, -1)
+	var off := global_position - farm_center
+	var along_z := absf(off.x) > absf(off.z)
+	var size := Vector3(0.6, 1.3, 3.6) if along_z else Vector3(3.6, 1.3, 0.6)
+	root.add_child(BuildingFactory._box(size, BuildingFactory._mat("adobe", Vector3(2, 1, 1)), Vector3(0, size.y * 0.5, 0)))
+	var cap := size + Vector3(0.1, 0, 0.1)
+	cap.y = 0.12
+	root.add_child(BuildingFactory._box(cap, BuildingFactory._mat("plaster"), Vector3(0, size.y + 0.06, 0)))
+	var body := BuildingFactory._collision_box(size)
+	root.add_child(body)
+	return root

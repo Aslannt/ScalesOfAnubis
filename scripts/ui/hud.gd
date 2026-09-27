@@ -293,8 +293,9 @@ func _refresh_slots() -> void:
 		match arma:
 			"khopesh": icon = "khopesh"
 			"martillo": icon = "hammer"
+			"baston": icon = "staff"
 		_slot_arma_icon.texture = load(ICONS + icon + ".png")
-		_slot_arma_key.text = "1/2" if night else "1/2/3"
+		_slot_arma_key.text = "1/2/3"
 		if night:
 			_slot_count.text = ""
 		else:

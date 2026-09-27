@@ -89,5 +89,6 @@
   "codex_nueva": "Nueva entrada en el Libro de los Muertos: {n}. Tab para leerla.",
   "codex_titulo": "LIBRO DE LOS MUERTOS",
   "codex_cerrar": "[TAB] CERRAR",
-  "codex_vacia": "Esta página todavía está en blanco."
+  "codex_vacia": "Esta página todavía está en blanco.",
+  "defensa_muro": "Muro de adobe · {p} deben"
 }
