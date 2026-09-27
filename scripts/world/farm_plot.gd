@@ -16,6 +16,16 @@ var crop_id: String = ""
 var growth_day: int = 0
 var watered_today: bool = false
 var is_orilla: bool = false
+## Akhet: la orilla queda bajo el agua (no se puede trabajar). Al bajar,
+## deja limo fertil: la siguiente siembra arranca con un dia de ventaja.
+var flooded: bool = false:
+	set(v):
+		flooded = v
+		if v:
+			limo = false
+		elif is_orilla and GameState.orilla_limo:
+			limo = true
+var limo: bool = false
 var tile_size: float = 2.0
 
 var _soil_mesh: MeshInstance3D
@@ -82,7 +92,7 @@ func _ready() -> void:
 
 
 func till() -> bool:
-	if state != State.UNTILLED:
+	if state != State.UNTILLED or flooded:
 		return false
 	state = State.TILLED
 	_soil_mesh.visible = true
@@ -97,7 +107,7 @@ func till() -> bool:
 
 
 func can_plant(id: String) -> bool:
-	if state != State.TILLED:
+	if state != State.TILLED or flooded:
 		return false
 	var data: Dictionary = GameState.crops.get(id, {})
 	if data.is_empty():
@@ -114,6 +124,9 @@ func plant(id: String) -> bool:
 	growth_day = 0
 	watered_today = false
 	state = State.PLANTED
+	if limo:
+		limo = false
+		growth_day = 1
 	var sheet: Texture2D = load(GameState.crops[id]["sprite"])
 	_crop_mats.clear()
 	for q in _crop_quads:
@@ -129,7 +142,7 @@ func plant(id: String) -> bool:
 
 
 func water() -> bool:
-	if state != State.PLANTED or watered_today:
+	if state != State.PLANTED or watered_today or flooded:
 		return false
 	watered_today = true
 	_water_elapsed = GameTime.elapsed
@@ -195,6 +208,16 @@ func gnaw(delta: float) -> void:
 		eat_progress = 0.0
 		_show_bar(false)
 		damage()
+
+
+## La crecida se lleva el cultivo sin dar cosecha ni sonidos.
+func harvest_silent() -> void:
+	crop_id = ""
+	growth_day = 0
+	watered_today = false
+	state = State.TILLED
+	_hide_crop()
+	_soil_mesh.material_override = _mat_dry
 
 
 func is_being_eaten() -> bool:
@@ -364,10 +387,11 @@ func _on_day_started() -> void:
 
 
 func to_dict() -> Dictionary:
-	return {"s": state, "c": crop_id, "g": growth_day, "w": watered_today}
+	return {"s": state, "c": crop_id, "g": growth_day, "w": watered_today, "l": limo}
 
 
 func from_dict(d: Dictionary) -> void:
+	limo = bool(d.get("l", false))
 	var st := int(d.get("s", 0))
 	if st >= State.TILLED:
 		till()

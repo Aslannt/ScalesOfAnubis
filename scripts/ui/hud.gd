@@ -316,6 +316,8 @@ func _build_fase() -> void:
 
 func _on_cycle_updated(_elapsed: float, _total: float, phase: int) -> void:
 	_lbl_dia.text = "%s %d" % [Textos.t("hud_dia"), GameState.current_day]
+	if GameState.modo_libre:
+		_lbl_dia.text = Textos.t("hud_estacion", {"d": _lbl_dia.text, "s": Textos.t("estacion_" + GameState.season())})
 	if phase != _last_phase:
 		_last_phase = phase
 		_lbl_fase.text = GameTime.phase_name()

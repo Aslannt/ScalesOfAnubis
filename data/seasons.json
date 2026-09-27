@@ -1,0 +1,38 @@
+{
+  "_doc": "Estaciones del Nilo (modo libre, despues de la demo). Los dias 1-3 son Peret. Desde el dia 4 el ciclo es shemu -> akhet -> peret, 'dias_por_estacion' dias cada una; la ultima noche de cada estacion vuelve el Heraldo (mas fuerte cada vez). mods: venta (x), precio_semilla (x), riego_auto (el Nilo riega los campos), inunda_orilla. oleadas: como waves.json; 'n' crece 'crece' por cada dia de modo libre.",
+  "dias_por_estacion": 3,
+  "primer_dia_libre": 4,
+  "ciclo": ["shemu", "akhet", "peret"],
+  "estaciones": {
+    "peret": {
+      "mods": {"precio_semilla": 0.7},
+      "oleadas": [
+        {"tipo": "sombra", "n": 5, "desde": "desierto", "ventana": [0.03, 0.3]},
+        {"tipo": "cria", "n": 4, "desde": "sur", "ventana": [0.2, 0.45]},
+        {"tipo": "sombra", "n": 5, "desde": "noreste", "grupo": "aldea", "ventana": [0.35, 0.6]},
+        {"tipo": "sombra", "n": 4, "desde": "necropolis", "ventana": [0.55, 0.8]}
+      ]
+    },
+    "shemu": {
+      "mods": {"venta": 1.25},
+      "oleadas": [
+        {"tipo": "sombra", "n": 7, "desde": "desierto", "ventana": [0.03, 0.35]},
+        {"tipo": "cria", "n": 4, "desde": "sur", "ventana": [0.15, 0.4]},
+        {"tipo": "sombra", "n": 6, "desde": "desierto", "ventana": [0.45, 0.75]},
+        {"tipo": "sombra", "n": 4, "desde": "necropolis", "ventana": [0.5, 0.8]}
+      ]
+    },
+    "akhet": {
+      "mods": {"riego_auto": 1, "inunda_orilla": 1, "venta": 0.9},
+      "oleadas": [
+        {"tipo": "cria", "n": 5, "desde": "rio_norte", "ventana": [0.03, 0.3]},
+        {"tipo": "cria", "n": 5, "desde": "rio_sur", "ventana": [0.25, 0.5]},
+        {"tipo": "sombra", "n": 5, "desde": "necropolis", "ventana": [0.3, 0.6]},
+        {"tipo": "sombra", "n": 4, "desde": "desierto", "ventana": [0.55, 0.8]}
+      ]
+    }
+  },
+  "crece": 0.12,
+  "jefe": {"tipo": "jefe", "n": 1, "desde": "desierto", "ventana": [0.4, 0.4]},
+  "jefe_vida_extra": 0.3
+}

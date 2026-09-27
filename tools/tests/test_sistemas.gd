@@ -24,6 +24,7 @@ func _ready() -> void:
 	await _test_templo()
 	await _test_mejoras()
 	await _test_amistad()
+	await _test_estaciones()
 	print("TEST SISTEMAS: ", "OK" if ok else "FALLO")
 	get_tree().quit(0 if ok else 1)
 
@@ -139,6 +140,62 @@ func _test_amistad() -> void:
 	sd._iry_riega()
 	var regadas: int = wb.farm_plots.filter(func(p): return p.watered_today).size()
 	check(regadas >= 1, "Iry riega al amanecer")
+
+
+func _test_estaciones() -> void:
+	print("ESTACIONES")
+	check(GameState.season_for_day(2) == "peret" and GameState.season_for_day(4) == "shemu" and GameState.season_for_day(7) == "akhet" and GameState.season_for_day(10) == "peret", "ciclo peret -> shemu -> akhet -> peret")
+	GameState.modo_libre = true
+	GameState.current_day = 6
+	check(GameState.is_season_last_day(), "el dia 6 es el ultimo de Shemu")
+	var nd = farm.get_node("NightDirector")
+	var entries: Array = nd._free_mode_entries()
+	check(entries.any(func(e): return e["tipo"] == "jefe"), "el Heraldo vuelve al final de la estacion")
+	check(is_equal_approx(GameState.season_mod("venta", 1.0), 1.25), "Shemu: se vende mas caro")
+	# pasar a Akhet: inundacion
+	var wb = farm.get_node("WorldBuilder")
+	var orilla: FarmPlot = null
+	for p in wb.farm_plots:
+		if p.is_orilla:
+			orilla = p
+			break
+	if orilla.state == FarmPlot.State.UNTILLED:
+		orilla.till()
+	orilla.plant("papiro")
+	var normal: FarmPlot = null
+	for p in wb.farm_plots:
+		if not p.is_orilla and p.state == FarmPlot.State.UNTILLED:
+			normal = p
+			break
+	normal.till()
+	normal.plant("lino")
+	GameTime.force_phase(GameTime.Phase.NIGHT)
+	await _secs(0.2)
+	GameTime.elapsed = GameTime.TOTAL_SECONDS - 0.05
+	await _secs(0.6)
+	var dawn = farm.get_node("DawnSummary")
+	if dawn.visible:
+		var ev := InputEventAction.new()
+		ev.action = "interact"
+		ev.pressed = true
+		await _secs(0.7)
+		dawn._unhandled_input(ev)
+	GameState.current_day = 7
+	GameTime.force_phase(GameTime.Phase.DAY)
+	await _secs(0.5)
+	check(GameState.season() == "akhet", "dia 7: Akhet")
+	var sdir = farm.get_node("SeasonDirector")
+	check(sdir._flood_on and orilla.flooded and orilla.state != FarmPlot.State.PLANTED, "la crecida cubre la orilla y se lleva lo plantado")
+	check(not orilla.till() or orilla.flooded, "no se puede trabajar la orilla inundada")
+	check(normal.watered_today, "Akhet riega los campos solo")
+	# vuelta a Peret: limo en la orilla
+	GameState.current_day = 10
+	GameTime.force_phase(GameTime.Phase.NIGHT)
+	await _secs(0.1)
+	GameTime.force_phase(GameTime.Phase.DAY)
+	await _secs(0.3)
+	check(not orilla.flooded and orilla.limo, "al bajar el agua queda limo fertil")
+	GameState.modo_libre = false
 
 
 func _npc(id: String) -> Node:

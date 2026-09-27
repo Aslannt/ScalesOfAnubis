@@ -272,6 +272,11 @@ func _ready() -> void:
 	await _secs(5.8)
 	check(GameState.boss_defeated, "el Heraldo cae")
 	check(GameState.demo_finished, "tras el amanecer pasa al final de la demo")
+	check(GameState.has_save(), "queda guardado el inicio del modo libre")
+	var kills := GameState.total_enemies_defeated
+	check(GameState.load_game() and GameState.modo_libre and GameState.current_day == 4 and GameState.total_enemies_defeated == kills, "el modo libre retoma en el dia 4 (Shemu)")
+	check(GameState.season() == "shemu", "el dia 4 es Shemu")
+	GameState.delete_save()
 
 	if _fallos.is_empty():
 		print("TEST DEMO: OK")

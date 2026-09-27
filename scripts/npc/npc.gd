@@ -202,7 +202,7 @@ const PACK := 3
 
 func _precio_pack(id: String) -> int:
 	# precio de amigo (amistad con Ptahmose nivel 1)
-	return int(ceil(int(GameState.crops[id]["precio_semilla"]) * PACK * (1.0 - GameState.friend_bonus("descuento"))))
+	return int(ceil(int(GameState.crops[id]["precio_semilla"]) * PACK * (1.0 - GameState.friend_bonus("descuento")) * GameState.season_mod("precio_semilla", 1.0)))
 
 
 ## La cosecha que se vende; el lino se guarda si la mision de Meret sigue
@@ -218,7 +218,7 @@ func _valor_cosecha() -> int:
 	var total := 0
 	for cid in _vendibles():
 		total += int(GameState.crops[cid]["precio_venta"]) * GameState.item_count(cid)
-	total = int(round(total * (GameState.heart_mod("venta", 1.0) + GameState.friend_bonus("precio_venta"))))
+	total = int(round(total * (GameState.heart_mod("venta", 1.0) + GameState.friend_bonus("precio_venta")) * GameState.season_mod("venta", 1.0)))
 	return total
 
 

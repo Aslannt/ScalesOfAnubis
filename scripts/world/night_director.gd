@@ -44,7 +44,9 @@ func _on_night_started() -> void:
 	var banner = get_tree().get_first_node_in_group("combat_banner")
 	if banner:
 		banner.announce(Textos.t("noche_titulo", {"n": day}), Textos.t("noche_mas_fuerte") if day > 1 else Textos.t("noche_sub"))
-	var entries: Array = _waves.get(key, [])
+	var entries: Array = _waves.get(key, []) if not GameState.modo_libre else _free_mode_entries()
+	if GameState.modo_libre:
+		GameState.boss_defeated = false
 	for ei in range(entries.size()):
 		var entry: Dictionary = entries[ei]
 		var n := int(entry.get("n", 1))
@@ -64,6 +66,23 @@ func _on_night_started() -> void:
 			if entry.get("grupo", "") == "aldea":
 				GameState.village_raiders_total += 1
 	_schedule.sort_custom(func(a, b): return a["t"] < b["t"])
+
+
+## Oleadas del modo libre: las de la estacion, cada vez mas numerosas, y el
+## Heraldo la ultima noche de cada estacion.
+func _free_mode_entries() -> Array:
+	var sd: Dictionary = GameState.seasons_data
+	var base: Array = sd.get("estaciones", {}).get(GameState.season(), {}).get("oleadas", [])
+	var extra_dias := maxi(0, GameState.current_day - int(sd.get("primer_dia_libre", 4)))
+	var factor := 1.0 + float(sd.get("crece", 0.12)) * extra_dias
+	var out: Array = []
+	for e in base:
+		var c: Dictionary = (e as Dictionary).duplicate()
+		c["n"] = int(round(int(c.get("n", 1)) * factor))
+		out.append(c)
+	if GameState.is_season_last_day():
+		out.append(sd.get("jefe", {"tipo": "jefe", "n": 1, "desde": "desierto", "ventana": [0.4, 0.4]}))
+	return out
 
 
 ## Al amanecer las criaturas que quedan se desvanecen (vuelven al Duat).
@@ -123,6 +142,12 @@ func spawn(tipo: String, desde: String, grupo: String = "", at: Vector3 = Vector
 		inst.set("group_id", grupo)
 	_enemies_root.add_child(inst)
 	if tipo == "jefe":
+		if GameState.modo_libre:
+			# cada regreso del Heraldo es mas duro
+			GameState.jefes_libre += 1
+			var k := 1.0 + float(GameState.seasons_data.get("jefe_vida_extra", 0.3)) * GameState.jefes_libre
+			inst.max_health = int(inst.max_health * k)
+			inst.health = inst.max_health
 		boss = inst
 		GameTime.hold_night = true
 		boss_spawned.emit(inst)

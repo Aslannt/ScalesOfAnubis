@@ -329,7 +329,12 @@
     "estado_hambre": "Nakht... Ammit ya relame sus dientes. Ese poder que sientes es SU hambre. Piensa en el pesaje.",
     "iry_riega": "Iry pasó al amanecer y regó {n} de tus cultivos. Ese niño te quiere más que a sus cebollas.",
     "templo_objetivo": "Meret puede restaurar el templo si le llevas cosechas y deben. Cada parte trae una bendición.",
-    "amistad_explica": "Charla con los aldeanos cada día y hazles regalos. Los amigos cuentan secretos... y ayudan."
+    "amistad_explica": "Charla con los aldeanos cada día y hazles regalos. Los amigos cuentan secretos... y ayudan.",
+    "estacion_peret": "Peret: la tierra sale del agua, negra y blanda. Los egipcios llamaban a su país Kemet, 'la tierra negra', por esto.",
+    "estacion_shemu": "Shemu: calor, cosecha y bolsillos llenos. Y el desierto, que también tiene hambre.",
+    "estacion_akhet": "Akhet: el Nilo se desborda. Nadie trabaja la orilla en estos días; el río lo riega todo por ti. Ojo con lo que sale del agua.",
+    "akhet_riego": "El agua alta llegó hasta tus campos: hoy no tienes que regar.",
+    "libre_inicio": "¿Seguimos? El Heraldo volverá cada vez que termine una estación, más fuerte. Y yo sigo anotando todo, claro."
   },
   "anubis": {
     "intro": [

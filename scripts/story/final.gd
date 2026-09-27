@@ -147,7 +147,7 @@ func _show_thanks() -> void:
 		var l := UIStyle.make_label(panel, lines[i], Vector2(0, 6 + i * 13), UIStyle.SMALL, UIStyle.TEXT if i < 3 else Color(0.6, 0.85, 1.0))
 		l.size = Vector2(300, 10)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var back := UIStyle.make_label(_thanks, Textos.t("gracias_volver"), Vector2(0, 236), UIStyle.SMALL, UIStyle.TEXT_DIM)
+	var back := UIStyle.make_label(_thanks, Textos.t("libre_seguir") if GameState.has_save() else Textos.t("gracias_volver"), Vector2(0, 236), UIStyle.SMALL, UIStyle.TEXT_DIM)
 	back.size = Vector2(480, 10)
 	back.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var tw := back.create_tween().set_loops()
@@ -159,9 +159,22 @@ func _show_thanks() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not _can_leave:
 		return
-	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("pause"):
+	var seguir := (event.is_action_pressed("interact") or event.is_action_pressed("ui_accept")) and GameState.has_save()
+	if seguir or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept") or event.is_action_pressed("pause"):
 		_can_leave = false
 		get_viewport().set_input_as_handled()
 		await create_tween().tween_property(_fade, "color:a", 1.0, 1.0).finished
 		GameTime.paused = false
+		if seguir:
+			continue_free_mode()
+		else:
+			get_tree().change_scene_to_file(MENU)
+
+
+## Modo libre: carga el amanecer del dia 4 guardado antes del final.
+func continue_free_mode() -> void:
+	if not GameState.load_game():
 		get_tree().change_scene_to_file(MENU)
+		return
+	GameState.modo_libre = true
+	get_tree().change_scene_to_file("res://scenes/world/Farm.tscn")

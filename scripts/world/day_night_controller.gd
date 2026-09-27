@@ -34,6 +34,10 @@ const TARGETS := {
 }
 
 var _prev_target: Array = TARGETS[3]
+## Tono de la estacion (lo fija SeasonDirector): Shemu mas calido y seco,
+## Akhet mas fresco y nublado.
+var season_tint := Color.WHITE
+var season_clouds := 0.0
 var _t: float = TRANSITION_SECONDS
 
 
@@ -77,7 +81,7 @@ func _lerp_target(a: Array, b: Array, t: float) -> Array:
 
 
 func _apply(v: Array) -> void:
-	sun.light_color = v[0]
+	sun.light_color = v[0] * season_tint
 	sun.light_energy = v[1]
 	if env and env.environment:
 		var e := env.environment
@@ -90,6 +94,6 @@ func _apply(v: Array) -> void:
 		e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 		e.ambient_light_color = v[6]
 		e.ambient_light_energy = v[4]
-		e.fog_light_color = v[7]
+		e.fog_light_color = v[7] * season_tint
 		e.fog_light_energy = v[5]
-	RenderingServer.global_shader_parameter_set("cloud_shadow_strength", v[8])
+	RenderingServer.global_shader_parameter_set("cloud_shadow_strength", v[8] + season_clouds)

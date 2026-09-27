@@ -90,6 +90,9 @@ func _physics_process(delta: float) -> void:
 		if input_dir.length() > 1.0:
 			input_dir = input_dir.normalized()
 		var sp := speed * GameState.heart_mod("vel", 1.0)
+		var sdir = get_tree().get_first_node_in_group("season_director")
+		if sdir and sdir.is_flooded(global_position):
+			sp *= 0.65  # caminar por la crecida cuesta
 		velocity.x = input_dir.x * sp + _knock.x
 		velocity.z = input_dir.y * sp + _knock.z
 		if input_dir.length_squared() > 0.01:
@@ -535,6 +538,8 @@ func get_interact_hint() -> String:
 	var plot := _target_plot()
 	if plot == null:
 		return ""
+	if plot.flooded:
+		return Textos.t("hint_inundada")
 	match plot.state:
 		FarmPlot.State.UNTILLED:
 			return Textos.t("hint_arar")

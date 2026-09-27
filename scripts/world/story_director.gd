@@ -59,6 +59,8 @@ func setup(p: Player, nd: Node, ds: Node) -> void:
 	if GameState.pending_world.is_empty():
 		autosave.call_deferred()
 	_apply_pending_world()
+	if GameState.modo_libre:
+		GameState.thot_once("libre_inicio", Dialogos.thot("libre_inicio"), true)
 	# fundido de entrada al despertar en la granja
 	_fade.color.a = 1.0
 	create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(_fade, "color:a", 0.0, 1.2)
@@ -161,6 +163,24 @@ func _apply_pending_world() -> void:
 	GameState.thot(Textos.t("partida_cargada", {"n": GameState.current_day}))
 
 
+## Objetivos del modo libre: la estacion, el regreso del Heraldo y las
+## metas largas (templo, amistad).
+func _free_objectives() -> Array:
+	var out: Array = []
+	var per := int(GameState.seasons_data.get("dias_por_estacion", 3))
+	out.append([Textos.t("obj_estacion", {"s": Textos.t("estacion_nombre_" + GameState.season()), "d": GameState.season_day(), "t": per}), false])
+	if GameState.is_season_last_day():
+		out.append([Textos.t("obj_jefe_vuelve"), GameState.boss_defeated])
+	if GameState.temple.size() < 4:
+		out.append([Textos.t("obj_templo", {"n": GameState.temple.size()}), false])
+	else:
+		var lv := 0
+		for n in ["meret", "ptahmose", "iry"]:
+			lv += GameState.friend_level(n)
+		out.append([Textos.t("obj_amistad", {"n": lv}), lv >= 9])
+	return out
+
+
 ## Objetivos del momento para el HUD: [[texto, cumplido], ...]. Siempre dice
 ## que hacer y donde (pedido de Deivid: "no sabia que hacer").
 func objectives() -> Array:
@@ -169,6 +189,8 @@ func objectives() -> Array:
 	var day := GameState.current_day
 	var out: Array = []
 	var wb: WorldBuilder = player.world_builder
+	if GameState.modo_libre:
+		return _free_objectives()
 	if GameTime.is_night() or GameTime.phase == GameTime.Phase.DUSK:
 		if day == 2:
 			out.append([Textos.t("obj_noche2"), false])
@@ -239,7 +261,7 @@ func _on_village_damaged(total: int) -> void:
 ## Tras la noche 3 con el jefe vencido, pasa al final de la demo.
 func _on_dawn() -> void:
 	var night_of := GameState.current_day - 1  # next_day ya corrio
-	if night_of >= 3 and GameState.boss_defeated:
+	if night_of >= 3 and GameState.boss_defeated and not GameState.modo_libre:
 		_go_final()
 		return
 	var extra: Array = []
@@ -284,8 +306,14 @@ func _go_final() -> void:
 	if _ending:
 		return
 	_ending = true
+	# se guarda el amanecer del dia 4 como punto de partida del modo libre:
+	# desde la pantalla de gracias (o "Continuar") se sigue jugando
+	GameState.modo_libre = true
+	GameState.boss_defeated = false
+	autosave()
+	GameState.modo_libre = false
+	GameState.boss_defeated = true
 	GameState.demo_finished = true
-	GameState.delete_save()
 	GameTime.paused = true
 	var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tw.tween_property(_fade, "color:a", 1.0, 1.5)

@@ -38,6 +38,8 @@ const SCENARIOS := [
 	{"name": "35_templo_ruinas", "tile": Vector2(24, 9.5), "phase": 1, "wide": true},
 	{"name": "36_templo_restaurado", "tile": Vector2(24, 9.5), "phase": 1, "wide": true, "setup": "templo"},
 	{"name": "37_menu_amistad", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "amistad"},
+	{"name": "38_akhet_crecida", "tile": Vector2(9, 12), "phase": 1, "wide": true, "setup": "akhet", "bark": true},
+	{"name": "39_shemu_calor", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "shemu"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -165,6 +167,11 @@ func _setup(kind: String) -> void:
 			for k in range(3):
 				nd.spawn("sombra", "", "", world_builder.defense_spots[0].global_position + Vector3(2.5 + k, 0, k - 1.0))
 			await get_tree().create_timer(1.6).timeout
+		"akhet", "shemu":
+			GameState.modo_libre = true
+			GameState.current_day = 7 if kind == "akhet" else 4
+			farm.get_node("SeasonDirector")._apply_season(true)
+			await get_tree().create_timer(3.0).timeout
 		"templo":
 			for id in ["columnas", "estatua", "estandartes", "santuario"]:
 				GameState.temple.append(id)
@@ -240,6 +247,10 @@ func _setup(kind: String) -> void:
 
 func _cleanup() -> void:
 	get_tree().paused = false
+	if GameState.modo_libre:
+		GameState.modo_libre = false
+		GameState.current_day = 1
+		farm.get_node("SeasonDirector")._apply_season(false)
 	GameState.heart_weight = 50.0
 	GameState._refresh_heart_state()
 	var bn = get_tree().get_first_node_in_group("combat_banner")

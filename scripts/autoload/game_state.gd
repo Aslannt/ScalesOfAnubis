@@ -17,6 +17,8 @@ signal crop_attacked(plot: Node)
 signal heart_state_changed(nuevo: String, anterior: String)
 ## Metas largas (fase 2): templo de Maat, mejoras y amistad.
 signal temple_changed(pieza: String)
+## Estaciones del Nilo (fase 3): cambia al amanecer del primer dia de cada una.
+signal season_changed(estacion: String)
 signal upgrades_changed()
 signal friendship_changed(npc: String, nivel: int, subio: bool)
 
@@ -90,6 +92,9 @@ func player_input_locked() -> bool:
 ## cambio de escena: sin esto, "Salir al menu" + "Nueva partida" arrastraba
 ## el deben, el inventario y el peso del corazon de la partida anterior).
 func reset() -> void:
+	modo_libre = false
+	jefes_libre = 0
+	orilla_limo = false
 	temple = []
 	upgrades = []
 	amistad = {}
@@ -158,6 +163,7 @@ func save_game(world: Dictionary) -> void:
 		"meret_mission_done": meret_mission_done, "ptahmose_intro_shown": ptahmose_intro_shown,
 		"iry_intro_shown": iry_intro_shown, "selected_seed": selected_seed, "tutorial": tutorial,
 		"total_enemies_defeated": total_enemies_defeated, "health": health,
+		"modo_libre": modo_libre, "jefes_libre": jefes_libre, "orilla_limo": orilla_limo,
 		"temple": temple, "upgrades": upgrades, "amistad": amistad,
 		"amistad_charla": amistad_charla, "amistad_regalo": amistad_regalo,
 		"amistad_nivel_dado": amistad_nivel_dado,
@@ -193,6 +199,9 @@ func load_game() -> bool:
 	selected_seed = d.get("selected_seed", "trigo")
 	tutorial = d.get("tutorial", {})
 	total_enemies_defeated = int(d.get("total_enemies_defeated", 0))
+	modo_libre = bool(d.get("modo_libre", false))
+	jefes_libre = int(d.get("jefes_libre", 0))
+	orilla_limo = bool(d.get("orilla_limo", false))
 	temple = d.get("temple", [])
 	upgrades = d.get("upgrades", [])
 	amistad = d.get("amistad", {})
@@ -295,6 +304,7 @@ func _ready() -> void:
 	temple_data = _load_json("res://data/temple.json")
 	upgrades_data = _load_json("res://data/upgrades.json")
 	friendship_data = _load_json("res://data/friendship.json")
+	seasons_data = _load_json("res://data/seasons.json")
 	GameTime.night_started.connect(func():
 		crops_lost_tonight = 0
 		enemies_defeated_tonight = 0
@@ -348,6 +358,46 @@ func remove_item(item_id: String, cantidad: int = 1) -> bool:
 
 func item_count(item_id: String) -> int:
 	return inventory.get(item_id, 0)
+
+
+# ------------------------------------------------ modo libre y estaciones
+## Despues de la demo se puede seguir jugando: estaciones del Nilo, noches
+## que crecen y el Heraldo que vuelve al final de cada estacion.
+var modo_libre: bool = false
+var jefes_libre: int = 0  # veces que el Heraldo volvio en modo libre
+var orilla_limo: bool = false  # tras Akhet, la orilla queda fertil
+var seasons_data: Dictionary = {}
+
+
+func season_for_day(day: int) -> String:
+	var first := int(seasons_data.get("primer_dia_libre", 4))
+	if day < first:
+		return "peret"
+	var ciclo: Array = seasons_data.get("ciclo", ["shemu", "akhet", "peret"])
+	var per := int(seasons_data.get("dias_por_estacion", 3))
+	return String(ciclo[((day - first) / per) % ciclo.size()])
+
+
+func season() -> String:
+	return season_for_day(current_day)
+
+
+## Dia dentro de la estacion (1..dias_por_estacion); 0 en la demo.
+func season_day() -> int:
+	var first := int(seasons_data.get("primer_dia_libre", 4))
+	if current_day < first:
+		return 0
+	return (current_day - first) % int(seasons_data.get("dias_por_estacion", 3)) + 1
+
+
+func is_season_last_day() -> bool:
+	return modo_libre and season_day() == int(seasons_data.get("dias_por_estacion", 3))
+
+
+func season_mod(key: String, defecto: float = 0.0) -> float:
+	if not modo_libre:
+		return defecto
+	return float(seasons_data.get("estaciones", {}).get(season(), {}).get("mods", {}).get(key, defecto))
 
 
 # ------------------------------------------------ metas largas (fase 2)
@@ -580,8 +630,11 @@ func register_decision(id: String, valor: String) -> void:
 
 
 func next_day() -> void:
+	var antes := season()
 	current_day += 1
 	day_changed.emit(current_day)
+	if season() != antes:
+		season_changed.emit(season())
 
 
 func take_damage(cantidad: int) -> void:
