@@ -20,6 +20,7 @@ var _starting := false
 
 
 func _ready() -> void:
+	MenuMusic.play_theme()
 	theme = UIStyle.theme()
 	get_tree().paused = false
 	_layer("title_sky.png")

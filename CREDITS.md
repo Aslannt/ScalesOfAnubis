@@ -12,11 +12,12 @@
   rocas, palmeras) generada por código en `scripts/world/building_factory.gd`.
 
 ## Audio
-- Todos los SFX (`assets/audio/sfx/`) y los loops musicales de día/noche/jefe
-  (`assets/audio/music/`) son **síntesis propia** generada con
-  `tools/gen_sfx.py` y `tools/gen_music.py` (numpy → WAV, ondas
-  cuadradas/sierra/seno con envolventes ADSR, estilo sfxr). No se usó audio
-  de terceros.
+- Todos los SFX (`assets/audio/sfx/`) y la música (`assets/audio/music/`:
+  título, día, noche, jefe y ambientes de día/noche) son **síntesis propia**
+  generada con `tools/gen_sfx.py` y `tools/gen_music.py` (numpy → WAV):
+  arpa por Karplus-Strong, flauta ney con vibrato y soplo, darbuka (doum/tek),
+  sistro, bordón, grillos, viento y pájaros sintetizados. Escala doble
+  armónica. No se usó audio de terceros.
 
 ## Fuentes
 - **Silkscreen** (Jason Kottke), licencia SIL Open Font License 1.1

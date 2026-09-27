@@ -66,12 +66,14 @@ func _run() -> void:
 		SFX.play("heart_shift", -6.0 if f != 1 else 0.0, 0.0)
 		await _wait(0.55 if f != 1 else 0.2)
 	_flash(Color(1, 0.95, 0.8, 0.5))
+	MenuMusic.stop_theme()
 	await _wait(1.8)  # silencio
 	var tw2 := create_tween()
 	tw2.tween_property(_scale, "position:x", 300.0, 1.0).set_trans(Tween.TRANS_SINE)
 	tw2.parallel().tween_property(_anubis, "modulate:a", 1.0, 1.2)
 	tw2.parallel().tween_property(_anubis, "position:x", 40.0, 1.2).set_trans(Tween.TRANS_SINE)
 	await tw2.finished
+	MenuMusic.play_theme()
 	_dlg.show_lines(Dialogos.lines("anubis", "intro"))
 	await _dlg.finished
 	_leave()
@@ -108,4 +110,5 @@ func _leave() -> void:
 	_fade.color = Color(1, 1, 1, 0)
 	var tw := create_tween()
 	tw.tween_property(_fade, "color:a", 1.0, 0.9)
+	MenuMusic.stop_theme()
 	tw.tween_callback(func(): get_tree().change_scene_to_file(FARM))

@@ -291,3 +291,17 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - Pruebas automatizadas: `tools/tests/test_demo.tscn` recorre los 3 días
   completos (granja, compra/venta, defensas, noches, ambas decisiones,
   Meret, jefe, derrota y final) y `test_story.tscn` la intro y el final.
+
+## Audio (M10)
+- Música rehecha: loops de 30–70 s (antes 2–8 s) con instrumentos
+  sintetizados (arpa Karplus-Strong, ney, darbuka con ritmo maqsum de
+  noche, sistro, bordón) en escala doble armónica. Tema propio para
+  título/intro/final (autoload `MenuMusic`), día, noche y jefe (132 bpm).
+  Los loops se cierran sin clic (eco y colocación circular + rampa final).
+- Ambiente en el bus de efectos: viento, río y pájaros de día; grillos y
+  viento de noche. Así el volumen de efectos de las opciones también lo
+  controla.
+- Como no puedo escuchar en la nube, verifiqué niveles (pico −6 dBFS la
+  música, −12 los efectos, −15 los ambientes), continuidad en el punto de
+  loop y espectrogramas. Si algo suena raro en tu PC, los parámetros están
+  al principio de cada función en `tools/gen_music.py`.

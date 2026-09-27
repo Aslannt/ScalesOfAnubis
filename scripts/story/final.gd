@@ -17,6 +17,7 @@ var _can_leave := false
 
 
 func _ready() -> void:
+	MenuMusic.play_theme()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().paused = false
 	Engine.time_scale = 1.0
