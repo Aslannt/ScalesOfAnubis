@@ -181,6 +181,7 @@ static func temple() -> Node3D:
 	## con columnas papiriformes y santuario al fondo. La entrada mira a +Z.
 	var root := Node3D.new()
 	root.name = "TemploMaat"
+	root.add_to_group("occluders")
 	var plaster := _mat("plaster", Vector3(2, 1, 1))
 	var stone := _mat("stone", Vector3(3, 2, 1))
 	var gold := _solid_mat(Color(0.91, 0.73, 0.14))
@@ -742,6 +743,7 @@ static func mastaba() -> Node3D:
 	## (la puerta por la que el ka salia a recibir ofrendas).
 	var root := Node3D.new()
 	root.name = "Mastaba"
+	root.add_to_group("occluders")
 	root.add_child(_tapered_box(Vector2(2.2, 1.5), Vector2(1.8, 1.15), 1.9, _shaded("plaster"), 1.6))
 	# cornisa de piedra sobre el talud
 	root.add_child(_box(Vector3(3.7, 0.12, 2.4), _mat("stone"), Vector3(0, 1.93, 0)))
@@ -784,6 +786,7 @@ static func step_pyramid() -> Node3D:
 	## Piramide escalonada pequena (como la de Djoser en Saqqara, en chico).
 	var root := Node3D.new()
 	root.name = "PiramideEscalonada"
+	root.add_to_group("occluders")
 	var stone := _shaded("pyramid_stone")
 	var y := 0.0
 	var half := 3.2

@@ -30,6 +30,9 @@ const SCENARIOS := [
 	{"name": "27_necropolis_dia", "tile": Vector2(26, 23), "phase": 1, "wide": true},
 	{"name": "28_casa_cerca", "tile": Vector2(27.2, 9.6), "phase": 1, "wide": false},
 	{"name": "29_piramide_escalonada", "tile": Vector2(29.5, 24.5), "phase": 1, "wide": false},
+	{"name": "30_casa_translucida", "tile": Vector2(28, 5.6), "phase": 1, "wide": false},
+	{"name": "31_orilla_gansos", "tile": Vector2(8, 6.5), "phase": 1, "wide": false},
+	{"name": "32_aldea_gato", "tile": Vector2(25, 11.5), "phase": 2, "wide": false},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]

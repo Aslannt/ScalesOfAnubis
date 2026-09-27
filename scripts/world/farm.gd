@@ -37,3 +37,8 @@ func _ready() -> void:
 	ambient.river_min_x = world_builder.river_min_x
 	add_child(ambient)
 	ambient.set_target(player)
+
+	var life := VillageLife.new()
+	life.name = "VillageLife"
+	add_child(life)
+	life.setup(player, world_builder, world_builder.layout.get("animales", []))

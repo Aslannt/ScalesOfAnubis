@@ -40,14 +40,64 @@ func _ready() -> void:
 
 var _t: float = 0.0
 var _news: Label3D
+## Paseo corto alrededor de su lugar (tercera ronda: mundo vivo). Se quedan
+## quietos y te miran cuando te acercas, y de noche no salen.
+const WANDER := {"meret": 2.2, "ptahmose": 0.9, "iry": 2.6}
+var _home := Vector3.INF
+var _goal := Vector3.ZERO
+var _wait := 2.0
+var _facing := "south"
 
 
 func _process(delta: float) -> void:
 	_t += delta
 	sprite.offset.y = CharacterFX.breathe_offset(_t, 1.9)
+	_wander(delta)
 	_news.visible = has_news()
 	if _news.visible:
 		_news.position.y = 2.3 + absf(sin(_t * 3.0)) * 0.25
+
+
+func _wander(delta: float) -> void:
+	if _home == Vector3.INF:
+		_home = position
+		_goal = position
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	var near := player != null and player.global_position.distance_to(global_position) < 3.4
+	if near or GameTime.is_night():
+		if near:
+			_face((player.global_position - global_position))
+		sprite.play(_facing + "_idle")
+		return
+	var to := _goal - position
+	to.y = 0
+	if to.length() > 0.12:
+		position += to.normalized() * minf(0.85 * delta, to.length())
+		_face(to)
+		sprite.play(_facing + "_walk")
+		return
+	sprite.play(_facing + "_idle")
+	_wait -= delta
+	if _wait > 0.0:
+		return
+	_wait = randf_range(2.5, 6.0)
+	var r: float = WANDER.get(npc_id, 1.5)
+	var ang := randf() * TAU
+	var cand := _home + Vector3(cos(ang), 0, sin(ang)) * randf_range(0.4, r)
+	# no atravesar muros ni puestos: si algo solido se cruza, se queda
+	var space := get_world_3d().direct_space_state
+	var q := PhysicsRayQueryParameters3D.create(global_position + Vector3(0, 0.5, 0), (get_parent() as Node3D).to_global(cand) + Vector3(0, 0.5, 0))
+	if space.intersect_ray(q).is_empty():
+		_goal = cand
+
+
+func _face(dir: Vector3) -> void:
+	if absf(dir.x) > absf(dir.z) * 1.2:
+		_facing = "east"
+		sprite.flip_h = dir.x < 0
+	else:
+		_facing = "south" if dir.z > 0 else "north"
+		sprite.flip_h = false
 
 
 ## true si hablar con este aldeano avanza algo (intro, mision, regalo...).

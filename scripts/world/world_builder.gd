@@ -13,6 +13,8 @@ var river_shore_x: float = -26.0
 var spawn_points: Dictionary = {}
 var village_center: Vector3 = Vector3.ZERO
 var defense_spots: Array = []
+## map_layout.json completo (otros sistemas leen sus secciones).
+var layout: Dictionary = {}
 var river_min_x: float = -36.0
 var npcs: Array = []
 
@@ -23,6 +25,7 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		push_error("No se pudo abrir %s" % layout_path)
 		return
 	var data: Dictionary = JSON.parse_string(f.get_as_text())
+	layout = data
 
 	tile_size = float(data.get("tile_size", 2.0))
 	world_w = int(data["world_tiles"]["w"])
