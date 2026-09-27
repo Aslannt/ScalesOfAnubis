@@ -14,7 +14,8 @@
 ## Audio
 - Todos los SFX (`assets/audio/sfx/`) y la música (`assets/audio/music/`:
   título, día, noche, jefe y ambientes de día/noche) son **síntesis propia**
-  generada con `tools/gen_sfx.py` y `tools/gen_music.py` (numpy → WAV):
+  generada con `tools/gen_sfx.py`, `tools/gen_groove.py` (soundtrack
+  adaptativo en capas) y `tools/gen_music.py` (ambientes) (numpy → WAV):
   arpa por Karplus-Strong, flauta ney con vibrato y soplo, darbuka (doum/tek),
   sistro, bordón, grillos, viento y pájaros sintetizados. Escala doble
   armónica. No se usó audio de terceros.

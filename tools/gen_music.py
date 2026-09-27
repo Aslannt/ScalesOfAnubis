@@ -341,9 +341,7 @@ def ambience_night():
 
 
 if __name__ == "__main__":
-    title_theme()
+    # La musica de juego, titulo y jefe ahora sale de tools/gen_groove.py
+    # (soundtrack adaptativo). Aqui quedan solo los ambientes.
     ambience_day()
     ambience_night()
-    day_theme()
-    night_theme()
-    boss_theme()

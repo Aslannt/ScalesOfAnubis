@@ -23,5 +23,22 @@ func _ready() -> void:
 			playing = true
 	print("  ", "ok: " if playing else "FALLO: ", "suena musica en la granja")
 	ok = ok and playing
+	# las capas del groove deben durar lo mismo para quedar sincronizadas
+	var lens := []
+	for f in ["groove_base", "groove_dia", "groove_noche"]:
+		lens.append(snappedf(load("res://assets/audio/music/%s.wav" % f).get_length(), 0.001))
+	var sync: bool = lens[0] == lens[1] and lens[1] == lens[2]
+	print("  ", "ok: " if sync else "FALLO: ", "capas del groove del mismo largo ", lens)
+	ok = ok and sync
+	# la musica no se corta durante un dialogo (arbol en pausa)
+	get_tree().paused = true
+	await get_tree().create_timer(0.3, true).timeout
+	var still := false
+	for c in md.get_children():
+		if c is AudioStreamPlayer and c.playing and not c.stream_paused and c.volume_db > -10.0 and c.can_process():
+			still = true
+	get_tree().paused = false
+	print("  ", "ok: " if still else "FALLO: ", "la musica sigue en pausa")
+	ok = ok and still
 	print("TEST AUDIO: ", "OK" if ok else "FALLO")
 	get_tree().quit(0 if ok else 1)
