@@ -6,12 +6,39 @@ func _ready() -> void:
 	GameState.reset()
 	var intro: Node = load("res://scenes/story/Intro.tscn").instantiate()
 	add_child(intro)
-	await _t(5.2)
+	await _t(4.2)
+	_shot("20a_intro_tarjeta")
+	await _t(9.0)
+	_shot("20b_intro_tarjeta_ammit")
+	for i in range(8):
+		intro._advance = true
+		await _t(0.4)
+	while not intro._hall.visible:
+		intro._advance = true
+		await _t(0.2)
+	await _t(2.6)
+	_shot("20c_intro_balanza_oscila")
+	while not intro._stamp.visible:
+		await _t(0.1)
+	await _t(0.6)
 	_shot("20_intro_balanza")
 	while not intro._dlg.visible:
 		await _t(0.2)
 	await _t(1.5)
 	_shot("21_intro_anubis")
+	while intro._thot.position.x > 300 or intro._dlg.visible:
+		if intro._dlg.visible and intro._thot.position.x > 300:
+			intro._dlg._advance()
+		await _t(0.3)
+		if not intro._dlg.visible and intro._thot.position.x < 300:
+			break
+	await _t(1.8)
+	_shot("21b_intro_thot")
+	while intro._dlg.visible:
+		intro._dlg._advance()
+		await _t(0.3)
+	await _t(1.2)
+	_shot("21c_intro_mision")
 	intro.queue_free()
 	GameState.heart_weight = 38.0
 	GameState.register_decision("robo_altar", "respetado")

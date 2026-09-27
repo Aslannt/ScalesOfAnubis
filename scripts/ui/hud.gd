@@ -74,6 +74,7 @@ func _ready() -> void:
 	_build_inventario()
 	_build_hint()
 	_build_boss_bar()
+	_build_objectives()
 	var ind := preload("res://scripts/ui/threat_indicators.gd").new()
 	_root.add_child(ind)
 
@@ -176,16 +177,16 @@ func _on_deben_changed(v: int) -> void:
 func _build_balanza() -> void:
 	# Balanza dorada (GDD 6.1): corazon a un lado, pluma al otro, se inclina
 	# con suavizado segun GameState.heart_weight (50 = equilibrio exacto).
-	_balanza_panel = UIStyle.make_panel(_root, Vector2(188, 4), Vector2(104, 38))
+	_balanza_panel = UIStyle.make_panel(_root, Vector2(188, 4), Vector2(104, 40))
 	var p := _balanza_panel
-	var pivote := UIStyle.make_icon(p, ICONS + "balanza_pivote.png", Vector2(44, 15), Vector2(16, 20))
+	var pivote := UIStyle.make_icon(p, ICONS + "balanza_pivote.png", Vector2(44, 9), Vector2(16, 20))
 	pivote.stretch_mode = TextureRect.STRETCH_SCALE
 
 	_viga = TextureRect.new()
 	_viga.texture = load(ICONS + "balanza_viga.png")
 	_viga.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_viga.size = Vector2(64, 10)
-	_viga.position = Vector2(20, 12)
+	_viga.position = Vector2(20, 8)
 	_viga.pivot_offset = Vector2(32, 5)
 	p.add_child(_viga)
 
@@ -194,10 +195,27 @@ func _build_balanza() -> void:
 	var pluma := UIStyle.make_icon(_viga, ICONS + "feather.png", Vector2(56, 4))
 	pluma.name = "Pluma"
 
+	# el numero del peso, con color: verde si es mas liviano que la pluma
+	_lbl_peso = UIStyle.make_label(p, "", Vector2(0, 27), UIStyle.SMALL)
+	_lbl_peso.size = Vector2(104, 10)
+	_lbl_peso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_update_peso(GameState.heart_weight)
+
 	_lbl_corazon_flot = UIStyle.make_label(_root, "", Vector2(188, 44), UIStyle.SMALL)
 	_lbl_corazon_flot.size = Vector2(104, 10)
+	_lbl_corazon_flot.position.x = 140
+	_lbl_corazon_flot.size.x = 200
 	_lbl_corazon_flot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_lbl_corazon_flot.modulate = Color(1, 1, 1, 0)
+
+
+var _lbl_peso: Label
+
+
+func _update_peso(v: float) -> void:
+	_lbl_peso.text = Textos.t("hud_peso", {"n": int(round(v))}) + " / 50"
+	var col := Color(0.55, 0.95, 0.6) if v < 49.5 else (Color(1.0, 0.5, 0.4) if v > 50.5 else Color(0.98, 0.8, 0.35))
+	_lbl_peso.add_theme_color_override("font_color", col)
 
 
 func _set_balanza_rotation(v: float) -> void:
@@ -208,6 +226,7 @@ func _set_balanza_rotation(v: float) -> void:
 
 
 func _on_heart_changed(v: float, delta: float, _motivo: String) -> void:
+	_update_peso(v)
 	var tw := create_tween()
 	tw.tween_method(_set_balanza_rotation, v - delta, v, 0.8).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	if absf(delta) > 0.01:
@@ -215,9 +234,9 @@ func _on_heart_changed(v: float, delta: float, _motivo: String) -> void:
 		_lbl_corazon_flot.text = texto
 		_lbl_corazon_flot.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35) if delta > 0 else Color(0.55, 0.9, 1.0))
 		_lbl_corazon_flot.modulate = Color(1, 1, 1, 1)
-		_lbl_corazon_flot.position.y = 44
+		_lbl_corazon_flot.position.y = 46
 		var tw2 := create_tween()
-		tw2.tween_property(_lbl_corazon_flot, "position:y", 50.0, 1.6)
+		tw2.tween_property(_lbl_corazon_flot, "position:y", 52.0, 1.8)
 		tw2.parallel().tween_property(_lbl_corazon_flot, "modulate:a", 0.0, 1.0).set_delay(0.9)
 		var flash := create_tween()
 		_balanza_panel.modulate = Color(1.6, 1.4, 1.0)
@@ -230,9 +249,7 @@ func _build_fase() -> void:
 	_fase_icon = UIStyle.make_icon(p, ICONS + "phase_sun.png", Vector2(3, 3))
 	_lbl_dia = UIStyle.make_label(p, "", Vector2(23, 3), UIStyle.SMALL)
 	_lbl_fase = UIStyle.make_label(p, "", Vector2(23, 13), UIStyle.SMALL, UIStyle.TEXT_DIM)
-	var est := UIStyle.make_label(p, Textos.t("hud_estacion"), Vector2(60, 3), UIStyle.SMALL, Color(0.55, 0.85, 0.75))
-	est.size = Vector2(40, 10)
-	est.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
 	var track := ColorRect.new()
 	track.color = Color(0.18, 0.14, 0.1)
 	track.position = Vector2(4, 27)
@@ -398,6 +415,72 @@ func _on_boss_health(hp: int, max_hp: int) -> void:
 		_boss_fill.color = Color(0.85, 0.15, 0.2)
 
 
+# ----------------------------------------------------------- objetivos
+var _obj_panel: Panel
+var _obj_box: VBoxContainer
+var _obj_last: String = ""
+var _obj_t: float = 0.0
+var _obj_done: Dictionary = {}
+const OBJ_W := 150.0
+
+
+func _build_objectives() -> void:
+	_obj_panel = UIStyle.make_panel(_root, Vector2(480 - 6 - OBJ_W, 44), Vector2(OBJ_W, 30))
+	var title := UIStyle.make_label(_obj_panel, Textos.t("obj_titulo"), Vector2(6, 3), UIStyle.SMALL, UIStyle.GOLD)
+	title.name = "Titulo"
+	_obj_box = VBoxContainer.new()
+	_obj_box.position = Vector2(5, 14)
+	_obj_box.add_theme_constant_override("separation", 2)
+	_obj_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_obj_panel.add_child(_obj_box)
+	_obj_panel.visible = false
+
+
+func _refresh_objectives(delta: float) -> void:
+	_obj_t -= delta
+	if _obj_t > 0.0:
+		return
+	_obj_t = 0.4
+	var sd = get_tree().get_first_node_in_group("story_director")
+	if sd == null:
+		return
+	var objs: Array = sd.objectives()
+	var key := str(objs)
+	if key == _obj_last:
+		return
+	_obj_last = key
+	for c in _obj_box.get_children():
+		c.queue_free()
+	_obj_panel.visible = not objs.is_empty()
+	for o in objs:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 3)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var box := ColorRect.new()
+		box.custom_minimum_size = Vector2(5, 5)
+		box.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		box.color = UIStyle.GOLD if o[1] else Color(0.35, 0.3, 0.25)
+		row.add_child(box)
+		var l := Label.new()
+		l.text = o[0]
+		l.add_theme_font_size_override("font_size", UIStyle.SMALL)
+		l.add_theme_color_override("font_color", UIStyle.TEXT_DIM if o[1] else UIStyle.TEXT)
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.custom_minimum_size = Vector2(OBJ_W - 20, 0)
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(l)
+		_obj_box.add_child(row)
+		# objetivo recien cumplido: sonido y destello
+		if o[1] and not _obj_done.get(o[0].get_slice("(", 0), false):
+			_obj_done[o[0].get_slice("(", 0)] = true
+			SFX.play("coin", -4.0)
+			l.modulate = Color(2, 1.8, 1)
+			create_tween().tween_property(l, "modulate", Color.WHITE, 0.6)
+	# alto real una vez que el contenedor acomodo las filas
+	await get_tree().process_frame
+	_obj_panel.size.y = _obj_box.get_combined_minimum_size().y + 18
+
+
 # --------------------------------------------------------------- pista
 func _build_hint() -> void:
 	_hint_panel = UIStyle.make_panel(_root, Vector2(180, 270 - 50), Vector2(120, 14))
@@ -426,6 +509,7 @@ func _refresh_hint() -> void:
 		_lbl_hint.size.x = w
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_refresh_slots()
 	_refresh_hint()
+	_refresh_objectives(delta)

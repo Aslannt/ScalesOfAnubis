@@ -159,7 +159,41 @@ def ba_memory():
     return img
 
 
+def scale_parts():
+    """Balanza en piezas para animarla en Godot: pilar (con la pluma de Maat
+    arriba), viga y plato con sus cuerdas."""
+    pillar = Image.new("RGBA", (48, 96), (0, 0, 0, 0))
+    d = ImageDraw.Draw(pillar)
+    cx = 24
+    d.polygon([(cx - 22, 95), (cx + 22, 95), (cx + 14, 86), (cx - 14, 86)], fill=GOLD_D)
+    d.rectangle([cx - 3, 20, cx + 3, 86], fill=GOLD)
+    d.rectangle([cx + 1, 20, cx + 3, 86], fill=GOLD_D)
+    for y in (40, 60):
+        d.rectangle([cx - 4, y, cx + 4, y + 2], fill=LAPIS)
+    d.ellipse([cx - 5, 17, cx + 5, 27], fill=GOLD)
+    pillar = add_outline(pillar, (20, 12, 8, 255))
+    beam = Image.new("RGBA", (108, 8), (0, 0, 0, 0))
+    d = ImageDraw.Draw(beam)
+    d.rectangle([2, 2, 105, 5], fill=GOLD)
+    d.line([(2, 5), (105, 5)], fill=GOLD_D)
+    d.ellipse([0, 1, 5, 6], fill=GOLD_D)
+    d.ellipse([102, 1, 107, 6], fill=GOLD_D)
+    beam = add_outline(beam, (20, 12, 8, 255))
+    pan = Image.new("RGBA", (32, 30), (0, 0, 0, 0))
+    d = ImageDraw.Draw(pan)
+    d.line([(16, 0), (4, 22)], fill=GOLD_D)
+    d.line([(16, 0), (28, 22)], fill=GOLD_D)
+    d.chord([2, 16, 30, 29], 0, 180, fill=GOLD)
+    d.line([(2, 22), (30, 22)], fill=GOLD_D)
+    pan = add_outline(pan, (20, 12, 8, 255))
+    return pillar, beam, pan
+
+
 if __name__ == "__main__":
+    pil, beam, pan = scale_parts()
+    save(pil, os.path.join(OUT, "scale_pillar.png"))
+    save(beam, os.path.join(OUT, "scale_beam.png"))
+    save(pan, os.path.join(OUT, "scale_pan.png"))
     bust = anubis_bust()
     save(bust, os.path.join(OUT, "anubis_bust.png"))
     save(bust.resize((100, 100), Image.NEAREST), os.path.join(OUT_P, "anubis.png"))

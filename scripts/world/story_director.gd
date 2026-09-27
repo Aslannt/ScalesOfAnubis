@@ -20,6 +20,7 @@ var _ending := false
 
 
 func _ready() -> void:
+	add_to_group("story_director")
 	GameTime.phase_changed.connect(_on_phase)
 	GameState.village_damaged.connect(_on_village_damaged)
 	var layer := CanvasLayer.new()
@@ -66,8 +67,11 @@ func _process(delta: float) -> void:
 			GameState.thot_once("t_arar", Dialogos.thot("arar"))
 		if _t > 55.0:
 			GameState.thot_once("aldeanos", Dialogos.thot("aldeanos"))
-	if day == 2 and GameTime.phase == GameTime.Phase.DAY and GameTime.phase_progress() > 0.35:
-		GameState.thot_once("altar_d2", Dialogos.thot("altar_d2"))
+	if day == 2 and GameTime.phase == GameTime.Phase.DAY:
+		if GameState.deben >= 18:
+			GameState.thot_once("defensa", Dialogos.thot("defensa"))
+		if GameTime.phase_progress() > 0.35:
+			GameState.thot_once("altar_d2", Dialogos.thot("altar_d2"))
 
 
 func _on_phase(phase: int) -> void:
@@ -120,6 +124,55 @@ func _apply_pending_world() -> void:
 			wb.defense_spots[i].build(String(defs[i]))
 	# silenciar los sonidos/particulas de reconstruir al cargar
 	GameState.thot(Textos.t("partida_cargada", {"n": GameState.current_day}))
+
+
+## Objetivos del momento para el HUD: [[texto, cumplido], ...]. Siempre dice
+## que hacer y donde (pedido de Deivid: "no sabia que hacer").
+func objectives() -> Array:
+	if player == null:
+		return []
+	var day := GameState.current_day
+	var out: Array = []
+	var wb: WorldBuilder = player.world_builder
+	if GameTime.is_night() or GameTime.phase == GameTime.Phase.DUSK:
+		if day == 2:
+			out.append([Textos.t("obj_noche2"), false])
+		if day >= 3 and night_director and night_director.boss != null and is_instance_valid(night_director.boss):
+			out.append([Textos.t("obj_jefe"), GameState.boss_defeated])
+		out.append([Textos.t("obj_sobrevivir"), false])
+		out.append([Textos.t("obj_proteger"), false])
+		if day == 1:
+			out.append([Textos.t("obj_controles"), false])
+		return out
+	match day:
+		1:
+			var sown := 0
+			for p in wb.farm_plots:
+				if p.state == FarmPlot.State.PLANTED and (p.watered_today or p.growth_day > 0):
+					sown += 1
+			out.append([Textos.t("obj_sembrar", {"n": mini(sown, 3)}), sown >= 3])
+			var met := int(GameState.meret_intro_shown) + int(GameState.ptahmose_intro_shown) + int(GameState.iry_intro_shown)
+			out.append([Textos.t("obj_aldeanos", {"n": met}), met >= 3])
+			out.append([Textos.t("obj_prepararse"), false])
+		2:
+			var ready := 0
+			for p in wb.farm_plots:
+				if p.is_ready():
+					ready += 1
+			out.append([Textos.t("obj_cosechar"), ready == 0])
+			out.append([Textos.t("obj_vender"), GameState.tutorial.get("vendio", false)])
+			var built := false
+			for sp in wb.defense_spots:
+				if sp.built != "":
+					built = true
+			out.append([Textos.t("obj_defensa"), built])
+		_:
+			if not GameState.owned_amulets.has("escarabajo"):
+				out.append([Textos.t("obj_meret_escarabajo"), false])
+			if not GameState.meret_mission_done:
+				out.append([Textos.t("obj_lino", {"n": mini(GameState.item_count("lino"), 3)}), false])
+			out.append([Textos.t("obj_gran_noche"), false])
+	return out
 
 
 func _on_village_damaged(total: int) -> void:

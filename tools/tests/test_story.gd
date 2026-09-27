@@ -26,9 +26,11 @@ func _ready() -> void:
 	var intro: Node = load("res://scenes/story/Intro.tscn").instantiate()
 	add_child(intro)
 	t = 0.0
-	while not intro._leaving and t < 60.0:
+	while not intro._leaving and t < 90.0:
 		if intro._dlg.visible:
 			intro._dlg._advance()
+		else:
+			intro._advance = true
 		await get_tree().create_timer(0.25, true, false, true).timeout
 		t += 0.25
 	if intro._leaving:

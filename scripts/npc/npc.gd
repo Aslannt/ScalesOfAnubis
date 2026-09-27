@@ -25,15 +25,56 @@ func _ready() -> void:
 	sprite.play("south_idle")
 	CharacterFX.add_blob_shadow(self, 0.4)
 	_t = randf() * 10.0
+	# "!" amarillo cuando el aldeano tiene algo nuevo que decir
+	_news = Label3D.new()
+	_news.text = "!"
+	_news.font_size = 96
+	_news.outline_size = 18
+	_news.modulate = Color(1.0, 0.85, 0.25)
+	_news.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_news.pixel_size = 0.01
+	_news.position.y = 2.3
+	add_child(_news)
 	call_deferred("_find_dialogue_box")
 
 
 var _t: float = 0.0
+var _news: Label3D
 
 
 func _process(delta: float) -> void:
 	_t += delta
 	sprite.offset.y = CharacterFX.breathe_offset(_t, 1.9)
+	_news.visible = has_news()
+	if _news.visible:
+		_news.position.y = 2.3 + absf(sin(_t * 3.0)) * 0.25
+
+
+## true si hablar con este aldeano avanza algo (intro, mision, regalo...).
+func has_news() -> bool:
+	match npc_id:
+		"meret":
+			if not GameState.meret_intro_shown:
+				return true
+			if GameState.decisiones.has("noche2") and not GameState.tutorial.get("meret_d2", false):
+				return true
+			if GameState.current_day >= 3 and not GameState.owned_amulets.has("escarabajo"):
+				return true
+			return not GameState.meret_mission_done and GameState.item_count("lino") >= GameState.MERET_CROPS_NEEDED
+		"ptahmose":
+			if not GameState.ptahmose_intro_shown:
+				return true
+			for cid in ["trigo", "papiro"]:
+				if GameState.item_count(cid) > 0:
+					return true
+			return false
+		"iry":
+			if not GameState.iry_intro_shown:
+				return true
+			if GameState.current_day >= 2 and not GameState.tutorial.get("iry_d2", false):
+				return true
+			return GameState.current_day >= 3 and not GameState.tutorial.get("iry_d3", false)
+	return false
 
 
 func _find_dialogue_box() -> void:
@@ -131,6 +172,7 @@ func _on_ptahmose_choice(i: int) -> void:
 		for cid in _vendibles():
 			GameState.remove_item(cid, GameState.item_count(cid))
 		GameState.add_deben(total)
+		GameState.tutorial["vendio"] = true
 		_dialogue.show_lines(Dialogos.lines("ptahmose", "vender_exito"))
 	elif i >= 1 and i <= 3:
 		var id: String = GameState.SEED_IDS[i - 1]

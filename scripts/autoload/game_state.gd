@@ -275,6 +275,8 @@ func item_count(item_id: String) -> int:
 
 func shift_heart(delta: float, motivo: String = "") -> void:
 	heart_weight = clampf(heart_weight + delta, HEART_MIN, HEART_MAX)
+	if absf(delta) > 0.01:
+		thot_once("corazon_explica", Dialogos.thot("corazon_explica"))
 	heart_weight_changed.emit(heart_weight, delta, motivo)
 	if absf(delta) > 0.01:
 		SFX.play("heart_shift")
