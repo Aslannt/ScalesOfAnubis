@@ -353,7 +353,7 @@ func _on_day_started() -> void:
 		growth_day += 1
 		# favor de Maat: a veces crece un dia extra
 		var dias := int(GameState.crops.get(crop_id, {}).get("dias_para_crecer", 1))
-		if growth_day < dias and randf() < GameState.heart_mod("crecida", 0.0):
+		if growth_day < dias and randf() < GameState.heart_mod("crecida", 0.0) + GameState.temple_bonus("crecida"):
 			growth_day += 1
 			if not quiet:
 				CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.8, 0), Color(0.55, 0.9, 1.0))

@@ -30,7 +30,86 @@
     "abandonaste": [
       "Meret: Anoche las sombras entraron a la aldea. ¿Dónde estabas?",
       "Meret: Ah, cuidando tu trigo. Claro."
-    ]
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Meret: Cada mañana barro el patio del templo, aunque nadie venga. Maat no necesita público."
+        ],
+        [
+          "Meret: ¿Sabías que la pluma de Maat es de avestruz? Blanca, ligera, recta. Así debería ser un corazón."
+        ],
+        [
+          "Meret: Cuando era niña contaba las estrellas desde el techo del templo. Siempre me salían cuarenta y dos. Como los jueces del Duat."
+        ],
+        [
+          "Meret: Los campesinos creen que los sacerdotes no comemos. Comemos. Pan, cebolla y mucha paciencia."
+        ],
+        [
+          "Meret: Anoche soñé con el Nilo crecido. Buena señal. O eso quiero creer."
+        ]
+      ],
+      "ya_charlaste": [
+        "Meret: Ya hablamos hoy, Nakht. Ve a tus campos; mañana tendrás más que contarme."
+      ],
+      "regalo_ama": [
+        "Meret: ¡Lino! Con esto se tejen las vendas sagradas. Lo guardaré en el santuario. Gracias, de verdad."
+      ],
+      "regalo_gusta": [
+        "Meret: Papiro... servirá para copiar oraciones. Eres atento."
+      ],
+      "regalo_normal": [
+        "Meret: Gracias. Lo compartiré con quien lo necesite."
+      ],
+      "ya_regalaste": [
+        "Meret: Ya me diste algo hoy. Guarda el resto; tu granja lo necesita más que yo."
+      ],
+      "nada_que_regalar": [
+        "Meret: No tienes cosechas encima. No importa: tu compañía también es una ofrenda."
+      ],
+      "nivel1": [
+        "Meret: Antes éramos siete sacerdotes. Cuando el templo se agrietó, los demás huyeron río abajo.",
+        "Meret: Yo me quedé. Alguien tenía que encender la lámpara cada noche.",
+        "Meret: Toma, semillas de lino. Si algún día quieres ayudarme a reconstruir esto, las vendas del santuario serán lo primero."
+      ],
+      "nivel2": [
+        "Meret: Nakht... hay algo que no te he dicho.",
+        "Meret: Fui yo quien preparó tu cuerpo para el entierro. Te lavé con natrón, empecé a envolverte en lino...",
+        "Meret: Pero esa noche llegaron las sombras. Huí y te dejé a medio envolver, con los ritos sin terminar.",
+        "Meret: Quizás por eso tu corazón quedó sin decidir en la balanza. Por mi culpa.",
+        "Meret: Este amuleto de Maat estaba destinado a tu pecho. Llévalo ahora. Te dará fuerza."
+      ],
+      "nivel3": [
+        "Meret: Durante años dudé de Maat. Pensé que nos había abandonado, que la balanza era un cuento para niños.",
+        "Meret: Y entonces un muerto volvió a arar la tierra, a defender a extraños, a reconstruir un templo que ni siquiera era suyo.",
+        "Meret: Tú me devolviste la fe. Esta pluma es de mi primer día como sacerdotisa. Ahora es tuya."
+      ],
+      "templo_intro": [
+        "Meret: El templo se cae a pedazos. Con cosechas y deben podríamos restaurarlo, parte por parte.",
+        "Meret: Y créeme: Maat recompensa a quien levanta su casa."
+      ],
+      "templo_hecho_columnas": [
+        "Meret: ¡Las columnas vuelven a estar en pie! Siento el templo respirar otra vez.",
+        "Meret: Maat te bendice: tu cuerpo aguantará más golpes."
+      ],
+      "templo_hecho_estatua": [
+        "Meret: La estatua de Maat nos mira de nuevo. Su justicia guía a tus defensas: golpearán más fuerte."
+      ],
+      "templo_hecho_estandartes": [
+        "Meret: Los estandartes ondean sobre el pilono. Hasta el río parece más contento.",
+        "Meret: Tus campos recibirán la crecida de Maat más seguido."
+      ],
+      "templo_hecho_santuario": [
+        "Meret: El santuario brilla. Hace años que no veía esta luz.",
+        "Meret: Nakht... el templo está completo. Maat te mira con buenos ojos. Tu corazón es más liviano."
+      ],
+      "templo_falta": [
+        "Meret: Aún no tienes lo necesario. Mira bien la lista: cosechas y deben."
+      ],
+      "templo_completo": [
+        "Meret: El templo está completo gracias a ti. Ven a rezar cuando quieras; ya no estoy sola."
+      ]
+    }
   },
   "ptahmose": {
     "intro": [
@@ -66,7 +145,60 @@
         "Ptahmose: Los nobles se entierran con shabtis, figuritas que trabajarán la tierra por ellos en el más allá.",
         "Thot: Tú no tienes shabtis, campesino. Tendrás que cosechar el Aaru con tus propias manos."
       ]
-    ]
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Ptahmose: ¡El precio del trigo en Tebas se duplicó! O eso dice mi primo. Mi primo miente mucho."
+        ],
+        [
+          "Ptahmose: Una vez le vendí un burro a un sacerdote de Ptah. El burro era más sabio que él."
+        ],
+        [
+          "Ptahmose: ¿Ves este anillo? Cobre con baño de oro. Pero no se lo digas a nadie."
+        ],
+        [
+          "Ptahmose: Comercio es confianza, amigo. Por eso siempre cuento dos veces lo que me pagan."
+        ],
+        [
+          "Ptahmose: De noche cierro con tres cerrojos. Dos para los ladrones y uno para Ammit."
+        ]
+      ],
+      "ya_charlaste": [
+        "Ptahmose: ¡Ya me sacaste suficiente charla gratis por hoy! Vuelve mañana."
+      ],
+      "regalo_ama": [
+        "Ptahmose: ¡Papiro de primera! En Menfis me lo pagarían en plata. ¿Seguro que me lo regalas? ¡No te arrepientas!"
+      ],
+      "regalo_gusta": [
+        "Ptahmose: Trigo. Honesto y dorado, como yo. Bueno, casi como yo."
+      ],
+      "regalo_normal": [
+        "Ptahmose: Un regalo... ¡qué costumbre tan rara entre comerciantes! Gracias."
+      ],
+      "ya_regalaste": [
+        "Ptahmose: Uno al día, amigo. Si no, voy a pensar que quieres algo."
+      ],
+      "nada_que_regalar": [
+        "Ptahmose: ¿Regalarme qué? ¿Aire? Tráeme cosechas."
+      ],
+      "nivel1": [
+        "Ptahmose: Me caes bien, Nakht. Los vivos regatean; tú al menos trabajas.",
+        "Ptahmose: Desde hoy, precio de amigo en las semillas. No se lo cuentes a Iry, que me deja sin ganancia."
+      ],
+      "nivel2": [
+        "Ptahmose: Voy a contarte algo que no le he dicho a nadie. Ni a mi mujer.",
+        "Ptahmose: De joven... fui ladrón de tumbas. Entraba a las mastabas de noche y me llevaba amuletos, anillos, lo que brillara.",
+        "Ptahmose: Cuando vi a las criaturas de Ammit la primera noche, supe que venían por gente como yo.",
+        "Ptahmose: Toma estas monedas. Las gané honradamente. Casi todas."
+      ],
+      "nivel3": [
+        "Ptahmose: Anoche volví a la necrópolis. Solo.",
+        "Ptahmose: Devolví el último amuleto que robé, uno con forma de escarabajo, a la tumba de donde lo saqué.",
+        "Ptahmose: Juraría que sentí a alguien suspirar de alivio. Quizás era yo.",
+        "Ptahmose: Desde hoy te compro las cosechas a mejor precio. Un comerciante honrado, ¿quién lo diría?"
+      ]
+    }
   },
   "iry": {
     "intro": [
@@ -98,7 +230,58 @@
     "senet_gracias": [
       "Iry: ¡Mi ficha! ¡Gracias, gracias!",
       "Iry: Cuando sea grande te voy a ganar al senet. Ya verás."
-    ]
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Iry: Hoy aprendí a escribir mi nombre en jeroglíficos. Es un pato, una boca y un brazo. Creo."
+        ],
+        [
+          "Iry: ¿Tú has visto un hipopótamo de cerca? Yo sí. Bueno, de lejos. Bueno, lo vi en una pintura."
+        ],
+        [
+          "Iry: Mi mamá dice que no hable con los muertos. Pero tú eres un muerto simpático."
+        ],
+        [
+          "Iry: Si fuera faraón prohibiría las cebollas. Y las siestas."
+        ],
+        [
+          "Iry: El gato del templo me mira raro. Creo que es un espía de Bastet."
+        ]
+      ],
+      "ya_charlaste": [
+        "Iry: ¡Ya jugamos hoy! Mañana te cuento otro secreto. Uno de verdad."
+      ],
+      "regalo_ama": [
+        "Iry: ¡¿Trigo?! ¡Mi mamá va a hacer pan de miel! ¡Eres el mejor muerto del mundo!"
+      ],
+      "regalo_gusta": [
+        "Iry: Uy, gracias. Voy a hacer un barquito con esto."
+      ],
+      "regalo_normal": [
+        "Iry: ¿Para mí? Lo voy a esconder en mi tesoro secreto."
+      ],
+      "ya_regalaste": [
+        "Iry: ¡Ya me diste un regalo hoy! Mi mamá dice que no sea ambicioso."
+      ],
+      "nada_que_regalar": [
+        "Iry: ¿Me ibas a regalar algo? No tienes nada... ¡No importa!"
+      ],
+      "nivel1": [
+        "Iry: Te voy a contar un secreto: quiero ser tu aprendiz. Toma, semillas de trigo. Las guardé para ti."
+      ],
+      "nivel2": [
+        "Iry: Nakht... mi papá fue a la necrópolis una noche a buscar a un perro perdido. Nunca volvió.",
+        "Iry: Todos dicen que Ammit se lo llevó. Yo no lo creo.",
+        "Iry: Desde mañana voy a regar tus cultivos al amanecer, antes de que despiertes. Así tienes más tiempo para pelear."
+      ],
+      "nivel3": [
+        "Iry: Anoche lo vi. Un pájaro con cara de hombre, sentado en el techo. Tenía la sonrisa de mi papá.",
+        "Iry: Era su ba, ¿verdad? Me dijo que estaba bien. Que la balanza lo había encontrado justo.",
+        "Iry: Y me dijo algo para ti: \"El Heraldo teme a quien camina con el corazón liviano\".",
+        "Iry: No llores, Nakht. Los muertos simpáticos no lloran."
+      ]
+    }
   },
   "thot": {
     "inicio": "Soy Thot, tu escriba. Muévete con WASD. Arriba a la derecha tienes tus OBJETIVOS.",
@@ -143,7 +326,10 @@
     "estado_pluma": "Mira tu balanza: estás más liviano que la pluma. Maat te sonríe. Aprovéchalo.",
     "estado_equilibrio": "Vuelves al equilibrio. Ni santo ni monstruo. Lo cual, créeme, es lo más común en mis archivos.",
     "estado_sombra": "Tu corazón se oscurece. Sí, pegas más fuerte. No, eso no es un cumplido.",
-    "estado_hambre": "Nakht... Ammit ya relame sus dientes. Ese poder que sientes es SU hambre. Piensa en el pesaje."
+    "estado_hambre": "Nakht... Ammit ya relame sus dientes. Ese poder que sientes es SU hambre. Piensa en el pesaje.",
+    "iry_riega": "Iry pasó al amanecer y regó {n} de tus cultivos. Ese niño te quiere más que a sus cebollas.",
+    "templo_objetivo": "Meret puede restaurar el templo si le llevas cosechas y deben. Cada parte trae una bendición.",
+    "amistad_explica": "Charla con los aldeanos cada día y hazles regalos. Los amigos cuentan secretos... y ayudan."
   },
   "anubis": {
     "intro": [

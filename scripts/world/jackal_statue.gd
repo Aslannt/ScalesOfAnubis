@@ -80,7 +80,7 @@ func _fire(enemy: Node3D, idx: int = 0) -> void:
 	get_tree().current_scene.add_child(bolt)
 	bolt.global_position = global_position + Vector3(0.5 * (-1.0 if _sprite.flip_h else 1.0), 1.25 + 0.2 * idx, 0)
 	bolt.target = enemy
-	bolt.damage = damage
+	bolt.damage = int(round(damage * (1.0 + GameState.temple_bonus("defensas"))))
 
 
 class Bolt extends Node3D:

@@ -21,6 +21,11 @@ func _ready() -> void:
 	wb.defense_spots[1].build("brasero")
 	GameState.register_decision("robo_altar", "robado")
 	GameState.current_day = 2
+	GameState.temple.append("columnas")
+	GameState.recompute_max_health()
+	GameState.upgrades.append("azada")
+	GameState.amistad["meret"] = 5
+	GameState.amistad_nivel_dado["meret"] = 1
 	farm.get_node("StoryDirector").autosave()
 	var deben := GameState.deben
 	farm.queue_free()
@@ -39,6 +44,9 @@ func _ready() -> void:
 		"deben": GameState.deben == deben,
 		"decision": GameState.decisiones.get("robo_altar", "") == "robado",
 		"dia": GameState.current_day == 2,
+		"templo": GameState.temple == ["columnas"] and GameState.max_health == 115,
+		"mejoras": GameState.has_upgrade("azada"),
+		"amistad": GameState.friend_level("meret") == 1 and int(GameState.amistad_nivel_dado.get("meret", 0)) == 1,
 	}
 	for k in checks:
 		print("  ", "ok: " if checks[k] else "FALLO: ", k)

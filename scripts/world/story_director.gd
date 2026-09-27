@@ -97,13 +97,33 @@ func _on_phase(phase: int) -> void:
 		GameTime.Phase.DAWN:
 			_on_dawn()
 		GameTime.Phase.DAY:
+			_iry_riega.call_deferred()
 			autosave()
 			if day == 2:
 				GameState.thot_once("dia2", Dialogos.thot("dia2"))
 				GameState.thot_once("misterio_d2", Dialogos.thot("misterio_d2"))
+				GameState.thot_once("templo_objetivo", Dialogos.thot("templo_objetivo"))
 			elif day == 3:
 				GameState.thot_once("dia3", Dialogos.thot("dia3"))
 				GameState.thot_once("misterio_d3", Dialogos.thot("misterio_d3"))
+
+
+## Amistad con Iry nivel 2: al amanecer riega algunos cultivos.
+func _iry_riega() -> void:
+	var n := int(GameState.friend_bonus("iry_riega"))
+	if n <= 0 or player == null:
+		return
+	var regadas := 0
+	for p in player.world_builder.farm_plots:
+		if regadas >= n:
+			break
+		if p.state == FarmPlot.State.PLANTED and not p.watered_today and not p.is_ready():
+			FarmPlot.quiet = true
+			p.water()
+			FarmPlot.quiet = false
+			regadas += 1
+	if regadas > 0:
+		GameState.thot(Dialogos.thot("iry_riega").replace("{n}", str(regadas)))
 
 
 ## Autoguardado al empezar cada dia: parcelas y defensas + GameState.

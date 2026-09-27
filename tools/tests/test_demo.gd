@@ -326,8 +326,11 @@ func _npc(id: String):
 func _close_dialogue() -> void:
 	await _frames(2)
 	var guard := 0
-	while dlg.visible and guard < 60:
-		dlg._advance()
+	while (dlg.visible or choice.visible) and guard < 60:
+		if choice.visible:
+			choice._choose(-1)
+		else:
+			dlg._advance()
 		guard += 1
 		await _frames(1)
 	await _frames(2)

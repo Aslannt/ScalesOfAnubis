@@ -1,0 +1,10 @@
+{
+  "_doc": "Mejoras que vende Ptahmose. 'dia' = desde que dia las ofrece. 'efecto' lo leen player.gd (azada/regadera en area, dano extra por arma).",
+  "mejoras": [
+    {"id": "regadera", "precio": 20, "dia": 1, "efecto": {"riego_area": 1}},
+    {"id": "azada", "precio": 18, "dia": 1, "efecto": {"arado_area": 1}},
+    {"id": "khopesh_bronce", "precio": 30, "dia": 2, "efecto": {"arma": "khopesh", "dano": 4}},
+    {"id": "martillo_granito", "precio": 32, "dia": 2, "efecto": {"arma": "martillo", "dano": 8}},
+    {"id": "baston_heka", "precio": 34, "dia": 3, "efecto": {"arma": "baston", "dano": 4}}
+  ]
+}

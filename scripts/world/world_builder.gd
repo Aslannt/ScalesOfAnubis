@@ -74,6 +74,8 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		node.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
 		node.rotation_degrees.y = float(prop.get("rot", 0))
 		props_node.add_child(node)
+		if prop["tipo"] == "temple":
+			node.add_child(TempleRestoration.new())
 
 	_build_horizon(data.get("horizonte", {}))
 

@@ -1,0 +1,9 @@
+{
+  "_doc": "Restauracion del templo de Maat (meta larga). Se hace hablando con Meret. 'coste' = cosechas, 'deben' = monedas. 'bendicion' = efecto permanente (lo aplica GameState.temple_bonus).",
+  "piezas": [
+    {"id": "columnas", "coste": {"trigo": 3}, "deben": 15, "bendicion": {"vida_max": 15}},
+    {"id": "estatua", "coste": {"papiro": 2, "trigo": 2}, "deben": 25, "bendicion": {"defensas": 0.25}},
+    {"id": "estandartes", "coste": {"lino": 3}, "deben": 30, "bendicion": {"crecida": 0.15}},
+    {"id": "santuario", "coste": {"trigo": 4, "papiro": 3, "lino": 3}, "deben": 50, "bendicion": {"corazon": -8, "vida_max": 10}}
+  ]
+}

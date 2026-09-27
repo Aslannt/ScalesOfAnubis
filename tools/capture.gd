@@ -35,6 +35,9 @@ const SCENARIOS := [
 	{"name": "32_aldea_gato", "tile": Vector2(25, 11.5), "phase": 2, "wide": false},
 	{"name": "33_corazon_hambre", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "hambre", "bark": true},
 	{"name": "34_corazon_pluma", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "pluma", "bark": true},
+	{"name": "35_templo_ruinas", "tile": Vector2(24, 9.5), "phase": 1, "wide": true},
+	{"name": "36_templo_restaurado", "tile": Vector2(24, 9.5), "phase": 1, "wide": true, "setup": "templo"},
+	{"name": "37_menu_amistad", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "amistad"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -162,6 +165,20 @@ func _setup(kind: String) -> void:
 			for k in range(3):
 				nd.spawn("sombra", "", "", world_builder.defense_spots[0].global_position + Vector3(2.5 + k, 0, k - 1.0))
 			await get_tree().create_timer(1.6).timeout
+		"templo":
+			for id in ["columnas", "estatua", "estandartes", "santuario"]:
+				GameState.temple.append(id)
+				GameState.temple_changed.emit(id)
+			await get_tree().create_timer(2.0).timeout
+		"amistad":
+			GameState.meret_intro_shown = true
+			GameState.meret_mission_done = true
+			GameState.amistad["meret"] = 4
+			GameState.add_item("lino", 2)
+			for n in world_builder.npcs:
+				if n.npc_id == "meret":
+					n.interact()
+			await get_tree().create_timer(0.6).timeout
 		"hambre":
 			GameState.shift_heart(40.0, "robo_altar")
 			await get_tree().create_timer(1.0).timeout

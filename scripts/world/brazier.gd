@@ -109,5 +109,5 @@ func _process(delta: float) -> void:
 		if dv.length() <= radius:
 			if slows and e.has_method("slow"):
 				e.slow(1.0)
-			e.take_hit(damage, dv.normalized() * 1.5)
+			e.take_hit(int(round(damage * (1.0 + GameState.temple_bonus("defensas")))), dv.normalized() * 1.5)
 			CombatFX.spawn_hit_particles(get_tree().current_scene, e.global_position + Vector3(0, 0.5, 0), Color(0.55, 0.8, 1.0) if slows else Color(1.0, 0.55, 0.2))

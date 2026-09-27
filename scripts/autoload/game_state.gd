@@ -15,6 +15,10 @@ signal crop_attacked(plot: Node)
 ## El corazon cruzo a otro estado (data/heart_states.json): pluma,
 ## equilibrio, sombra o hambre. Cambia como se juega, no solo el final.
 signal heart_state_changed(nuevo: String, anterior: String)
+## Metas largas (fase 2): templo de Maat, mejoras y amistad.
+signal temple_changed(pieza: String)
+signal upgrades_changed()
+signal friendship_changed(npc: String, nivel: int, subio: bool)
 
 const HEART_START := 50.0
 const HEART_MIN := 0.0
@@ -86,6 +90,12 @@ func player_input_locked() -> bool:
 ## cambio de escena: sin esto, "Salir al menu" + "Nueva partida" arrastraba
 ## el deben, el inventario y el peso del corazon de la partida anterior).
 func reset() -> void:
+	temple = []
+	upgrades = []
+	amistad = {}
+	amistad_charla = {}
+	amistad_regalo = {}
+	amistad_nivel_dado = {}
 	deben = 15
 	heart_weight = HEART_START
 	current_day = 1
@@ -114,6 +124,8 @@ func reset() -> void:
 	demo_finished = false
 	heart_log = []
 	heart_state_id = "equilibrio"
+	recompute_max_health()
+	health = max_health
 	_input_lock_until_ms = 0
 	pending_world = {}
 	Codex.reset()
@@ -146,6 +158,9 @@ func save_game(world: Dictionary) -> void:
 		"meret_mission_done": meret_mission_done, "ptahmose_intro_shown": ptahmose_intro_shown,
 		"iry_intro_shown": iry_intro_shown, "selected_seed": selected_seed, "tutorial": tutorial,
 		"total_enemies_defeated": total_enemies_defeated, "health": health,
+		"temple": temple, "upgrades": upgrades, "amistad": amistad,
+		"amistad_charla": amistad_charla, "amistad_regalo": amistad_regalo,
+		"amistad_nivel_dado": amistad_nivel_dado,
 		"codex": Codex.entries.filter(func(e): return e["desbloqueada"]).map(func(e): return e["id"]),
 		"world": world,
 	}
@@ -178,6 +193,13 @@ func load_game() -> bool:
 	selected_seed = d.get("selected_seed", "trigo")
 	tutorial = d.get("tutorial", {})
 	total_enemies_defeated = int(d.get("total_enemies_defeated", 0))
+	temple = d.get("temple", [])
+	upgrades = d.get("upgrades", [])
+	amistad = d.get("amistad", {})
+	amistad_charla = d.get("amistad_charla", {})
+	amistad_regalo = d.get("amistad_regalo", {})
+	amistad_nivel_dado = d.get("amistad_nivel_dado", {})
+	recompute_max_health()
 	health = int(d.get("health", max_health))
 	heart_at_night_start = heart_weight
 	_refresh_heart_state(true)
@@ -270,6 +292,9 @@ func _ready() -> void:
 	inventory = {"semilla_trigo": 8, "semilla_lino": 3, "semilla_papiro": 2}
 	_cargar_crops()
 	_cargar_heart_states()
+	temple_data = _load_json("res://data/temple.json")
+	upgrades_data = _load_json("res://data/upgrades.json")
+	friendship_data = _load_json("res://data/friendship.json")
 	GameTime.night_started.connect(func():
 		crops_lost_tonight = 0
 		enemies_defeated_tonight = 0
@@ -323,6 +348,172 @@ func remove_item(item_id: String, cantidad: int = 1) -> bool:
 
 func item_count(item_id: String) -> int:
 	return inventory.get(item_id, 0)
+
+
+# ------------------------------------------------ metas largas (fase 2)
+var temple: Array = []        # piezas restauradas del templo de Maat
+var upgrades: Array = []      # mejoras compradas a Ptahmose
+var amistad: Dictionary = {}  # npc -> puntos
+var amistad_charla: Dictionary = {}  # npc -> ultimo dia en que charlaste
+var amistad_regalo: Dictionary = {}  # npc -> ultimo dia en que regalaste
+var amistad_nivel_dado: Dictionary = {}  # npc -> nivel cuya recompensa ya se dio
+var temple_data: Dictionary = {}
+var upgrades_data: Dictionary = {}
+var friendship_data: Dictionary = {}
+
+
+func _load_json(path: String) -> Dictionary:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+	var d = JSON.parse_string(f.get_as_text())
+	return d if d is Dictionary else {}
+
+
+## Suma de una bendicion de todas las piezas restauradas del templo.
+func temple_bonus(key: String) -> float:
+	var total := 0.0
+	for p in temple_data.get("piezas", []):
+		if temple.has(p["id"]):
+			total += float(p.get("bendicion", {}).get(key, 0.0))
+	return total
+
+
+func temple_piece(id: String) -> Dictionary:
+	for p in temple_data.get("piezas", []):
+		if p["id"] == id:
+			return p
+	return {}
+
+
+## Siguiente pieza a restaurar (en orden), o {} si el templo esta completo.
+func temple_next() -> Dictionary:
+	for p in temple_data.get("piezas", []):
+		if not temple.has(p["id"]):
+			return p
+	return {}
+
+
+func can_restore(p: Dictionary) -> bool:
+	if p.is_empty() or deben < int(p.get("deben", 0)):
+		return false
+	for item in p.get("coste", {}):
+		if item_count(item) < int(p["coste"][item]):
+			return false
+	return true
+
+
+func restore_temple_piece(p: Dictionary) -> bool:
+	if not can_restore(p):
+		return false
+	add_deben(-int(p.get("deben", 0)))
+	for item in p.get("coste", {}):
+		remove_item(item, int(p["coste"][item]))
+	temple.append(p["id"])
+	var b: Dictionary = p.get("bendicion", {})
+	if b.has("corazon"):
+		shift_heart(float(b["corazon"]), "templo")
+	recompute_max_health()
+	full_heal()
+	temple_changed.emit(p["id"])
+	return true
+
+
+func has_upgrade(id: String) -> bool:
+	return upgrades.has(id)
+
+
+func upgrade_effect(key: String, arma: String = "") -> float:
+	var total := 0.0
+	for u in upgrades_data.get("mejoras", []):
+		if not upgrades.has(u["id"]):
+			continue
+		var e: Dictionary = u.get("efecto", {})
+		if arma != "" and String(e.get("arma", "")) != arma:
+			continue
+		total += float(e.get(key, 0.0))
+	return total
+
+
+func buy_upgrade(id: String) -> bool:
+	for u in upgrades_data.get("mejoras", []):
+		if u["id"] == id and not upgrades.has(id) and can_afford(int(u["precio"])):
+			add_deben(-int(u["precio"]))
+			upgrades.append(id)
+			upgrades_changed.emit()
+			return true
+	return false
+
+
+func friend_points(npc: String) -> int:
+	return int(amistad.get(npc, 0))
+
+
+func friend_level(npc: String) -> int:
+	var lv := 0
+	for t in friendship_data.get("niveles", [3, 7, 12]):
+		if friend_points(npc) >= int(t):
+			lv += 1
+	return lv
+
+
+## Suma puntos; devuelve true si subio de nivel.
+func add_friendship(npc: String, pts: int) -> bool:
+	var before := friend_level(npc)
+	amistad[npc] = friend_points(npc) + pts
+	var after := friend_level(npc)
+	friendship_changed.emit(npc, after, after > before)
+	return after > before
+
+
+## Gusto por un item: "ama", "gusta" o "normal".
+func friend_taste(npc: String, item: String) -> String:
+	var n: Dictionary = friendship_data.get("npcs", {}).get(npc, {})
+	if (n.get("ama", []) as Array).has(item):
+		return "ama"
+	if (n.get("gusta", []) as Array).has(item):
+		return "gusta"
+	return "normal"
+
+
+## Recompensa del nivel 'lv' (1..3) de un aldeano: se aplica una sola vez.
+func apply_friend_reward(npc: String, lv: int) -> void:
+	if int(amistad_nivel_dado.get(npc, 0)) >= lv:
+		return
+	amistad_nivel_dado[npc] = lv
+	var rew: Array = friendship_data.get("npcs", {}).get(npc, {}).get("recompensas", [])
+	if lv < 1 or lv > rew.size():
+		return
+	var r: Dictionary = rew[lv - 1]
+	for k in r:
+		match k:
+			"vida_max":
+				recompute_max_health()
+				full_heal()
+			"corazon":
+				shift_heart(float(r[k]), "amistad")
+			"deben":
+				add_deben(int(r[k]))
+			"descuento", "precio_venta", "iry_riega":
+				pass  # se leen con friend_bonus()
+			_:
+				add_item(k, int(r[k]))
+
+
+## Suma de un efecto de las recompensas de amistad ya ganadas.
+func friend_bonus(key: String) -> float:
+	var total := 0.0
+	for npc in friendship_data.get("npcs", {}):
+		var rew: Array = friendship_data["npcs"][npc].get("recompensas", [])
+		for i in range(mini(int(amistad_nivel_dado.get(npc, 0)), rew.size())):
+			total += float(rew[i].get(key, 0.0))
+	return total
+
+
+func recompute_max_health() -> void:
+	max_health = 100 + int(temple_bonus("vida_max")) + int(friend_bonus("vida_max"))
+	health = mini(health, max_health)
+	health_changed.emit(health, max_health)
 
 
 # ------------------------------------------------ estados del corazon

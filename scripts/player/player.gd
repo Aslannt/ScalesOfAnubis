@@ -248,7 +248,7 @@ func _start_attack() -> void:
 	var stats: Dictionary = WEAPON_STATS[weapon]
 	var hit := _combo_index % int(stats["golpes"])
 	# la sombra de Ammit da fuerza (estados del corazon)
-	var dano: int = int(round(stats["dano"][hit] * GameState.heart_mod("dano", 1.0)))
+	var dano: int = int(round((stats["dano"][hit] + GameState.upgrade_effect("dano", weapon)) * GameState.heart_mod("dano", 1.0)))
 	var empuje: float = stats["empuje"][hit]
 	var is_finisher := weapon == "khopesh" and hit == 2
 	if weapon == "baston":
@@ -460,6 +460,12 @@ func _try_interact() -> void:
 	match plot.state:
 		FarmPlot.State.UNTILLED:
 			plot.till()
+			if GameState.upgrade_effect("arado_area") > 0.0:
+				for p in _neighbor_plots(plot):
+					if p.state == FarmPlot.State.UNTILLED:
+						FarmPlot.quiet = true
+						p.till()
+						FarmPlot.quiet = false
 			GameState.thot_once("t_sembrar", Dialogos.thot("sembrar"))
 		FarmPlot.State.TILLED:
 			var sid := _seed_for(plot)
@@ -474,7 +480,20 @@ func _try_interact() -> void:
 				plot.harvest()
 			elif not plot.watered_today:
 				plot.water()
+				if GameState.upgrade_effect("riego_area") > 0.0:
+					for p in _neighbor_plots(plot):
+						if p.state == FarmPlot.State.PLANTED and not p.watered_today and not p.is_ready():
+							p.water()
 				GameState.thot_once("t_regado", Dialogos.thot("regado"))
+
+
+## Parcelas pegadas a 'plot' (vasija doble y azada de bronce).
+func _neighbor_plots(plot: FarmPlot) -> Array:
+	var out: Array = []
+	for p in world_builder.farm_plots:
+		if p != plot and p.global_position.distance_to(plot.global_position) < plot.tile_size * 1.5:
+			out.append(p)
+	return out
 
 
 func _target_plot() -> FarmPlot:

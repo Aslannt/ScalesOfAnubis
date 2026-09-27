@@ -1,0 +1,14 @@
+{
+  "_doc": "Amistad con los aldeanos. Charlar suma 1 (una vez al dia), regalar suma segun gusto (un regalo al dia). 'niveles' = puntos para cada nivel. Las recompensas las aplica GameState.apply_friend_reward; los textos estan en dialogues.json -> <npc> -> amistad.",
+  "niveles": [3, 7, 12],
+  "charla": 1,
+  "regalo": {"ama": 3, "gusta": 2, "normal": 1},
+  "npcs": {
+    "meret": {"ama": ["lino"], "gusta": ["papiro"],
+      "recompensas": [{"semilla_lino": 3}, {"vida_max": 10}, {"corazon": -5}]},
+    "ptahmose": {"ama": ["papiro"], "gusta": ["trigo"],
+      "recompensas": [{"descuento": 0.2}, {"deben": 30}, {"precio_venta": 0.15}]},
+    "iry": {"ama": ["trigo"], "gusta": ["papiro", "lino"],
+      "recompensas": [{"semilla_trigo": 4}, {"iry_riega": 3}, {"corazon": -4}]}
+  }
+}
