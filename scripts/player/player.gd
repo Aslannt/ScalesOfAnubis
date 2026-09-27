@@ -36,6 +36,9 @@ const ANJ_INTERVAL := 6.0
 const ANJ_HEAL := 12
 
 var world_builder: WorldBuilder = null
+## true si lo ultimo que se toco fue un mando: se apunta con el stick
+## derecho (o hacia donde caminas) en vez de con el mouse.
+var using_pad := false
 var _anim_t: float = 0.0
 var _step_t: float = 0.0
 
@@ -114,12 +117,35 @@ func _physics_process(delta: float) -> void:
 	for i in range(3):
 		if Input.is_action_just_pressed("tool_%d" % (i + 1)):
 			_select_slot(i)
+	if Input.is_action_just_pressed("tool_next"):
+		_select_slot((_current_slot() + 1) % 3)
+	if Input.is_action_just_pressed("tool_prev"):
+		_select_slot((_current_slot() + 2) % 3)
 
 	if Input.is_action_just_pressed("amulet"):
 		_cycle_amulet()
 
 	_update_amulet_passive(delta)
 	_update_animation()
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton or (event is InputEventJoypadMotion and absf(event.axis_value) > 0.3):
+		using_pad = true
+	elif event is InputEventMouseMotion or event is InputEventKey or event is InputEventMouseButton:
+		using_pad = false
+
+
+func _current_slot() -> int:
+	if GameTime.is_night():
+		return maxi(0, ["khopesh", "martillo", "baston"].find(GameState.equipped_weapon))
+	return maxi(0, GameState.SEED_IDS.find(GameState.selected_seed))
+
+
+## Direccion del stick derecho del mando (o Vector2.ZERO).
+func _pad_aim() -> Vector2:
+	var v := Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X), Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
+	return v if v.length() > 0.35 else Vector2.ZERO
 
 
 func _select_slot(i: int) -> void:
@@ -216,6 +242,13 @@ func _fire_staff(dano: int) -> void:
 func _aim_dir_to_mouse() -> Vector3:
 	var cam := get_viewport().get_camera_3d()
 	var fv := _facing_vector()
+	if using_pad:
+		var a := _pad_aim()
+		if a != Vector2.ZERO:
+			return Vector3(a.x, 0, a.y).normalized()
+		if _move_dir.length() > 0.1:
+			return Vector3(_move_dir.x, 0, _move_dir.y).normalized()
+		return fv
 	if cam == null:
 		return fv
 	var mp := get_viewport().get_mouse_position()
@@ -312,6 +345,11 @@ func _hammer_impact(fv: Vector3) -> void:
 ## Ataque hacia la direccion del mouse (GDD 6.3 / 10), no hacia donde
 ## caminas: proyecta el rayo de camara sobre el plano del suelo (y=0).
 func _aim_at_mouse() -> void:
+	if using_pad:
+		var a := _pad_aim()
+		if a != Vector2.ZERO:
+			_update_facing(a)
+		return
 	var cam := get_viewport().get_camera_3d()
 	if cam == null:
 		return

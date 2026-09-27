@@ -412,6 +412,8 @@ func _refresh_hint() -> void:
 	var txt := ""
 	if player and player.has_method("get_interact_hint"):
 		txt = player.get_interact_hint()
+		if player.using_pad:
+			txt = txt.replace("[E]", "[A]")
 	if txt == "":
 		_hint_panel.visible = false
 		return

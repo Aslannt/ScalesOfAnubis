@@ -305,3 +305,19 @@ recomendados, con la base técnica ya lista para construirlos encima.
   música, −12 los efectos, −15 los ambientes), continuidad en el punto de
   loop y espectrogramas. Si algo suena raro en tu PC, los parámetros están
   al principio de cada función en `tools/gen_music.py`.
+
+## Después de los hitos (orden de CLAUDE.md)
+- **Combate**: además de lo anterior, bastón (tecla 3 de noche): proyectil
+  de energía hacia el mouse que atraviesa hasta 2 criaturas. El sprite de
+  ataque muestra el khopesh para las tres armas (dibujar cada arma en cada
+  frame no valía la pena frente al arco/proyectil que ya las distingue).
+- **Claridad visual**: códice como rollo de papiro; caja de diálogo con
+  marco; comentarios de Thot bajo la balanza.
+- **Belleza del mapa**: casas de adobe egipcias; necrópolis con mastabas,
+  estelas, pirámide escalonada, estatuas de Anubis y camino.
+- **Muro de adobe**: tercera opción de los pedestales (10 deben), se orienta
+  solo perpendicular al lado del campo por donde llegan las criaturas.
+- **Mando**: stick izquierdo/cruceta mueven, stick derecho apunta, A
+  interactúa, X ataca (o gatillo derecho), B esquiva (o gatillo izquierdo),
+  Y amuleto, LB/RB cambian arma o semilla (también la rueda del mouse),
+  Back abre el códice, Start pausa. La pista del HUD dice "[A]" si usas mando.
