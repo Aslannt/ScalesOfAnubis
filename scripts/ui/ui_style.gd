@@ -68,3 +68,65 @@ static func make_icon(parent: Node, tex_path: String, pos: Vector2, size: Vector
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(t)
 	return t
+
+
+static var _theme: Theme = null
+
+
+## Tema comun para botones, sliders y checkboxes de menus y pausa.
+static func theme() -> Theme:
+	if _theme != null:
+		return _theme
+	var t := Theme.new()
+	var normal := panel_style(Color(0.1, 0.07, 0.06, 0.9), GOLD_DARK)
+	normal.content_margin_left = 8
+	normal.content_margin_right = 8
+	normal.content_margin_top = 3
+	normal.content_margin_bottom = 3
+	var hover := normal.duplicate()
+	hover.bg_color = Color(0.24, 0.16, 0.08, 0.95)
+	hover.border_color = GOLD
+	var pressed := normal.duplicate()
+	pressed.bg_color = GOLD_DARK
+	pressed.border_color = Color(1, 0.9, 0.5)
+	t.set_stylebox("normal", "Button", normal)
+	t.set_stylebox("hover", "Button", hover)
+	t.set_stylebox("focus", "Button", hover)
+	t.set_stylebox("pressed", "Button", pressed)
+	t.set_stylebox("hover_pressed", "Button", pressed)
+	t.set_color("font_color", "Button", TEXT_DIM)
+	t.set_color("font_hover_color", "Button", Color(1, 0.88, 0.5))
+	t.set_color("font_focus_color", "Button", Color(1, 0.88, 0.5))
+	t.set_color("font_pressed_color", "Button", Color(1, 1, 1))
+	t.set_font_size("font_size", "Button", BIG)
+	t.set_font_size("font_size", "Label", SMALL)
+	t.set_font_size("font_size", "CheckBox", SMALL)
+	t.set_color("font_color", "Label", TEXT)
+	var pc := panel_style(Color(0.08, 0.06, 0.05, 0.94), GOLD)
+	pc.content_margin_left = 10
+	pc.content_margin_right = 10
+	pc.content_margin_top = 8
+	pc.content_margin_bottom = 8
+	t.set_stylebox("panel", "PanelContainer", pc)
+	t.set_stylebox("panel", "Panel", panel_style(Color(0.08, 0.06, 0.05, 0.94), GOLD))
+	var slider_bg := StyleBoxFlat.new()
+	slider_bg.bg_color = Color(0.2, 0.15, 0.1)
+	slider_bg.content_margin_top = 2
+	slider_bg.content_margin_bottom = 2
+	var slider_fill := StyleBoxFlat.new()
+	slider_fill.bg_color = GOLD
+	slider_fill.content_margin_top = 2
+	slider_fill.content_margin_bottom = 2
+	t.set_stylebox("slider", "HSlider", slider_bg)
+	t.set_stylebox("grabber_area", "HSlider", slider_fill)
+	t.set_stylebox("grabber_area_highlight", "HSlider", slider_fill)
+	var grab := Image.create(6, 10, false, Image.FORMAT_RGBA8)
+	grab.fill(Color(1, 0.9, 0.55))
+	for y in range(10):
+		grab.set_pixel(0, y, Color(0.3, 0.2, 0.05))
+		grab.set_pixel(5, y, Color(0.3, 0.2, 0.05))
+	var gt := ImageTexture.create_from_image(grab)
+	t.set_icon("grabber", "HSlider", gt)
+	t.set_icon("grabber_highlight", "HSlider", gt)
+	_theme = t
+	return t

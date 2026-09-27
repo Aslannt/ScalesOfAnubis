@@ -12,20 +12,28 @@ func _ready() -> void:
 	layer = 20
 	visible = false
 
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.02, 0.06, 0.6)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(dim)
+
 	_panel = Panel.new()
-	_panel.set_anchors_preset(Control.PRESET_CENTER)
-	_panel.position = Vector2(-70, -60)
-	_panel.size = Vector2(140, 120)
+	_panel.theme = UIStyle.theme()
+	_panel.position = Vector2(240 - 90, 135 - 62)
+	_panel.size = Vector2(180, 124)
 	add_child(_panel)
 
 	var box := VBoxContainer.new()
 	box.position = Vector2(10, 8)
-	box.size = Vector2(120, 104)
+	box.size = Vector2(160, 108)
+	box.add_theme_constant_override("separation", 4)
 	_panel.add_child(box)
 
 	var titulo := Label.new()
-	titulo.text = Textos.t("pausa_titulo")
+	titulo.text = Textos.t("pausa_titulo").to_upper()
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	titulo.add_theme_font_size_override("font_size", 16)
+	titulo.add_theme_color_override("font_color", Color(0.98, 0.78, 0.28))
 	box.add_child(titulo)
 
 	var btn_continuar := Button.new()
@@ -44,9 +52,9 @@ func _ready() -> void:
 
 	_opciones = PanelContainer.new()
 	_opciones.set_script(OPTIONS_SCRIPT)
-	_opciones.set_anchors_preset(Control.PRESET_CENTER)
-	_opciones.position = Vector2(-110, -70)
-	_opciones.size = Vector2(220, 140)
+	_opciones.theme = UIStyle.theme()
+	_opciones.position = Vector2(240 - 115, 135 - 60)
+	_opciones.size = Vector2(230, 120)
 	_opciones.visible = false
 	add_child(_opciones)
 	btn_opciones.pressed.connect(func(): _opciones.visible = not _opciones.visible)
@@ -59,11 +67,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func toggle() -> void:
+	# no abrir la pausa encima de un dialogo o del codice (ambos ya pausan)
+	if not visible and get_tree().paused:
+		return
 	SFX.play("ui_select")
 	visible = not visible
 	get_tree().paused = visible
 	if not visible:
 		_opciones.visible = false
+		GameState.lock_player_input(0.2)
 
 
 func _salir_al_menu() -> void:
