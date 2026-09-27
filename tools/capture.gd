@@ -273,6 +273,8 @@ func _cleanup() -> void:
 		farm.get_node("SeasonDirector")._apply_season(false)
 	GameState.heart_weight = 50.0
 	GameState._refresh_heart_state()
+	GameState.heart_weight_changed.emit(50.0, 0.0, "")
+	GameState.current_day = 1
 	var bn = get_tree().get_first_node_in_group("combat_banner")
 	if bn:
 		bn.hide_now()

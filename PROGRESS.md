@@ -1,20 +1,58 @@
 # PROGRESS — Scales of Anubis (demo)
 
-_Última actualización: sesión en la nube (Linux), 2026-09-27 (ronda 3)._
+_Última actualización: sesión en la nube (Linux), 2026-09-27 (ronda 4, por fases)._
 
 ## Léeme primero
 La demo está **completa de principio a fin**: intro en el Duat → 3 días y 3
 noches → Heraldo de Ammit → pesaje final → recuerdo del ba → pantalla de
-gracias. Todo lo que pedían `CLAUDE_NUBE.md` y `PROMPT_PULIDO.md` está hecho,
-y también la lista extra de `CLAUDE.md` (combate, claridad, mapa,
-cayado/bastón, muro de adobe, mando y guardado).
+gracias. Después del final se puede **seguir jugando en modo libre** con
+las estaciones del Nilo. Todo lo que pedían `CLAUDE_NUBE.md` y
+`PROMPT_PULIDO.md` está hecho, y también la lista extra de `CLAUDE.md`.
+El juego está completo en **español e inglés**.
 
-**Mira primero la carpeta [`capturas_finales/`](capturas_finales/)** (31
+**Mira primero la carpeta [`capturas_finales/`](capturas_finales/)** (44
 capturas a 1920×1080, se ven bien desde el celular en GitHub).
 
 Cada decisión que tomé sin poder preguntarte está en `DECISIONES.md`.
 
-## Ronda 3 (lo último que reportaste)
+## Ronda 4: todo lo que le faltaba, por fases
+Me pediste hacer todo lo que te dije que le faltaba al juego, dividido en
+fases. Cada fase terminó con pruebas y commit. Detalle y decisiones en
+`DECISIONES.md` → "Cuarta ronda".
+1. **La balanza cambia cómo juegas.** Con el corazón liviano (*Favor de
+   Maat*) te curas de noche, Ptahmose paga más y tus cultivos a veces crecen
+   un día extra. Con el corazón pesado (*Sombra* y *Hambre de Ammit*) pegas
+   mucho más fuerte y matar te cura, pero vienen más criaturas... y el
+   pesaje final se acerca. El borde de la pantalla se tiñe según el estado.
+2. **Metas largas.** Restaura el **templo de Maat** en 4 partes hablando con
+   Meret (cada parte se ve en el mundo y da una bendición para siempre).
+   **Mejoras de herramientas** en la tienda de Ptahmose (vasija doble y
+   azada de bronce que trabajan en área, armas mejoradas). **Amistad**: una
+   charla y un regalo por día; cada aldeano tiene 3 niveles con escenas que
+   cuentan su secreto y una recompensa (Iry termina regando tus cultivos).
+3. **Estaciones del Nilo y modo libre.** Al terminar la demo, [E] en la
+   pantalla de gracias (o *Continuar* en el menú) sigue desde el día 4:
+   Shemu (cosecha), Akhet (la crecida cubre la orilla, riega todo y las
+   crías salen del río) y Peret (siembra). El Heraldo vuelve al final de
+   cada estación, más fuerte.
+4. **Personajes.** Retratos nuevos con expresiones (feliz, triste,
+   sorpresa, enojo). Thot con personalidad: comentarios sarcásticos pocos y
+   espaciados, y cada amanecer un recuerdo suyo con mitos reales que, poco
+   a poco, explican por qué tu balanza dudó.
+5. **Combate con más peso.** Martillo y cayado tienen su propia animación,
+   sonidos por arma, enemigos que se aplastan y se deshacen en humo,
+   vibración del mando y borde rojo que late con la vida baja.
+6. **Música.** El groove que te gustó sigue igual; se suma una capa por
+   estación (arpa, riq y palmas, agua) y jingles para el amanecer y los
+   logros.
+7. **Opciones e inglés.** Las opciones se guardan (volúmenes, pantalla
+   completa, vibración, sacudida, destellos, texto rápido) y todo el juego
+   está en inglés (Opciones → Idioma).
+8. **Pruebas y playtest.** El juego guarda un registro de cada partida para
+   ver dónde se trabó quien juega; `PLAYTEST.md` explica cómo probarlo con
+   amigos y `bash tools/correr_pruebas.sh` corre las 8 pruebas.
+
+## Ronda 3
 Detalle en `DECISIONES.md` → "Tercera ronda":
 - **Congelado en la noche 2**: redes de seguridad contra pausas huérfanas y
   un desatascador si te quedas pegado; prueba automática nueva.
@@ -71,7 +109,8 @@ todo desde el principio (el guardado viejo también carga).
 3. **Nueva partida** empieza con la intro (Esc la salta). **Continuar**
    aparece si hay una partida guardada.
 
-Duración aproximada: 16–20 minutos (día de 3 min, noche de 1 min 40 s).
+Duración aproximada de la demo: 16–20 minutos (día de 3 min, noche de
+1 min 40 s). El modo libre no tiene fin.
 
 ## Controles
 | Acción | Teclado y mouse | Mando |
@@ -121,6 +160,17 @@ Semillas de día: **1 trigo** (1 día), **2 lino** (2 días), **3 papiro**
   estadísticas y decisiones).
 - **Derrota**: Anubis te devuelve a la granja (pierdes deben y amanece); si
   caes ante el jefe, reintentas la pelea.
+- **Siempre disponible**: charlar y regalar a los aldeanos (E sobre ellos
+  cuando no tienen "!"), restaurar el templo con Meret, mejoras con
+  Ptahmose, ofrendas en el altar.
+
+## Modo libre (después del final)
+- Ciclo de estaciones de 3 días: **Shemu** (días 4–6), **Akhet** (7–9),
+  **Peret** (10–12) y vuelve a empezar.
+- La última noche de cada estación vuelve el **Heraldo**, con más vida
+  cada vez. Las noches traen más criaturas cada día.
+- Metas: completar el templo (4 partes) y la amistad con los tres aldeanos.
+- Se guarda al empezar cada día, igual que la demo.
 
 ## Qué se hizo en esta sesión (resumen; detalle en `DECISIONES.md`)
 **Bugs que encontraste jugando**
@@ -168,7 +218,13 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
   - `tools/tests/test_save.tscn` — guardar y continuar.
   - `tools/tests/test_robustez.tscn` — pausas huérfanas, desatascar al
     jugador, criaturas que rodean el templo.
-  - `tools/tests/test_audio.tscn` — la música suena y hace loop.
+  - `tools/tests/test_audio.tscn` — la música suena, hace loop y las capas
+    de las estaciones están sincronizadas.
+  - `tools/tests/test_sistemas.tscn` — estados del corazón, templo, mejoras,
+    amistad, estaciones, inundación e idioma inglés.
+  - `tools/tests/test_libre.tscn` — modo libre del día 4 al 7 (regreso del
+    Heraldo, llegada de Akhet).
+  - Todas juntas: `bash tools/correr_pruebas.sh`.
   - Correr: `godot --headless --path . res://tools/tests/test_demo.tscn`
     o, con un build exportado: `juego.exe -- --autotest=demo`.
 
@@ -180,22 +236,31 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
 - En la nube la GPU es por software: la iluminación exacta (SSAO, glow) en
   tu RTX puede verse algo distinta a las capturas, aunque el renderer es el
   mismo.
-- El sprite de ataque muestra el khopesh con las tres armas (el arco o el
-  proyectil sí cambian según el arma).
 - El congelamiento de la noche 2 no lo pude reproducir; quedó cubierto con
   redes de seguridad, pero si vuelve a pasar dime qué estabas haciendo.
 - El guardado es al empezar cada día: si sales a mitad del día, retomas
   desde su comienzo.
 
+- Los números nuevos (estados del corazón, precios del templo y mejoras,
+  oleadas del modo libre) están calculados, no jugados por personas:
+  seguramente hay que ajustarlos después de tus primeras partidas.
+- El inglés lo traduje yo; conviene que lo lea alguien nativo antes de
+  publicarlo.
+
 ## Próximos pasos recomendados
-1. Jugarla entera en tu PC y ajustar números de balance (vida del jefe en
-   `scenes/enemies/Heraldo.tscn`, oleadas en `data/waves.json`, precios en
-   `data/crops.json` y `scripts/world/defense_spot.gd`, duración del día en
-   `scripts/autoload/game_time.gd`).
-2. Escuchar la música y los efectos y retocar lo que no guste.
-3. Sprites de ataque distintos para martillo y bastón.
-4. Traducción al inglés: los textos ya están centralizados en
-   `data/textos_es.json`, `data/dialogues.json` y `data/codex.json`.
+1. **Hacer playtests** con 3–5 personas siguiendo `PLAYTEST.md` y mandarme
+   sus notas y los registros de `playtest/`. Es lo que más va a mejorar el
+   juego ahora.
+2. Ajustar balance con esos datos. Todo está en JSON: `data/heart_states.json`,
+   `data/temple.json`, `data/upgrades.json`, `data/friendship.json`,
+   `data/seasons.json`, `data/defenses.json`, `data/waves.json`.
+3. **Arte hecho a mano** (el mayor salto de calidad posible): un pixel
+   artist para personajes, retratos y animaciones. Los sprites generados
+   sirven de guía de tamaños y paleta.
+4. **Música grabada o compuesta por una persona**, usando las capas actuales
+   como maqueta (mismo tempo y estructura por capas).
+5. Hacer una "rebanada vertical" de 30–45 minutos con ese arte y esa música
+   para mostrar el juego o buscar financiamiento.
 
 ## Estructura
 - `scenes/` escenas (`world/Farm.tscn`, `ui/Main.tscn`, `story/Intro|Final`,
@@ -203,7 +268,8 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
 - `scripts/` código por área (`autoload/`, `world/`, `ui/`, `enemies/`,
   `npc/`, `player/`, `fx/`, `story/`).
 - `data/` todo el contenido: mapa, oleadas, cultivos, diálogos, textos,
-  códice.
+  códice, estados del corazón, templo, mejoras, amistad, estaciones;
+  `data/i18n/` las traducciones.
 - `assets/` arte, shaders y audio, **todo generado por los scripts de
   `tools/`** (Python + Pillow + numpy). Ver `CREDITS.md`.
 - `tools/` generadores de arte y audio, capturas y pruebas.

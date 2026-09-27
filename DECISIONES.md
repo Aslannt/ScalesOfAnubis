@@ -414,3 +414,63 @@ recomendados, con la base técnica ya lista para construirlos encima.
   casas, el templo y las tumbas se vuelven translúcidas cuando te tapan.
   Animales configurables en `data/map_layout.json` → `animales`; sprites
   en `tools/gen_animals.py`.
+
+## Cuarta ronda: "haz todo lo que me dijiste, por fases"
+Deivid preguntó qué le falta para ser tan bueno como los grandes juegos y
+pidió hacerlo todo, en fases. El plan y lo que decidí en cada una:
+
+- **Fase 1 — La balanza cambia cómo se juega** (`data/heart_states.json`).
+  Cuatro estados según el peso: *Favor de Maat* (≤35: te curas de noche,
+  Ptahmose paga +25 %, cultivos pueden crecer un día extra), *Equilibrio*,
+  *Sombra de Ammit* (61–80: +30 % daño, robo de vida, +25 % criaturas,
+  −10 % en ventas) y *Hambre de Ammit* (81+: +60 % daño, más robo de vida,
+  +50 % criaturas). Decisión: el poder oscuro es real y tentador, pero pesa
+  en el final; así cada decisión moral se siente en las manos.
+- **Fase 2 — Metas largas.** Templo de Maat en 4 partes (`data/temple.json`),
+  se restaura *hablando con Meret* (es la sacerdotisa: no hacía falta otro
+  punto de interacción) y cada parte se ve en el mundo y da una bendición
+  permanente. Mejoras en la tienda de Ptahmose (`data/upgrades.json`).
+  Amistad (`data/friendship.json`): una charla y un regalo por día, gustos
+  que se descubren al regalar, 3 niveles con escenas que cuentan secretos
+  (Meret preparó el cuerpo de Nakht y no terminó los ritos; Ptahmose fue
+  ladrón de tumbas; el padre de Iry desapareció en la necrópolis) y
+  recompensas útiles (Iry riega tus cultivos al amanecer).
+- **Fase 3 — Estaciones y modo libre.** La demo sigue igual (3 días, Peret).
+  Al final se guarda el amanecer del día 4 y se puede seguir jugando: ciclo
+  Shemu → Akhet → Peret de 3 días (`data/seasons.json`), el Heraldo vuelve
+  al final de cada estación con +30 % de vida por regreso. Akhet cubre la
+  orilla con agua (la crecida se lleva lo plantado ahí), riega todo y deja
+  limo fértil. Decisión: no toqué la historia de la demo para no romper lo
+  que ya funcionaba; el modo libre es la extensión.
+- **Fase 4 — Personajes.** Retratos nuevos de 50×50 (el tamaño exacto del
+  marco, sin reescalar) con 5 expresiones; el diálogo elige la expresión con
+  "Nombre (emoción): texto". Thot: comentarios de ambiente con 2 minutos de
+  pausa mínima (no volver a hacerlo charlatán) y un recuerdo por amanecer
+  con mitos reales (la escritura, el senet contra la Luna y los 5 días
+  epagómenos, Isis y Osiris, el ibis) que explican poco a poco por qué la
+  balanza de Nakht dudó.
+- **Fase 5 — Combate.** Animación propia de martillo y cayado (ya no todos
+  con el khopesh), el martillo golpea en el cuadro del impacto (0,18 s),
+  sonidos por arma, enemigos que se aplastan al recibir golpes y se
+  deshacen en humo al morir, empujón de cámara en golpes pesados,
+  vibración de mando y borde rojo que late con la vida baja. Todo
+  moderado: en la ronda 3 las sacudidas molestaban.
+- **Fase 6 — Música.** No toqué el groove que a Deivid le gustó. Agregué una
+  capa por estación del mismo largo (se suma sin cortes) y tres jingles
+  (amanecer, logro, estación). Revisé espectro y niveles porque no puedo
+  escuchar: el contenido agudo queda por debajo del groove.
+- **Fase 7 — Opciones e inglés.** Opciones guardadas en
+  `user://opciones.cfg`, con "destellos de pantalla" y "sacudida" para quien
+  se marea. Inglés completo en `data/i18n/` superpuesto al español (lo que
+  falte cae al español); "Thot" se llama "Thoth" en inglés. Las claves de
+  emoción de los diálogos quedan en español (son internas).
+- **Fase 8 — Pruebas y playtest.** Registro local de cada partida
+  (`user://playtest/`), `PLAYTEST.md` para probar con amigos,
+  `tools/correr_pruebas.sh` con las 8 pruebas (todas pasan, también en un
+  build exportado).
+
+**Lo que no puedo hacer yo** (y recomiendo): arte final hecho a mano por
+un pixel artist, música grabada o compuesta por una persona, y playtests
+con gente real. Todo lo demás queda preparado para eso: los datos están en
+JSON, el arte sale de scripts con paleta fija y el registro de playtest
+dice dónde se traban los jugadores.
