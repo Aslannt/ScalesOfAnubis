@@ -285,6 +285,10 @@ func die() -> void:
 		return
 	_dead = true
 	GameState.enemies_defeated_tonight += 1
+	# sombra/hambre de Ammit: cada muerte cura (si el jugador esta vivo)
+	var steal := int(GameState.heart_mod("robo_vida", 0.0))
+	if steal > 0 and GameState.health > 0:
+		GameState.heal(steal)
 	GameState.total_enemies_defeated += 1
 	if group_id == "aldea":
 		GameState.village_kills += 1

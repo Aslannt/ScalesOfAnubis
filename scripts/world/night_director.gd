@@ -48,6 +48,9 @@ func _on_night_started() -> void:
 	for ei in range(entries.size()):
 		var entry: Dictionary = entries[ei]
 		var n := int(entry.get("n", 1))
+		# un corazon pesado atrae mas criaturas (el jefe no se duplica)
+		if entry.get("tipo", "") != "jefe":
+			n += int(round(n * GameState.heart_mod("oleada_extra", 0.0)))
 		var win: Array = entry.get("ventana", [0.0, 0.5])
 		for i in range(n):
 			var frac := lerpf(float(win[0]), float(win[1]), (i + 0.5) / n) if n > 1 else float(win[0])

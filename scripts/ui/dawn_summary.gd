@@ -45,6 +45,7 @@ func show_summary(day: int, extra_lines: Array = []) -> void:
 		[Textos.t("amanecer_enemigos_derrotados", {"n": GameState.enemies_defeated_tonight}), UIStyle.TEXT],
 		[Textos.t("amanecer_cultivos_perdidos", {"n": GameState.crops_lost_tonight}), Color(1, 0.6, 0.5) if GameState.crops_lost_tonight > 0 else UIStyle.TEXT],
 		[Textos.t("amanecer_balanza", {"n": int(round(GameState.heart_weight))}), UIStyle.TEXT],
+		[Textos.t("amanecer_estado", {"n": Textos.t("estado_" + GameState.heart_state_id)}), GameState.heart_state_color()],
 	]
 	if absf(delta) >= 0.5:
 		rows.append([Textos.t("amanecer_cambio", {"n": ("%+d" % int(round(delta)))}), Color(1, 0.5, 0.4) if delta > 0 else Color(0.55, 0.9, 1.0)])

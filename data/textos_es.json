@@ -170,5 +170,16 @@
   "def_mejorada": "¡{n} Nv{l}!",
   "hint_defensa_mejorar": "[E] Mejorar o cambiar defensa",
   "noche_mas_fuerte": "Las criaturas son más fuertes esta noche",
-  "defensas_nuevas": "Nuevas defensas disponibles en los pedestales"
+  "defensas_nuevas": "Nuevas defensas disponibles en los pedestales",
+  "estado_pluma": "Favor de Maat",
+  "estado_equilibrio": "Equilibrio",
+  "estado_sombra": "Sombra de Ammit",
+  "estado_hambre": "Hambre de Ammit",
+  "estado_desc_pluma": "Tu corazón es liviano. De noche te curas solo, Ptahmose paga más y a veces tus cultivos crecen un día extra.",
+  "estado_desc_equilibrio": "Ni bueno ni malo. Tus actos decidirán hacia dónde cae.",
+  "estado_desc_sombra": "Tu corazón pesa. Pegas más fuerte y matar te cura, pero vienen más criaturas y te pagan menos.",
+  "estado_desc_hambre": "Ammit te huele. Poder enorme y cada muerte te cura, pero las noches son una avalancha y en el pesaje final...",
+  "estado_cambio": "Tu corazón: {n}",
+  "amanecer_estado": "Estado del corazón: {n}",
+  "crecida_maat": "¡Maat bendijo esta cosecha!"
 }

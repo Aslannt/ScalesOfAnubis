@@ -27,6 +27,9 @@ var _lbl_deben: Label
 # balanza
 var _viga: TextureRect
 var _lbl_corazon_flot: Label
+var _lbl_estado: Label
+var _vignette: TextureRect
+var _vig_t: float = 0.0
 var _balanza_panel: Panel
 
 # fase
@@ -180,16 +183,16 @@ func _on_deben_changed(v: int) -> void:
 func _build_balanza() -> void:
 	# Balanza dorada (GDD 6.1): corazon a un lado, pluma al otro, se inclina
 	# con suavizado segun GameState.heart_weight (50 = equilibrio exacto).
-	_balanza_panel = UIStyle.make_panel(_root, Vector2(188, 4), Vector2(104, 40))
+	_balanza_panel = UIStyle.make_panel(_root, Vector2(178, 4), Vector2(124, 50))
 	var p := _balanza_panel
-	var pivote := UIStyle.make_icon(p, ICONS + "balanza_pivote.png", Vector2(44, 9), Vector2(16, 20))
+	var pivote := UIStyle.make_icon(p, ICONS + "balanza_pivote.png", Vector2(54, 9), Vector2(16, 20))
 	pivote.stretch_mode = TextureRect.STRETCH_SCALE
 
 	_viga = TextureRect.new()
 	_viga.texture = load(ICONS + "balanza_viga.png")
 	_viga.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_viga.size = Vector2(64, 10)
-	_viga.position = Vector2(20, 8)
+	_viga.position = Vector2(30, 8)
 	_viga.pivot_offset = Vector2(32, 5)
 	p.add_child(_viga)
 
@@ -200,11 +203,21 @@ func _build_balanza() -> void:
 
 	# el numero del peso, con color: verde si es mas liviano que la pluma
 	_lbl_peso = UIStyle.make_label(p, "", Vector2(0, 27), UIStyle.SMALL)
-	_lbl_peso.size = Vector2(104, 10)
+	_lbl_peso.size = Vector2(124, 10)
 	_lbl_peso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_update_peso(GameState.heart_weight)
 
-	_lbl_corazon_flot = UIStyle.make_label(_root, "", Vector2(188, 44), UIStyle.SMALL)
+	# estado del corazon (pluma / equilibrio / sombra / hambre) bajo la balanza
+	_lbl_estado = UIStyle.make_label(p, "", Vector2(0, 37), UIStyle.SMALL)
+	_lbl_estado.size = Vector2(124, 10)
+	_lbl_estado.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_lbl_estado.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.03))
+	_lbl_estado.add_theme_constant_override("outline_size", 3)
+	_build_vignette()
+	_on_heart_state(GameState.heart_state_id, "")
+	GameState.heart_state_changed.connect(_on_heart_state)
+
+	_lbl_corazon_flot = UIStyle.make_label(_root, "", Vector2(178, 57), UIStyle.SMALL)
 	_lbl_corazon_flot.size = Vector2(104, 10)
 	_lbl_corazon_flot.position.x = 140
 	_lbl_corazon_flot.size.x = 200
@@ -226,6 +239,42 @@ func _set_balanza_rotation(v: float) -> void:
 	# contrarrotar los platos para que queden colgando derechos
 	for c in _viga.get_children():
 		c.rotation = -_viga.rotation
+
+
+## Borde de pantalla teñido segun el estado del corazon: dorado-celeste con
+## el favor de Maat, violeta/rojo con la sombra y el hambre de Ammit.
+func _build_vignette() -> void:
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 0))
+	g.set_offset(0, 0.62)
+	g.set_color(1, Color(1, 1, 1, 1))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 128
+	gt.height = 72
+	_vignette = TextureRect.new()
+	_vignette.texture = gt
+	_vignette.stretch_mode = TextureRect.STRETCH_SCALE
+	_vignette.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_vignette.modulate = Color(1, 1, 1, 0)
+	_root.add_child(_vignette)
+	_root.move_child(_vignette, 0)
+
+
+func _on_heart_state(id: String, _anterior: String) -> void:
+	var col := GameState.heart_state_color(id)
+	_lbl_estado.text = Textos.t("estado_" + id)
+	_lbl_estado.add_theme_color_override("font_color", col)
+	var alpha := {"pluma": 0.35, "equilibrio": 0.0, "sombra": 0.45, "hambre": 0.65}.get(id, 0.0) as float
+	create_tween().tween_property(_vignette, "modulate", Color(col.r, col.g, col.b, alpha), 1.2)
+	if _anterior != "":
+		_lbl_estado.pivot_offset = Vector2(62, 5)
+		_lbl_estado.scale = Vector2(1.6, 1.6)
+		create_tween().tween_property(_lbl_estado, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _on_heart_changed(v: float, delta: float, _motivo: String) -> void:

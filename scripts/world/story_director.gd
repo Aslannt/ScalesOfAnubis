@@ -23,6 +23,7 @@ func _ready() -> void:
 	add_to_group("story_director")
 	GameTime.phase_changed.connect(_on_phase)
 	GameState.village_damaged.connect(_on_village_damaged)
+	GameState.heart_state_changed.connect(_on_heart_state_changed)
 	var layer := CanvasLayer.new()
 	layer.layer = 30
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -37,6 +38,16 @@ func _ready() -> void:
 	_fade_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_fade_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_fade_lbl.modulate.a = 0.0
+
+
+## El corazon cambio de estado: cartel con lo que eso significa y un
+## comentario de Thot la primera vez.
+func _on_heart_state_changed(nuevo: String, _anterior: String) -> void:
+	var banner = get_tree().get_first_node_in_group("combat_banner")
+	if banner:
+		banner.announce(Textos.t("estado_cambio", {"n": Textos.t("estado_" + nuevo)}), Textos.t("estado_desc_" + nuevo), GameState.heart_state_color(nuevo), 3.2)
+	SFX.play("heart_shift", 2.0, 0.0)
+	GameState.thot_once("estado_" + nuevo, Dialogos.thot("estado_" + nuevo))
 
 
 func setup(p: Player, nd: Node, ds: Node) -> void:

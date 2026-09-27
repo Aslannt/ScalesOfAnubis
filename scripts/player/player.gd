@@ -68,8 +68,12 @@ func _ready() -> void:
 	GameTime.phase_changed.connect(_on_phase_changed)
 
 
+var _regen_acc: float = 0.0
+
+
 func _physics_process(delta: float) -> void:
 	_update_timers(delta)
+	_heart_regen(delta)
 	_knock = _knock.move_toward(Vector3.ZERO, 18.0 * delta)
 	if dead:
 		velocity = Vector3.ZERO
@@ -85,8 +89,9 @@ func _physics_process(delta: float) -> void:
 		)
 		if input_dir.length() > 1.0:
 			input_dir = input_dir.normalized()
-		velocity.x = input_dir.x * speed + _knock.x
-		velocity.z = input_dir.y * speed + _knock.z
+		var sp := speed * GameState.heart_mod("vel", 1.0)
+		velocity.x = input_dir.x * sp + _knock.x
+		velocity.z = input_dir.y * sp + _knock.z
 		if input_dir.length_squared() > 0.01:
 			_move_dir = input_dir
 			_update_facing(input_dir)
@@ -242,7 +247,8 @@ func _start_attack() -> void:
 	var weapon: String = GameState.equipped_weapon
 	var stats: Dictionary = WEAPON_STATS[weapon]
 	var hit := _combo_index % int(stats["golpes"])
-	var dano: int = stats["dano"][hit]
+	# la sombra de Ammit da fuerza (estados del corazon)
+	var dano: int = int(round(stats["dano"][hit] * GameState.heart_mod("dano", 1.0)))
 	var empuje: float = stats["empuje"][hit]
 	var is_finisher := weapon == "khopesh" and hit == 2
 	if weapon == "baston":
@@ -639,6 +645,18 @@ func revive() -> void:
 	_hurt_iframes = 1.5
 	sprite.modulate = Color.WHITE
 	sprite.visible = true
+
+
+## Favor de Maat: de noche la vida vuelve sola, poco a poco.
+func _heart_regen(delta: float) -> void:
+	var r := GameState.heart_mod("regen_noche", 0.0)
+	if r <= 0.0 or dead or not GameTime.is_night() or GameState.health >= GameState.max_health:
+		return
+	_regen_acc += r * delta
+	if _regen_acc >= 1.0:
+		var n := int(_regen_acc)
+		_regen_acc -= n
+		GameState.heal(n)
 
 
 func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, _stun: float = 0.0) -> void:

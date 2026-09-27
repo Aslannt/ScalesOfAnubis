@@ -12,6 +12,9 @@ signal thot_says(texto: String, urgente: bool)
 signal village_damaged(total: int)
 signal seed_selected(id: String)
 signal crop_attacked(plot: Node)
+## El corazon cruzo a otro estado (data/heart_states.json): pluma,
+## equilibrio, sombra o hambre. Cambia como se juega, no solo el final.
+signal heart_state_changed(nuevo: String, anterior: String)
 
 const HEART_START := 50.0
 const HEART_MIN := 0.0
@@ -110,6 +113,7 @@ func reset() -> void:
 	boss_defeated = false
 	demo_finished = false
 	heart_log = []
+	heart_state_id = "equilibrio"
 	_input_lock_until_ms = 0
 	pending_world = {}
 	Codex.reset()
@@ -176,6 +180,7 @@ func load_game() -> bool:
 	total_enemies_defeated = int(d.get("total_enemies_defeated", 0))
 	health = int(d.get("health", max_health))
 	heart_at_night_start = heart_weight
+	_refresh_heart_state(true)
 	for id in d.get("codex", []):
 		Codex.unlock(id)
 	pending_world = d.get("world", {})
@@ -264,6 +269,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	inventory = {"semilla_trigo": 8, "semilla_lino": 3, "semilla_papiro": 2}
 	_cargar_crops()
+	_cargar_heart_states()
 	GameTime.night_started.connect(func():
 		crops_lost_tonight = 0
 		enemies_defeated_tonight = 0
@@ -319,8 +325,55 @@ func item_count(item_id: String) -> int:
 	return inventory.get(item_id, 0)
 
 
+# ------------------------------------------------ estados del corazon
+var _heart_states: Array = []
+var heart_state_id: String = "equilibrio"
+
+
+func _cargar_heart_states() -> void:
+	var f := FileAccess.open("res://data/heart_states.json", FileAccess.READ)
+	if f:
+		var d = JSON.parse_string(f.get_as_text())
+		if d is Dictionary:
+			_heart_states = d.get("estados", [])
+
+
+func heart_state() -> Dictionary:
+	for st in _heart_states:
+		if heart_weight <= float(st["hasta"]):
+			return st
+	return _heart_states.back() if not _heart_states.is_empty() else {}
+
+
+func heart_state_color(id: String = "") -> Color:
+	var target := heart_state_id if id == "" else id
+	for st in _heart_states:
+		if st["id"] == target:
+			var c: Array = st["color"]
+			return Color(c[0], c[1], c[2])
+	return Color.WHITE
+
+
+## Modificador del estado actual (dano, venta, regen_noche, robo_vida,
+## oleada_extra, crecida, vel). Si el estado no lo define, 'defecto'.
+func heart_mod(key: String, defecto: float = 0.0) -> float:
+	return float(heart_state().get("mods", {}).get(key, defecto))
+
+
+func _refresh_heart_state(silencioso: bool = false) -> void:
+	var st := heart_state()
+	var nuevo: String = st.get("id", "equilibrio")
+	if nuevo == heart_state_id:
+		return
+	var anterior := heart_state_id
+	heart_state_id = nuevo
+	if not silencioso:
+		heart_state_changed.emit(nuevo, anterior)
+
+
 func shift_heart(delta: float, motivo: String = "") -> void:
 	heart_weight = clampf(heart_weight + delta, HEART_MIN, HEART_MAX)
+	_refresh_heart_state()
 	if motivo != "" and absf(delta) > 0.01:
 		heart_log.append([motivo, delta])
 	if absf(delta) > 0.01:

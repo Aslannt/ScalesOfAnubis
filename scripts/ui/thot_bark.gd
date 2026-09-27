@@ -13,7 +13,7 @@ const HOLD_MIN := 2.4
 const QUIET_BETWEEN := 9.0   # silencio minimo entre comentarios normales
 const PANEL_X := 6.0
 const PANEL_Y := 46.0
-const PANEL_W := 212.0
+const PANEL_W := 168.0
 
 signal speaking(active: bool)
 

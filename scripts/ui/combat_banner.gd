@@ -23,7 +23,9 @@ func _ready() -> void:
 	_banner.pivot_offset = Vector2(240, 11)
 	_banner.modulate.a = 0.0
 	_sub = UIStyle.make_label(self, "", Vector2(0, 198), UIStyle.SMALL, UIStyle.TEXT)
-	_sub.size = Vector2(480, 10)
+	_sub.position.x = 60
+	_sub.size = Vector2(360, 10)
+	_sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sub.modulate.a = 0.0
 	_combo = UIStyle.make_label(self, "", Vector2(6, 208), UIStyle.BIG, Color(1.0, 0.9, 0.5))
@@ -44,10 +46,11 @@ func hide_now() -> void:
 	_sub.modulate.a = 0.0
 
 
-func announce(title: String, sub: String = "") -> void:
+func announce(title: String, sub: String = "", color: Color = Color(1.0, 0.82, 0.35), hold: float = 1.8) -> void:
 	if _tw:
 		_tw.kill()
 	_banner.text = title
+	_banner.add_theme_color_override("font_color", color)
 	_sub.text = sub
 	_banner.scale = Vector2(1.8, 1.8)
 	var tw := create_tween()
@@ -56,7 +59,7 @@ func announce(title: String, sub: String = "") -> void:
 	tw.tween_property(_banner, "modulate:a", 1.0, 0.15)
 	tw.tween_property(_banner, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tw.tween_property(_sub, "modulate:a", 1.0, 0.3)
-	tw.chain().tween_interval(1.8)
+	tw.chain().tween_interval(hold)
 	tw.chain().tween_property(_banner, "modulate:a", 0.0, 0.5)
 	tw.parallel().tween_property(_sub, "modulate:a", 0.0, 0.5)
 	SFX.play("drum_hit", 0.0, 0.0)

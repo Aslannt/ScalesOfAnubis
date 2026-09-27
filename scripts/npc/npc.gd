@@ -213,6 +213,7 @@ func _valor_cosecha() -> int:
 	var total := 0
 	for cid in _vendibles():
 		total += int(GameState.crops[cid]["precio_venta"]) * GameState.item_count(cid)
+	total = int(round(total * GameState.heart_mod("venta", 1.0)))
 	return total
 
 

@@ -139,7 +139,11 @@
     "campamento_noche": "De noche no se descansa, Nakht. De noche se pelea.",
     "ofrenda": "Una ofrenda a Maat. Tu corazón pesa un poco menos.",
     "misterio_d2": "Tu juicio... Hay algo en mi papiro de ese día que no me cuadra. Luego te cuento. Quizá.",
-    "misterio_d3": "Nakht. Si tu corazón empató, no fue por casualidad. Pero no me corresponde decírtelo. Todavía."
+    "misterio_d3": "Nakht. Si tu corazón empató, no fue por casualidad. Pero no me corresponde decírtelo. Todavía.",
+    "estado_pluma": "Mira tu balanza: estás más liviano que la pluma. Maat te sonríe. Aprovéchalo.",
+    "estado_equilibrio": "Vuelves al equilibrio. Ni santo ni monstruo. Lo cual, créeme, es lo más común en mis archivos.",
+    "estado_sombra": "Tu corazón se oscurece. Sí, pegas más fuerte. No, eso no es un cumplido.",
+    "estado_hambre": "Nakht... Ammit ya relame sus dientes. Ese poder que sientes es SU hambre. Piensa en el pesaje."
   },
   "anubis": {
     "intro": [

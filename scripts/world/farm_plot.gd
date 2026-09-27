@@ -351,6 +351,12 @@ func _on_day_started() -> void:
 		return
 	if watered_today:
 		growth_day += 1
+		# favor de Maat: a veces crece un dia extra
+		var dias := int(GameState.crops.get(crop_id, {}).get("dias_para_crecer", 1))
+		if growth_day < dias and randf() < GameState.heart_mod("crecida", 0.0):
+			growth_day += 1
+			if not quiet:
+				CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.8, 0), Color(0.55, 0.9, 1.0))
 	watered_today = false
 	_water_elapsed = -1.0
 	_update_crop_frame()

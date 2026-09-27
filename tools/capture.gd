@@ -33,6 +33,8 @@ const SCENARIOS := [
 	{"name": "30_casa_translucida", "tile": Vector2(28, 5.6), "phase": 1, "wide": false},
 	{"name": "31_orilla_gansos", "tile": Vector2(8, 6.5), "phase": 1, "wide": false},
 	{"name": "32_aldea_gato", "tile": Vector2(25, 11.5), "phase": 2, "wide": false},
+	{"name": "33_corazon_hambre", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "hambre", "bark": true},
+	{"name": "34_corazon_pluma", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "pluma", "bark": true},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -160,6 +162,12 @@ func _setup(kind: String) -> void:
 			for k in range(3):
 				nd.spawn("sombra", "", "", world_builder.defense_spots[0].global_position + Vector3(2.5 + k, 0, k - 1.0))
 			await get_tree().create_timer(1.6).timeout
+		"hambre":
+			GameState.shift_heart(40.0, "robo_altar")
+			await get_tree().create_timer(1.0).timeout
+		"pluma":
+			GameState.shift_heart(-30.0, "ofrenda")
+			await get_tree().create_timer(1.0).timeout
 		"defensa_menu":
 			GameState.current_day = 2
 			GameState.add_deben(40)
@@ -215,6 +223,8 @@ func _setup(kind: String) -> void:
 
 func _cleanup() -> void:
 	get_tree().paused = false
+	GameState.heart_weight = 50.0
+	GameState._refresh_heart_state()
 	var bn = get_tree().get_first_node_in_group("combat_banner")
 	if bn:
 		bn.hide_now()
