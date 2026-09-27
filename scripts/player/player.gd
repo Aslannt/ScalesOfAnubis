@@ -194,20 +194,58 @@ func _try_interact() -> void:
 		return
 	if GameTime.is_night():
 		return
-	var target_pos := global_position + _facing_vector() * 1.2
-	var plot: FarmPlot = world_builder.plot_at_world(target_pos, interact_range)
+	var plot := _target_plot()
 	if plot == null:
 		return
 	match plot.state:
 		FarmPlot.State.UNTILLED:
 			plot.till()
 		FarmPlot.State.TILLED:
-			plot.plant("papiro" if plot.is_orilla else "trigo")
+			plot.plant(_seed_for(plot))
 		FarmPlot.State.PLANTED:
 			if plot.is_ready():
 				plot.harvest()
 			elif not plot.watered_today:
 				plot.water()
+
+
+func _target_plot() -> FarmPlot:
+	var target_pos := global_position + _facing_vector() * 1.2
+	return world_builder.plot_at_world(target_pos, interact_range)
+
+
+func _seed_for(plot: FarmPlot) -> String:
+	return "papiro" if plot.is_orilla else "trigo"
+
+
+## Texto de ayuda contextual para el HUD ("[E] Arar", "[E] Hablar con
+## Meret"...): tutorial integrado sin muros de texto (GDD 2, pilar 2).
+func get_interact_hint() -> String:
+	if world_builder == null or get_tree().paused:
+		return ""
+	var npc = world_builder.npc_at_world(global_position, 2.4)
+	if npc:
+		if npc.npc_id == "altar":
+			return Textos.t("hint_altar")
+		return Textos.t("hint_hablar", {"n": Textos.t("npc_" + npc.npc_id)})
+	if GameTime.is_night():
+		return ""
+	var plot := _target_plot()
+	if plot == null:
+		return ""
+	match plot.state:
+		FarmPlot.State.UNTILLED:
+			return Textos.t("hint_arar")
+		FarmPlot.State.TILLED:
+			var sid := _seed_for(plot)
+			return Textos.t("hint_sembrar", {"n": GameState.crops.get(sid, {}).get("nombre_corto", sid.capitalize())})
+		FarmPlot.State.PLANTED:
+			if plot.is_ready():
+				return Textos.t("hint_cosechar")
+			if not plot.watered_today:
+				return Textos.t("hint_regar")
+			return Textos.t("hint_regado")
+	return ""
 
 
 func _facing_vector() -> Vector3:

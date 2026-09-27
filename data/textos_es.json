@@ -39,5 +39,14 @@
   "npc_anubis": "Anubis",
   "gracias_titulo": "Gracias por jugar la demo de",
   "gracias_juego": "Scales of Anubis",
-  "gracias_subtitulo": "El viaje de Nakht continúa pronto."
+  "gracias_subtitulo": "El viaje de Nakht continúa pronto.",
+  "hud_estacion": "Peret",
+  "hint_hablar": "[E] Hablar con {n}",
+  "hint_altar": "[E] Altar de ofrendas",
+  "hint_arar": "[E] Arar",
+  "hint_sembrar": "[E] Sembrar {n}",
+  "hint_regar": "[E] Regar",
+  "hint_cosechar": "[E] Cosechar",
+  "hint_creciendo": "Creciendo...",
+  "hint_regado": "Regado: crecerá mañana"
 }
