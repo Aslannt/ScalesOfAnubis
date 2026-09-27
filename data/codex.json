@@ -94,5 +94,21 @@
     "thot": "Lo anoto como ficción. Mi reputación de escriba no se mancha por un monstruo inventado.",
     "icono": "res://assets/sprites/icons/codex_heraldo.png",
     "desbloqueada": false
+  },
+  {
+    "id": "shabti",
+    "titulo": "Shabtis",
+    "texto": "Figuritas que se enterraban con el difunto. Su trabajo: hacer por él las tareas del campo en el más allá, para que pudiera descansar.",
+    "thot": "Un ejército de muñequitos que trabaja gratis por la eternidad. Envidiable.",
+    "icono": "res://assets/sprites/icons/shabti.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "senet",
+    "titulo": "Senet",
+    "texto": "Juego de mesa egipcio de los más antiguos que se conocen. Se asociaba al viaje del alma después de la muerte.",
+    "thot": "Iry hace trampa. Lo vi. Lo anoté.",
+    "icono": "res://assets/sprites/icons/senet.png",
+    "desbloqueada": false
   }
 ]

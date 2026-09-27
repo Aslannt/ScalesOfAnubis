@@ -120,5 +120,18 @@
   "oleada_sub_sombra": "Van por ti",
   "oleada_sub_aldea": "Defiende la aldea... o tus cultivos",
   "noche_titulo": "NOCHE {n}",
-  "noche_sub": "Sobrevive hasta el amanecer"
+  "noche_sub": "Sobrevive hasta el amanecer",
+  "camp_titulo": "Tu campamento",
+  "camp_esperar": "Descansar hasta el atardecer",
+  "hint_camp": "[E] Descansar",
+  "hint_shabti": "[E] Recoger shabti",
+  "hint_senet": "[E] Recoger la ficha de Iry",
+  "altar_titulo": "Altar de Maat",
+  "altar_ofrecer": "Ofrecer 1 {n} a Maat (corazón −2)",
+  "altar_robar": "Tomar la ofrenda (+20 deben, corazón +10)",
+  "altar_irse": "Irse",
+  "altar_sin_cosecha": "(no tienes cosecha para ofrecer)",
+  "obj_shabtis": "Opcional: encuentra shabtis escondidos ({n}/5)",
+  "obj_senet": "Busca la ficha de senet de Iry en la necrópolis (sur)",
+  "obj_senet_volver": "Devuélvele la ficha a Iry"
 }

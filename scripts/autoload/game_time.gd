@@ -12,7 +12,7 @@ signal day_started()
 signal dawn_summary_ready()
 
 const DAWN_SECONDS := 12.0
-const DAY_SECONDS := 180.0
+const DAY_SECONDS := 165.0
 const DUSK_SECONDS := 18.0
 const NIGHT_SECONDS := 100.0
 const TOTAL_SECONDS := DAWN_SECONDS + DAY_SECONDS + DUSK_SECONDS + NIGHT_SECONDS

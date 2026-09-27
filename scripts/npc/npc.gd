@@ -73,6 +73,9 @@ func has_news() -> bool:
 				return true
 			if GameState.current_day >= 2 and not GameState.tutorial.get("iry_d2", false):
 				return true
+			var sn: String = GameState.tutorial.get("iry_senet", "")
+			if GameState.current_day >= 2 and (sn == "" or sn == "encontrado"):
+				return true
 			return GameState.current_day >= 3 and not GameState.tutorial.get("iry_d3", false)
 	return false
 
@@ -199,6 +202,17 @@ func _iry() -> void:
 		_dialogue.show_lines(Dialogos.lines("iry", "intro"))
 		return
 	var key := "repeat"
+	# mision de la ficha de senet (dia 2 en adelante)
+	var senet: String = GameState.tutorial.get("iry_senet", "")
+	if senet == "encontrado":
+		GameState.tutorial["iry_senet"] = "entregado"
+		GameState.shift_heart(-5.0, "ayudar_iry")
+		_dialogue.show_lines(Dialogos.lines("iry", "senet_gracias"))
+		return
+	if GameState.current_day >= 2 and GameState.tutorial.get("iry_d2", false) and senet == "":
+		GameState.tutorial["iry_senet"] = "pedido"
+		_dialogue.show_lines(Dialogos.lines("iry", "senet_pedido"))
+		return
 	if GameState.current_day >= 3 and not GameState.tutorial.get("iry_d3", false):
 		GameState.tutorial["iry_d3"] = true
 		key = "dia3"

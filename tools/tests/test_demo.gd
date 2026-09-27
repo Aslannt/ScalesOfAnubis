@@ -146,13 +146,48 @@ func _ready() -> void:
 	choice._choose(0)
 	await _close_dialogue()
 	check(GameState.deben == dv + 24 and GameState.item_count("trigo") == 0, "venta a Ptahmose")
-	var h0 := GameState.heart_weight
+	# ofrenda: aligera el corazon
+	GameState.add_item("trigo", 1)
+	var hof := GameState.heart_weight
 	var altar = _npc("altar")
 	altar.interact()
 	await _frames(3)
-	choice._choose(0)
+	choice._choose(_option("Ofrecer"))
+	check(GameState.heart_weight < hof and GameState.item_count("trigo") == 0, "ofrenda en el altar aligera el corazon")
+	var h0 := GameState.heart_weight
+	altar.interact()
+	await _frames(3)
+	choice._choose(_option("Tomar"))
 	await _close_dialogue()
 	check(GameState.decisiones.get("robo_altar", "") == "robado" and GameState.heart_weight > h0, "decision 1: robar la ofrenda pesa")
+
+	# actividades de dia: shabti, mision de Iry, campamento
+	var sh = null
+	var senet = null
+	for c in get_tree().get_nodes_in_group("collectibles"):
+		if c.npc_id == "shabti" and sh == null:
+			sh = c
+		if c.npc_id == "senet":
+			senet = c
+	var dsh := GameState.deben
+	sh.interact()
+	check(GameState.tutorial.get("shabtis", 0) == 1 and GameState.deben == dsh + 8, "recoger un shabti")
+	var iry = _npc("iry")
+	for i in range(3):
+		iry.interact()
+		await _close_dialogue()
+	check(GameState.tutorial.get("iry_senet", "") == "pedido" and senet.is_available(), "Iry pide su ficha de senet")
+	senet.interact()
+	var hi := GameState.heart_weight
+	iry.interact()
+	await _close_dialogue()
+	check(GameState.tutorial.get("iry_senet", "") == "entregado" and GameState.heart_weight < hi, "devolver la ficha a Iry aligera el corazon")
+	var camp = _npc("campamento")
+	camp.interact()
+	await _frames(3)
+	choice._choose(0)
+	await _secs(2.0)
+	check(GameTime.phase == GameTime.Phase.DUSK, "descansar en el campamento lleva al atardecer")
 
 	print("NOCHE 2")
 	await _go_night()
@@ -245,6 +280,13 @@ func _farm_plot(p, times: int) -> void:
 	_face(p)
 	for i in range(times):
 		player._try_interact()
+
+
+func _option(prefix: String) -> int:
+	for i in range(choice._buttons.size()):
+		if String(choice._buttons[i].text).begins_with(prefix):
+			return i
+	return -1
 
 
 func _npc(id: String):

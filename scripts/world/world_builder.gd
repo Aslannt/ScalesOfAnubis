@@ -116,6 +116,20 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		npcs.append(spot)
 		defense_spots.append(spot)
 
+	var ct: Array = data.get("campamento", [])
+	if ct.size() == 2:
+		var camp := Camp.new()
+		camp.position = _tile_to_world(float(ct[0]), float(ct[1]))
+		npcs_node.add_child(camp)
+		npcs.append(camp)
+	for cd in data.get("coleccionables", []):
+		var col := Collectible.new()
+		col.npc_id = cd["id"]
+		var tc: Array = cd["tile"]
+		col.position = _tile_to_world(float(tc[0]), float(tc[1]))
+		npcs_node.add_child(col)
+		npcs.append(col)
+
 	var spawn: Array = data.get("player_spawn_tile", [world_w / 2, world_h / 2])
 	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)
 
@@ -296,6 +310,9 @@ func npc_at_world(pos: Vector3, max_dist: float = 2.4):
 	var closest = null
 	var best := max_dist
 	for n in npcs:
+		# coleccionables ya recogidos (liberados) u ocultos no cuentan
+		if not is_instance_valid(n) or not n.visible:
+			continue
 		var d: float = n.position.distance_to(pos)
 		if d < best:
 			best = d

@@ -88,6 +88,16 @@
       "Iry: Nakht... ¿nos conocíamos antes? Siento que te he visto junto al río.",
       "Thot: ...",
       "Iry: ¿Thot? ¿Por qué no dices nada? Tú siempre dices algo."
+    ],
+    "senet_pedido": [
+      "Iry: Nakht... perdí mi ficha de senet jugando en la necrópolis. ¡Mi papá la talló para mí!",
+      "Thot: El senet es un juego de mesa muy antiguo. Los egipcios decían que era como el viaje del alma después de morir.",
+      "Iry: ¿Me la traes? Me da miedo volver allá solo.",
+      "Thot: La necrópolis es el cementerio, al sur. Busca algo que brille."
+    ],
+    "senet_gracias": [
+      "Iry: ¡Mi ficha! ¡Gracias, gracias!",
+      "Iry: Cuando sea grande te voy a ganar al senet. Ya verás."
     ]
   },
   "thot": {
@@ -122,7 +132,12 @@
     "robo": "Lo anoté. Todo queda anotado.",
     "muro": "Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar.",
     "cultivo_atacado": "¡Una cría se está comiendo tu cosecha! Mira la barra roja sobre la parcela: golpéala antes de que se vacíe.",
-    "corazon_explica": "¿Ves la balanza de arriba? Es tu corazón. Menos de 50 = liviano, bueno. Más de 50 = pesado, malo. Tus actos lo mueven."
+    "corazon_explica": "¿Ves la balanza de arriba? Es tu corazón. Menos de 50 = liviano, bueno. Más de 50 = pesado, malo. Tus actos lo mueven.",
+    "shabti": "¡Un shabti! Los egipcios enterraban estas figuritas para que trabajaran por ellos en el más allá. Van {n} de 5.",
+    "shabtis_todos": "¡Los cinco shabtis! Ptahmose pagaría bien... ya te lo pagó el destino. Y Maat lo nota.",
+    "senet_encontrado": "La ficha de senet de Iry. Llévasela: está en la aldea.",
+    "campamento_noche": "De noche no se descansa, Nakht. De noche se pelea.",
+    "ofrenda": "Una ofrenda a Maat. Tu corazón pesa un poco menos."
   },
   "anubis": {
     "intro": [

@@ -122,6 +122,9 @@ func _apply_pending_world() -> void:
 	for i in range(mini(defs.size(), wb.defense_spots.size())):
 		if String(defs[i]) != "":
 			wb.defense_spots[i].build(String(defs[i]))
+	for c in get_tree().get_nodes_in_group("collectibles"):
+		if c.already_taken():
+			c.queue_free()
 	# silenciar los sonidos/particulas de reconstruir al cargar
 	GameState.thot(Textos.t("partida_cargada", {"n": GameState.current_day}))
 
@@ -172,7 +175,26 @@ func objectives() -> Array:
 			if not GameState.meret_mission_done:
 				out.append([Textos.t("obj_lino", {"n": mini(GameState.item_count("lino"), 3)}), false])
 			out.append([Textos.t("obj_gran_noche"), false])
+	# misiones opcionales de dia
+	var sn: String = GameState.tutorial.get("iry_senet", "")
+	if sn == "pedido":
+		out.append([Textos.t("obj_senet"), false])
+	elif sn == "encontrado":
+		out.append([Textos.t("obj_senet_volver"), false])
+	var sh: int = GameState.tutorial.get("shabtis", 0)
+	if sh < 5:
+		out.append([Textos.t("obj_shabtis", {"n": sh}), false])
 	return out
+
+
+## Fundido a negro, salto de hora y vuelta (campamento: "descansar").
+func fade_skip_to(phase: int) -> void:
+	var tw := create_tween()
+	tw.tween_property(_fade, "color:a", 1.0, 0.7)
+	await tw.finished
+	GameTime.elapsed = GameTime._bounds[phase][0] - 0.3
+	await get_tree().create_timer(0.6).timeout
+	create_tween().tween_property(_fade, "color:a", 0.0, 0.9)
 
 
 func _on_village_damaged(total: int) -> void:
