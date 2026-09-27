@@ -7,6 +7,10 @@ extends Node3D
 
 enum State { UNTILLED, TILLED, PLANTED }
 
+## true mientras se reconstruye una partida guardada: sin sonidos ni
+## particulas por cada parcela restaurada.
+static var quiet := false
+
 var state: State = State.UNTILLED
 var crop_id: String = ""
 var growth_day: int = 0
@@ -78,9 +82,11 @@ func till() -> bool:
 	_soil_mesh.visible = true
 	_soil_mesh.material_override = _mat_dry
 	_marker_mesh.visible = false
-	SFX.play("till")
+	if not quiet:
+		SFX.play("till")
 	Codex.unlock("kemet")
-	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.15, 0), Color(0.37, 0.24, 0.15))
+	if not quiet:
+		CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.15, 0), Color(0.37, 0.24, 0.15))
 	return true
 
 
@@ -110,8 +116,9 @@ func plant(id: String) -> bool:
 		_crop_mats.append(m)
 		q.visible = true
 	_update_crop_frame()
-	SFX.play("plant")
-	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.1, 0), Color(0.45, 0.62, 0.28))
+	if not quiet:
+		SFX.play("plant")
+		CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.1, 0), Color(0.45, 0.62, 0.28))
 	return true
 
 
@@ -120,8 +127,9 @@ func water() -> bool:
 		return false
 	watered_today = true
 	_soil_mesh.material_override = _mat_wet
-	SFX.play("water")
-	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.2, 0), Color(0.3, 0.7, 0.75))
+	if not quiet:
+		SFX.play("water")
+		CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.2, 0), Color(0.3, 0.7, 0.75))
 	return true
 
 
@@ -191,3 +199,19 @@ func _on_day_started() -> void:
 		_update_crop_frame()
 	watered_today = false
 	_soil_mesh.material_override = _mat_dry
+
+
+func to_dict() -> Dictionary:
+	return {"s": state, "c": crop_id, "g": growth_day, "w": watered_today}
+
+
+func from_dict(d: Dictionary) -> void:
+	var st := int(d.get("s", 0))
+	if st >= State.TILLED:
+		till()
+	if st == State.PLANTED and String(d.get("c", "")) != "":
+		plant(String(d["c"]))
+		growth_day = int(d.get("g", 0))
+		if bool(d.get("w", false)):
+			water()
+		_update_crop_frame()

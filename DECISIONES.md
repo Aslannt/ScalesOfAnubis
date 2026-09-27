@@ -321,3 +321,11 @@ recomendados, con la base técnica ya lista para construirlos encima.
   interactúa, X ataca (o gatillo derecho), B esquiva (o gatillo izquierdo),
   Y amuleto, LB/RB cambian arma o semilla (también la rueda del mouse),
   Back abre el códice, Start pausa. La pista del HUD dice "[A]" si usas mando.
+- **Guardado**: autoguardado al empezar cada día (y al entrar al día 1) en
+  `user://partida.json` (en Windows: `%APPDATA%\Godot\app_userdata\Scales
+  of Anubis\`). Guarda deben, corazón, inventario, amuletos, decisiones,
+  progreso con NPCs, códice, parcelas y defensas. "Continuar" aparece en el
+  menú si hay partida; retoma al comienzo del día guardado. "Nueva partida"
+  borra el guardado anterior, y al terminar la demo también se borra.
+  Salir a mitad de un día pierde lo hecho ese día (se guarda solo al
+  amanecer, como en muchos juegos de granja).

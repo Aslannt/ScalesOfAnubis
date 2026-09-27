@@ -130,10 +130,15 @@ func _build_buttons() -> void:
 	box.position = Vector2(240 - 85, 150)
 	box.size = Vector2(170, 80)
 	add_child(box)
+	if GameState.has_save():
+		var bc := _button(box, Textos.t("menu_continuar"), _on_continuar)
+		bc.grab_focus.call_deferred()
+		box.position.y -= 14
 	_btn_nueva = _button(box, Textos.t("menu_nueva_partida"), _on_nueva)
 	_button(box, Textos.t("menu_opciones"), _toggle_opciones)
 	_button(box, Textos.t("menu_salir"), func(): SFX.play("ui_select"); get_tree().quit())
-	_btn_nueva.grab_focus()
+	if not GameState.has_save():
+		_btn_nueva.grab_focus()
 
 	_opciones = PanelContainer.new()
 	_opciones.set_script(OPTIONS_SCRIPT)
@@ -182,4 +187,19 @@ func _on_nueva() -> void:
 	tw.tween_property(_fade, "color:a", 1.0, 0.6)
 	tw.tween_callback(func():
 		GameState.reset()
+		GameState.delete_save()
 		get_tree().change_scene_to_file("res://scenes/story/Intro.tscn"))
+
+
+func _on_continuar() -> void:
+	if _starting:
+		return
+	_starting = true
+	SFX.play("ui_select")
+	var tw := create_tween()
+	tw.tween_property(_fade, "color:a", 1.0, 0.6)
+	tw.tween_callback(func():
+		if not GameState.load_game():
+			GameState.reset()
+		MenuMusic.stop_theme()
+		get_tree().change_scene_to_file("res://scenes/world/Farm.tscn"))

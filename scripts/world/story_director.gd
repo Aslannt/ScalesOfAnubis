@@ -44,6 +44,9 @@ func setup(p: Player, nd: Node, ds: Node) -> void:
 	dawn_summary = ds
 	player.died.connect(_on_player_died)
 	nd.boss_spawned.connect(_on_boss_spawned)
+	if GameState.pending_world.is_empty():
+		autosave.call_deferred()
+	_apply_pending_world()
 	# fundido de entrada al despertar en la granja
 	_fade.color.a = 1.0
 	create_tween().tween_property(_fade, "color:a", 0.0, 1.2)
@@ -79,10 +82,44 @@ func _on_phase(phase: int) -> void:
 		GameTime.Phase.DAWN:
 			_on_dawn()
 		GameTime.Phase.DAY:
+			autosave()
 			if day == 2:
 				GameState.thot_once("dia2", Dialogos.thot("dia2"))
 			elif day == 3:
 				GameState.thot_once("dia3", Dialogos.thot("dia3"))
+
+
+## Autoguardado al empezar cada dia: parcelas y defensas + GameState.
+func autosave() -> void:
+	if player == null or GameState.demo_finished:
+		return
+	var wb: WorldBuilder = player.world_builder
+	var plots: Array = []
+	for p in wb.farm_plots:
+		plots.append(p.to_dict())
+	var defs: Array = []
+	for d in wb.defense_spots:
+		defs.append(d.built)
+	GameState.save_game({"plots": plots, "defenses": defs})
+
+
+func _apply_pending_world() -> void:
+	var w: Dictionary = GameState.pending_world
+	if w.is_empty():
+		return
+	GameState.pending_world = {}
+	var wb: WorldBuilder = player.world_builder
+	var plots: Array = w.get("plots", [])
+	FarmPlot.quiet = true
+	for i in range(mini(plots.size(), wb.farm_plots.size())):
+		wb.farm_plots[i].from_dict(plots[i])
+	FarmPlot.quiet = false
+	var defs: Array = w.get("defenses", [])
+	for i in range(mini(defs.size(), wb.defense_spots.size())):
+		if String(defs[i]) != "":
+			wb.defense_spots[i].build(String(defs[i]))
+	# silenciar los sonidos/particulas de reconstruir al cargar
+	GameState.thot(Textos.t("partida_cargada", {"n": GameState.current_day}))
 
 
 func _on_village_damaged(total: int) -> void:
@@ -133,6 +170,7 @@ func _go_final() -> void:
 		return
 	_ending = true
 	GameState.demo_finished = true
+	GameState.delete_save()
 	GameTime.paused = true
 	var tw := create_tween()
 	tw.tween_property(_fade, "color:a", 1.0, 1.5)

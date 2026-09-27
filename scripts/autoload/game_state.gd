@@ -107,8 +107,75 @@ func reset() -> void:
 	boss_defeated = false
 	demo_finished = false
 	_input_lock_until_ms = 0
+	pending_world = {}
 	Codex.reset()
 	GameTime.reset()
+
+
+# ------------------------------------------------------------ guardado
+const SAVE_PATH := "user://partida.json"
+## Datos del mundo (parcelas, defensas) a aplicar cuando Farm termine de
+## construirse tras "Continuar". Vacio en partida nueva.
+var pending_world: Dictionary = {}
+
+
+func has_save() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+
+func delete_save() -> void:
+	if has_save():
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+
+
+## Autoguardado al empezar cada dia (lo llama StoryDirector).
+func save_game(world: Dictionary) -> void:
+	var data := {
+		"version": 1,
+		"deben": deben, "heart_weight": heart_weight, "current_day": current_day,
+		"inventory": inventory, "owned_amulets": owned_amulets, "equipped_amulet": equipped_amulet,
+		"decisiones": decisiones, "meret_intro_shown": meret_intro_shown,
+		"meret_mission_done": meret_mission_done, "ptahmose_intro_shown": ptahmose_intro_shown,
+		"iry_intro_shown": iry_intro_shown, "selected_seed": selected_seed, "tutorial": tutorial,
+		"total_enemies_defeated": total_enemies_defeated, "health": health,
+		"codex": Codex.entries.filter(func(e): return e["desbloqueada"]).map(func(e): return e["id"]),
+		"world": world,
+	}
+	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify(data))
+
+
+func load_game() -> bool:
+	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if f == null:
+		return false
+	var d = JSON.parse_string(f.get_as_text())
+	if not (d is Dictionary):
+		return false
+	reset()
+	deben = int(d.get("deben", 15))
+	heart_weight = float(d.get("heart_weight", HEART_START))
+	current_day = int(d.get("current_day", 1))
+	inventory = {}
+	for k in d.get("inventory", {}):
+		inventory[k] = int(d["inventory"][k])
+	owned_amulets = d.get("owned_amulets", ["anj"])
+	equipped_amulet = d.get("equipped_amulet", "")
+	decisiones = d.get("decisiones", {})
+	meret_intro_shown = d.get("meret_intro_shown", false)
+	meret_mission_done = d.get("meret_mission_done", false)
+	ptahmose_intro_shown = d.get("ptahmose_intro_shown", false)
+	iry_intro_shown = d.get("iry_intro_shown", false)
+	selected_seed = d.get("selected_seed", "trigo")
+	tutorial = d.get("tutorial", {})
+	total_enemies_defeated = int(d.get("total_enemies_defeated", 0))
+	health = int(d.get("health", max_health))
+	heart_at_night_start = heart_weight
+	for id in d.get("codex", []):
+		Codex.unlock(id)
+	pending_world = d.get("world", {})
+	return true
 
 
 func thot(texto: String) -> void:
