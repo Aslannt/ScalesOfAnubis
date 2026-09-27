@@ -132,11 +132,8 @@ func _ink_label(parent: Node, pos: Vector2, size: Vector2, font_size: int, col: 
 	return l
 
 
-func _on_unlocked(id: String) -> void:
+func _on_unlocked(_id: String) -> void:
 	_refresh_list()
-	var e := Codex.get_entry(id)
-	if not e.is_empty() and is_inside_tree():
-		GameState.thot(Textos.t("codex_nueva", {"n": e["titulo"]}))
 
 
 func _unhandled_input(event: InputEvent) -> void:

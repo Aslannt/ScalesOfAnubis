@@ -75,6 +75,9 @@ func _ready() -> void:
 	_build_hint()
 	_build_boss_bar()
 	_build_objectives()
+	_codex_toast = UIStyle.make_label(_root, "", Vector2(6, 214), UIStyle.SMALL, Color(0.98, 0.85, 0.5))
+	_codex_toast.modulate.a = 0.0
+	Codex.entry_unlocked.connect(_on_codex_unlocked)
 	var ind := preload("res://scripts/ui/threat_indicators.gd").new()
 	_root.add_child(ind)
 
@@ -413,6 +416,20 @@ func _on_boss_health(hp: int, max_hp: int) -> void:
 	tg.tween_property(_boss_ghost, "size:x", w, 0.4)
 	if hp <= max_hp / 2:
 		_boss_fill.color = Color(0.85, 0.15, 0.2)
+
+
+var _codex_toast: Label
+
+
+func _on_codex_unlocked(id: String) -> void:
+	var e := Codex.get_entry(id)
+	if e.is_empty():
+		return
+	_codex_toast.text = Textos.t("codex_toast", {"n": e["titulo"]})
+	var tw := create_tween()
+	tw.tween_property(_codex_toast, "modulate:a", 1.0, 0.3)
+	tw.tween_interval(3.5)
+	tw.tween_property(_codex_toast, "modulate:a", 0.0, 0.6)
 
 
 # ----------------------------------------------------------- objetivos

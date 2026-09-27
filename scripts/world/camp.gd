@@ -28,7 +28,7 @@ func _ready() -> void:
 
 func interact() -> void:
 	if GameTime.phase != GameTime.Phase.DAY:
-		GameState.thot(Dialogos.thot("campamento_noche"))
+		GameState.thot(Dialogos.thot("campamento_noche"), true)
 		return
 	var box = get_tree().get_first_node_in_group("choice_box")
 	box.ask(Textos.t("camp_titulo"), [Textos.t("camp_esperar"), Textos.t("cancelar")], func(i: int):

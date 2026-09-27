@@ -55,7 +55,7 @@ func _process(delta: float) -> void:
 
 func interact() -> void:
 	if built != "":
-		GameState.thot(Dialogos.thot(built))
+		GameState.thot(Dialogos.thot(built), true)
 		return
 	if GameTime.is_night():
 		return
@@ -85,7 +85,7 @@ func _on_choice(i: int) -> void:
 	else:
 		return
 	if not GameState.can_afford(cost):
-		GameState.thot(Textos.t("sin_dinero"))
+		GameState.thot(Textos.t("sin_dinero"), true)
 		SFX.play("hit_player", -10.0)
 		return
 	GameState.add_deben(-cost)

@@ -617,7 +617,7 @@ func _on_health_changed(h: int, _m: int) -> void:
 			GameState.escarabajo_usado_esta_noche = true
 			GameState.health = int(GameState.max_health * 0.5)
 			GameState.health_changed.emit(GameState.health, GameState.max_health)
-			GameState.thot(Dialogos.thot("escarabajo_uso"))
+			GameState.thot(Dialogos.thot("escarabajo_uso"), true)
 			_hurt_iframes = 2.0
 			for k in range(4):
 				CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.5 + k * 0.3, 0), Color(0.3, 0.6, 1.0))
@@ -627,7 +627,7 @@ func _on_health_changed(h: int, _m: int) -> void:
 		sprite.modulate = Color(0.5, 0.3, 0.6)
 		died.emit()
 	elif h > 0 and h <= GameState.max_health * 0.3:
-		GameState.thot_once("vida_baja", Dialogos.thot("vida_baja"))
+		GameState.thot_once("vida_baja", Dialogos.thot("vida_baja"), true)
 
 
 ## Devuelve el control despues de una derrota (StoryDirector).

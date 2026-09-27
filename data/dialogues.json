@@ -101,25 +101,25 @@
     ]
   },
   "thot": {
-    "inicio": "Bienvenido de vuelta, Nakht. Muévete con WASD. Arriba a la derecha verás tus OBJETIVOS: te dicen qué hacer.",
-    "arar": "Esta es tu granja. Párate frente a un cuadro de tierra oscura y pulsa E para ararlo.",
-    "sembrar": "¡Bien! Pulsa E otra vez para sembrar. Con 1, 2 y 3 eliges qué semilla: trigo, lino o papiro.",
-    "regar": "Ahora E una vez más para regar. Sin agua no crece nada.",
-    "regado": "Perfecto. Mañana estará más grande. El trigo tarda 1 día; el lino y el papiro, 2.",
-    "aldeanos": "Cuando termines, ve a la aldea (arriba a la derecha). Los aldeanos con un ! amarillo tienen algo que decirte.",
-    "atardecer": "El sol se pone. Cuando oscurezca, tus herramientas se convertirán en armas: vienen las criaturas de Ammit.",
-    "noche1": "¡Ahí vienen! Clic para atacar hacia el ratón. Espacio para esquivar. Con 1, 2 y 3 cambias de arma.",
-    "primer_kill": "¡Una menos! Estas sombras son 'sheut': los egipcios creían que la sombra era una parte más de cada persona.",
+    "inicio": "Soy Thot, tu escriba. Muévete con WASD. Arriba a la derecha tienes tus OBJETIVOS.",
+    "arar": "Mira un cuadro de tierra oscura y pulsa E para arar.",
+    "sembrar": "E otra vez para sembrar. 1, 2 y 3 eligen la semilla.",
+    "regar": "E una vez más para regar.",
+    "regado": "Bien. Crecerá durante el día y la noche.",
+    "aldeanos": "La aldea está arriba a la derecha. Los que tienen un ! quieren hablarte.",
+    "atardecer": "Se pone el sol. Tus herramientas se vuelven armas: prepárate.",
+    "noche1": "¡Ahí vienen! Clic para atacar, Espacio para esquivar.",
+    "primer_kill": "Una sombra menos. Anotado.",
     "cultivo_perdido": "¡Las crías de Ammit van por tus cultivos! Protégelos.",
     "vida_baja": "Tu vida se apaga. Esquiva, retrocede, o equipa el Anj con Q.",
-    "amanecer": "¡Sobreviviste a la noche! Este resumen te dice qué pasó y cómo cambió tu corazón.",
-    "dia2": "Día 2. Cosecha lo maduro y véndelo a Ptahmose, en el muelle. Con esas monedas (deben) puedes construir defensas.",
+    "amanecer": "Sobreviviste. Te leo lo que anoté esta noche.",
+    "dia2": "Cosecha, vende a Ptahmose y usa el deben para defensas.",
     "defensa": "¿Ves esos pedestales de piedra junto al campo? Pulsa E en uno para construir una defensa.",
     "altar_d2": "Nadie vigila hoy el altar del templo. Tiene ofrendas de valor... Tomarlas te haría rico. Y a tu corazón, más pesado.",
     "noche2": "¡Nakht! Unas sombras van hacia la aldea y otras hacia tus cultivos. No puedes estar en los dos sitios. ¿Qué vas a proteger?",
     "aldea_atacada": "¡Están saqueando la aldea!",
     "aldea_salvada": "La aldea resiste. Tus cultivos... bueno. El trigo vuelve a crecer; la gente no.",
-    "dia3": "Último día. Algo grande se acerca desde la necrópolis (el cementerio del sur). Meret quiere verte en el templo.",
+    "dia3": "Último día. Esta noche viene algo grande. Meret te espera en el templo.",
     "noche3": "Esta es la gran noche. Viene el heraldo de Ammit, su mensajero más fuerte. Aguanta.",
     "jefe": "¡El Heraldo! Cabeza de cocodrilo, cuerpo de león, ancas de hipopótamo. Como su ama. Cuidado con su embestida.",
     "jefe_rugido": "¡Está llamando a sus crías!",
@@ -137,7 +137,9 @@
     "shabtis_todos": "¡Los cinco shabtis! Ptahmose pagaría bien... ya te lo pagó el destino. Y Maat lo nota.",
     "senet_encontrado": "La ficha de senet de Iry. Llévasela: está en la aldea.",
     "campamento_noche": "De noche no se descansa, Nakht. De noche se pelea.",
-    "ofrenda": "Una ofrenda a Maat. Tu corazón pesa un poco menos."
+    "ofrenda": "Una ofrenda a Maat. Tu corazón pesa un poco menos.",
+    "misterio_d2": "Tu juicio... Hay algo en mi papiro de ese día que no me cuadra. Luego te cuento. Quizá.",
+    "misterio_d3": "Nakht. Si tu corazón empató, no fue por casualidad. Pero no me corresponde decírtelo. Todavía."
   },
   "anubis": {
     "intro": [
@@ -146,7 +148,8 @@
       "Anubis: Ni bueno ni malo. Así no puedo juzgarte.",
       "Anubis: Te devuelvo a la vida por tres días. Lo que hagas decidirá hacia dónde se inclina tu corazón.",
       "Anubis: Pero Ammit no quiere quedarse sin su comida. Cada noche mandará a sus criaturas por ti.",
-      "Thot: Y yo iré contigo. Soy Thot, el escriba de los dioses: yo anoté tu juicio. Te explicaré todo lo que no entiendas."
+      "Anubis: Thot, escriba de los dioses. Tú anotaste este juicio. Irás con él y escribirás cada cosa que haga.",
+      "Thot: ...Como ordenes. Soy Thot, Nakht. Donde vayas, iré. Todo lo que hagas quedará en mi papiro, y al final Anubis lo leerá."
     ]
   },
   "final": {

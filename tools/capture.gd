@@ -165,9 +165,10 @@ func _setup(kind: String) -> void:
 			GameState.enemies_defeated_tonight = 7
 			GameState.crops_lost_tonight = 2
 			GameState.heart_at_night_start = 50.0
-			GameState.shift_heart(-10.0, "defender_aldea")
+			GameState.shift_heart(-6.0, "defender_aldea")
+			GameState.shift_heart(-3.0, "ofrenda")
 			farm.get_node("DawnSummary").show_summary(2, [[Textos.t("amanecer_aldea_salvada"), Color(0.55, 0.9, 1.0)]])
-			await get_tree().create_timer(1.8).timeout
+			await get_tree().create_timer(4.0).timeout
 		"codice":
 			for id in ["anubis", "thot", "maat", "ammit", "kemet", "cultivos"]:
 				Codex.unlock(id)

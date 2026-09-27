@@ -60,13 +60,13 @@ func interact() -> void:
 		if n >= 5:
 			GameState.add_deben(20)
 			GameState.shift_heart(-3.0, "shabtis")
-			GameState.thot(Dialogos.thot("shabtis_todos"))
+			GameState.thot(Dialogos.thot("shabtis_todos"), true)
 		else:
-			GameState.thot(Dialogos.thot("shabti").replace("{n}", str(n)))
+			GameState.thot(Dialogos.thot("shabti").replace("{n}", str(n)), true)
 	else:
 		GameState.tutorial["iry_senet"] = "encontrado"
 		Codex.unlock("senet")
-		GameState.thot(Dialogos.thot("senet_encontrado"))
+		GameState.thot(Dialogos.thot("senet_encontrado"), true)
 	queue_free()
 
 

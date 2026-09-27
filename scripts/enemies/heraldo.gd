@@ -63,7 +63,7 @@ func _enter(s: S) -> void:
 			sprite.play("roar")
 			SFX.play("roar")
 			_shake(0.25, 0.6)
-			GameState.thot_once("jefe_rugido", Dialogos.thot("jefe_rugido"))
+			GameState.thot_once("jefe_rugido", Dialogos.thot("jefe_rugido"), true)
 		S.SLAM_WINDUP:
 			sprite.play("slam")
 			sprite.frame = 0
@@ -94,7 +94,7 @@ func _physics_process(delta: float) -> void:
 				_intro_done = true
 				SFX.play("roar")
 				_shake(0.3, 0.8)
-				GameState.thot(Dialogos.thot("jefe"))
+				GameState.thot(Dialogos.thot("jefe"), true)
 			if _state_t > 1.4:
 				_enter(S.CHASE)
 		S.CHASE:
@@ -250,7 +250,7 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, _stun: float = 0.0
 			sprite.modulate = Color(1.4, 0.8, 0.8) if _enraged else Color.WHITE)
 	if not _enraged and health <= max_health / 2:
 		_enraged = true
-		GameState.thot(Dialogos.thot("jefe_mitad"))
+		GameState.thot(Dialogos.thot("jefe_mitad"), true)
 		_roar_t = 0.0
 		_decide_t = 0.3
 	if health <= 0:
@@ -287,7 +287,7 @@ func die() -> void:
 	tw.tween_interval(1.0)
 	tw.tween_callback(func():
 		Engine.time_scale = 1.0
-		GameState.thot(Dialogos.thot("jefe_muerto"))
+		GameState.thot(Dialogos.thot("jefe_muerto"), true)
 		defeated.emit())
 	tw.tween_property(sprite, "modulate", Color(0.5, 0.2, 0.7, 0.0), 1.2)
 	tw.parallel().tween_property(sprite, "position:y", sprite.position.y + 1.0, 1.2)

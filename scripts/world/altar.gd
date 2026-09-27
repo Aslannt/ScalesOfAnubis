@@ -88,4 +88,4 @@ func _robar() -> void:
 	GameState.add_deben(DEBEN_ROBADOS)
 	GameState.shift_heart(PESO_ROBO, "robo_altar")
 	GameState.register_decision("robo_altar", "robado")
-	GameState.thot(Dialogos.thot("robo"))
+	GameState.thot(Dialogos.thot("robo"), true)

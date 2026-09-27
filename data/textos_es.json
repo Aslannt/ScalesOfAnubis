@@ -133,5 +133,16 @@
   "altar_sin_cosecha": "(no tienes cosecha para ofrecer)",
   "obj_shabtis": "Shabtis ocultos ({n}/5)",
   "obj_senet": "Busca la ficha de Iry (necrópolis)",
-  "obj_senet_volver": "Devuélvele la ficha a Iry"
+  "obj_senet_volver": "Devuélvele la ficha a Iry",
+  "notas_titulo": "Thot anotó:",
+  "notas_nada": "Nada que cambie tu corazón.",
+  "motivo_ofrenda": "Ofrendas a Maat",
+  "motivo_robo_altar": "Robaste la ofrenda del altar",
+  "motivo_respetar_altar": "Respetaste el altar",
+  "motivo_meret_mision": "Ayudaste al templo con lino",
+  "motivo_defender_aldea": "Defendiste la aldea",
+  "motivo_abandonar_aldea": "Dejaste sola a la aldea",
+  "motivo_ayudar_iry": "Ayudaste a Iry",
+  "motivo_shabtis": "Reuniste los cinco shabtis",
+  "codex_toast": "Nuevo en el códice: {n}  [Tab]"
 }

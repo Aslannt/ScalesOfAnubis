@@ -126,9 +126,13 @@ def thot(anim, i):
     # cuello y cabeza negros
     d.line([(14, 11 + y), (16, 8 + y)], fill=BLACK, width=2)
     d.ellipse([15, 5 + y, 19, 9 + y], fill=BLACK)
-    # pico largo curvo hacia abajo
+    # pico largo curvo hacia abajo (al hablar se abre la mandibula)
     for k, (bx, by) in enumerate(((19, 7), (20, 8), (21, 9), (22, 10), (22, 11), (23, 12))):
         d.point((bx, by + y), fill=(70, 60, 58, 255))
+    if anim == "talk" and i % 2 == 1:
+        for bx, by in ((19, 9), (20, 10), (21, 11), (21, 12), (22, 13)):
+            d.point((bx, by + y), fill=(70, 60, 58, 255))
+        d.point((20, 9 + y), fill=c("red_dark"))
     d.point((17, 6 + y), fill=c("fire_yellow"))  # ojo
     # paleta de escriba colgada del cuello
     d.line([(15, 10 + y), (15, 12 + y)], fill=c("soil"))
@@ -162,7 +166,7 @@ if __name__ == "__main__":
     save(strip(fr), os.path.join(ROOT, "enemies", "cria.png"))
     save_layout(os.path.join(ROOT, "enemies", "cria_layout.json"), 24, 20, nm)
     fr, nm = [], []
-    for anim, n in (("idle", 2), ("fly", 4)):
+    for anim, n in (("idle", 2), ("fly", 4), ("talk", 2)):
         for i in range(n):
             fr.append(thot(anim, i)); nm.append(f"{anim}_{i}")
     save(strip(fr), os.path.join(ROOT, "companion", "thot.png"))

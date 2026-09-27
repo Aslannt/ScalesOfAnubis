@@ -21,18 +21,18 @@ func _ready() -> void:
 	dim.color = Color(0.06, 0.03, 0.02, 0.55)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(dim)
-	_panel = UIStyle.make_panel(self, Vector2(240 - 110, 135 - 64), Vector2(220, 128))
-	UIStyle.make_icon(_panel, "res://assets/sprites/icons/phase_dawn.png", Vector2(102, 4))
+	_panel = UIStyle.make_panel(self, Vector2(240 - 120, 135 - 84), Vector2(240, 168))
+	UIStyle.make_icon(_panel, "res://assets/sprites/icons/phase_dawn.png", Vector2(112, 4))
 	_title = UIStyle.make_label(_panel, "", Vector2(0, 22), UIStyle.BIG, Color(0.98, 0.8, 0.35))
-	_title.size = Vector2(220, 18)
+	_title.size = Vector2(240, 18)
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_lines = VBoxContainer.new()
 	_lines.position = Vector2(14, 44)
-	_lines.size = Vector2(192, 60)
+	_lines.size = Vector2(212, 100)
 	_lines.add_theme_constant_override("separation", 2)
 	_panel.add_child(_lines)
-	_cont = UIStyle.make_label(_panel, Textos.t("amanecer_continuar"), Vector2(0, 112), UIStyle.SMALL, UIStyle.TEXT_DIM)
-	_cont.size = Vector2(220, 10)
+	_cont = UIStyle.make_label(_panel, Textos.t("amanecer_continuar"), Vector2(0, 152), UIStyle.SMALL, UIStyle.TEXT_DIM)
+	_cont.size = Vector2(240, 10)
 	_cont.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 
@@ -50,6 +50,21 @@ func show_summary(day: int, extra_lines: Array = []) -> void:
 		rows.append([Textos.t("amanecer_cambio", {"n": ("%+d" % int(round(delta)))}), Color(1, 0.5, 0.4) if delta > 0 else Color(0.55, 0.9, 1.0)])
 	for e in extra_lines:
 		rows.append(e)
+	# notas de Thot: lo que hiciste y como movio tu corazon (su papel en la
+	# historia: es el escriba que anota cada acto para el pesaje)
+	var grouped := {}
+	var order: Array = []
+	for entry in GameState.heart_log:
+		if not grouped.has(entry[0]):
+			grouped[entry[0]] = 0.0
+			order.append(entry[0])
+		grouped[entry[0]] += entry[1]
+	if not order.is_empty():
+		rows.append([Textos.t("notas_titulo"), UIStyle.GOLD])
+		for m in order.slice(0, 3):
+			var dv: float = grouped[m]
+			rows.append(["  %s (%+d)" % [Textos.t("motivo_" + m), int(round(dv))], Color(1, 0.55, 0.45) if dv > 0 else Color(0.55, 0.9, 1.0)])
+	GameState.heart_log = []
 	for r in rows:
 		var l := Label.new()
 		l.text = r[0]

@@ -8,7 +8,7 @@ signal inventory_changed()
 signal day_changed(dia: int)
 signal decision_tomada(id: String, valor: String)
 ## Comentario de Thot no bloqueante (tutorial integrado y reacciones, GDD 4)
-signal thot_says(texto: String)
+signal thot_says(texto: String, urgente: bool)
 signal village_damaged(total: int)
 signal seed_selected(id: String)
 signal crop_attacked(plot: Node)
@@ -50,6 +50,8 @@ var heart_at_night_start: float = HEART_START
 var total_enemies_defeated: int = 0
 var boss_defeated: bool = false
 var demo_finished: bool = false
+## Lo que Thot "anota" (cambios del corazon) desde el ultimo amanecer.
+var heart_log: Array = []
 var current_tool_index: int = 0  # 0=agricola/1=arma, ver Player
 
 # vida del jugador (para HUD / combate M4)
@@ -107,6 +109,7 @@ func reset() -> void:
 	total_enemies_defeated = 0
 	boss_defeated = false
 	demo_finished = false
+	heart_log = []
 	_input_lock_until_ms = 0
 	pending_world = {}
 	Codex.reset()
@@ -179,16 +182,19 @@ func load_game() -> bool:
 	return true
 
 
-func thot(texto: String) -> void:
-	thot_says.emit(texto)
+## urgente = respuesta a algo que acabas de hacer o aviso de combate: sale
+## enseguida. Lo demas (tutorial, curiosidades) espera su turno con pausas,
+## para que Thot no hable sin parar (feedback de Deivid).
+func thot(texto: String, urgente: bool = false) -> void:
+	thot_says.emit(texto, urgente)
 
 
 ## Muestra un comentario de Thot solo la primera vez (flag de tutorial).
-func thot_once(flag: String, texto: String) -> bool:
+func thot_once(flag: String, texto: String, urgente: bool = false) -> bool:
 	if tutorial.get(flag, false):
 		return false
 	tutorial[flag] = true
-	thot_says.emit(texto)
+	thot_says.emit(texto, urgente)
 	return true
 
 
@@ -203,7 +209,7 @@ func select_seed(id: String) -> void:
 
 func crop_under_attack(plot: Node) -> void:
 	crop_attacked.emit(plot)
-	thot_once("cultivo_atacado", Dialogos.thot("cultivo_atacado"))
+	thot_once("cultivo_atacado", Dialogos.thot("cultivo_atacado"), true)
 
 
 func damage_village(n: int = 1) -> void:
@@ -315,6 +321,8 @@ func item_count(item_id: String) -> int:
 
 func shift_heart(delta: float, motivo: String = "") -> void:
 	heart_weight = clampf(heart_weight + delta, HEART_MIN, HEART_MAX)
+	if motivo != "" and absf(delta) > 0.01:
+		heart_log.append([motivo, delta])
 	if absf(delta) > 0.01:
 		thot_once("corazon_explica", Dialogos.thot("corazon_explica"))
 	heart_weight_changed.emit(heart_weight, delta, motivo)

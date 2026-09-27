@@ -50,7 +50,7 @@ func setup(p: Player, nd: Node, ds: Node) -> void:
 	_apply_pending_world()
 	# fundido de entrada al despertar en la granja
 	_fade.color.a = 1.0
-	create_tween().tween_property(_fade, "color:a", 0.0, 1.2)
+	create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(_fade, "color:a", 0.0, 1.2)
 
 
 func _process(delta: float) -> void:
@@ -78,10 +78,10 @@ func _on_phase(phase: int) -> void:
 	var day := GameState.current_day
 	match phase:
 		GameTime.Phase.DUSK:
-			GameState.thot_once("dusk_%d" % day, Dialogos.thot("atardecer"))
+			GameState.thot_once("dusk_%d" % day, Dialogos.thot("atardecer"), true)
 		GameTime.Phase.NIGHT:
 			var key: String = ["noche1", "noche2", "noche3"][clampi(day, 1, 3) - 1]
-			GameState.thot_once("night_%d" % day, Dialogos.thot(key))
+			GameState.thot_once("night_%d" % day, Dialogos.thot(key), true)
 			_village_warned = false
 		GameTime.Phase.DAWN:
 			_on_dawn()
@@ -89,8 +89,10 @@ func _on_phase(phase: int) -> void:
 			autosave()
 			if day == 2:
 				GameState.thot_once("dia2", Dialogos.thot("dia2"))
+				GameState.thot_once("misterio_d2", Dialogos.thot("misterio_d2"))
 			elif day == 3:
 				GameState.thot_once("dia3", Dialogos.thot("dia3"))
+				GameState.thot_once("misterio_d3", Dialogos.thot("misterio_d3"))
 
 
 ## Autoguardado al empezar cada dia: parcelas y defensas + GameState.
@@ -189,18 +191,18 @@ func objectives() -> Array:
 
 ## Fundido a negro, salto de hora y vuelta (campamento: "descansar").
 func fade_skip_to(phase: int) -> void:
-	var tw := create_tween()
+	var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tw.tween_property(_fade, "color:a", 1.0, 0.7)
 	await tw.finished
 	GameTime.elapsed = GameTime._bounds[phase][0] - 0.3
 	await get_tree().create_timer(0.6).timeout
-	create_tween().tween_property(_fade, "color:a", 0.0, 0.9)
+	create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS).tween_property(_fade, "color:a", 0.0, 0.9)
 
 
 func _on_village_damaged(total: int) -> void:
 	if not _village_warned and total >= 1:
 		_village_warned = true
-		GameState.thot(Dialogos.thot("aldea_atacada"))
+		GameState.thot(Dialogos.thot("aldea_atacada"), true)
 
 
 ## Amanecer: evalua la decision 2 (si fue la noche 2) y muestra el resumen.
@@ -247,14 +249,14 @@ func _go_final() -> void:
 	GameState.demo_finished = true
 	GameState.delete_save()
 	GameTime.paused = true
-	var tw := create_tween()
+	var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tw.tween_property(_fade, "color:a", 1.0, 1.5)
 	tw.tween_callback(func(): get_tree().change_scene_to_file(FINAL_SCENE))
 
 
 # ------------------------------------------------------------- derrota
 func _on_player_died() -> void:
-	GameState.thot(Dialogos.thot("derrota"))
+	GameState.thot(Dialogos.thot("derrota"), true)
 	var boss = night_director.boss if night_director else null
 	var boss_alive: bool = boss != null and is_instance_valid(boss) and not GameState.boss_defeated
 	var lost := 0
@@ -262,7 +264,7 @@ func _on_player_died() -> void:
 		lost = int(GameState.deben * 0.25)
 	await get_tree().create_timer(0.8).timeout
 	_fade_lbl.text = Textos.t("derrota_titulo")
-	var tw := create_tween()
+	var tw := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tw.tween_property(_fade, "color:a", 1.0, 0.8)
 	tw.parallel().tween_property(_fade_lbl, "modulate:a", 1.0, 0.8)
 	await tw.finished
@@ -286,6 +288,6 @@ func _on_player_died() -> void:
 	else:
 		GameTime.paused = false
 		GameTime.skip_to_dawn()
-	var tw2 := create_tween()
+	var tw2 := create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tw2.tween_property(_fade, "color:a", 0.0, 1.0)
 	tw2.parallel().tween_property(_fade_lbl, "modulate:a", 0.0, 0.6)

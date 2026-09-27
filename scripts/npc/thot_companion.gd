@@ -40,6 +40,34 @@ func _ready() -> void:
 	_on_phase_changed(GameTime.phase)
 	_shadow = CharacterFX.add_blob_shadow(self, 0.25)
 	_shadow.top_level = true
+	# cartel con su nombre mientras habla (Deivid: "ni me aprendi su nombre")
+	_nameplate = Label3D.new()
+	_nameplate.text = "THOT"
+	_nameplate.font_size = 40
+	_nameplate.outline_size = 10
+	_nameplate.modulate = Color(0.98, 0.8, 0.35, 0.0)
+	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_nameplate.no_depth_test = true
+	_nameplate.pixel_size = 0.01
+	_nameplate.position.y = 0.75
+	add_child(_nameplate)
+	var bark = get_tree().get_first_node_in_group("thot_bark")
+	if bark:
+		bark.speaking.connect(_on_speaking)
+
+
+var _nameplate: Label3D
+var _talking := false
+
+
+func _on_speaking(active: bool) -> void:
+	_talking = active
+	create_tween().tween_property(_nameplate, "modulate:a", 1.0 if active else 0.0, 0.25)
+	if active:
+		# el disco lunar destella al empezar a hablar
+		var e := _moon_light.light_energy
+		_moon_light.light_energy = e + 1.2
+		create_tween().tween_property(_moon_light, "light_energy", e, 0.5)
 
 
 var _shadow: MeshInstance3D = null
@@ -73,7 +101,11 @@ func _process(delta: float) -> void:
 	)
 	var moving := global_position.distance_to(desired) > 0.08
 	global_position = global_position.lerp(desired, clampf(lag * delta, 0.0, 1.0))
-	sprite.play("fly" if moving else "idle")
+	var bark = get_tree().get_first_node_in_group("thot_bark")
+	if _talking and bark and bark.is_speaking():
+		sprite.play("talk")
+	else:
+		sprite.play("fly" if moving else "idle")
 	sprite.flip_h = global_position.x > target.global_position.x
 	# sombra en el suelo (Thot flota)
 	if _shadow:
