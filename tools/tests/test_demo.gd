@@ -86,6 +86,8 @@ func _ready() -> void:
 	await _go_night()
 	nd._night_t = 70.0
 	await _secs(1.5)
+	await _secs(0.4)
+	check(trigo_plots[1]._shown_stage >= 1 and trigo_plots[1]._shown_stage <= 2 and not trigo_plots[1].is_ready(), "el trigo crece poco a poco durante la noche (etapa %d)" % trigo_plots[1]._shown_stage)
 	var n1 := get_tree().get_nodes_in_group("enemies").size()
 	check(n1 >= 5, "aparecen sombras en la noche 1 (%d)" % n1)
 	# que el brasero queme: poner un enemigo cerca
@@ -249,7 +251,7 @@ func _ready() -> void:
 
 	print("NOCHE 3")
 	await _go_night()
-	nd._night_t = 33.0
+	nd._night_t = 35.5
 	await _secs(1.5)
 	var boss = nd.boss
 	check(boss != null and is_instance_valid(boss), "aparece el Heraldo de Ammit")

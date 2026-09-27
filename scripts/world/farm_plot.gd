@@ -29,6 +29,12 @@ const CROP_FRAMES := 4
 const CROP_SIZE := Vector2(1.5, 2.0)
 var _mat_dry: Material
 var _mat_wet: Material
+## Crecimiento visible entre amaneceres (reporte de Deivid: "cambian de
+## golpe de un dia para otro"): tras regar, la planta pasa por las etapas
+## y se estira poco a poco hasta el siguiente amanecer, donde madura.
+var _water_elapsed: float = -1.0
+var _shown_stage: int = -1
+var _grow_tick: float = 0.0
 
 
 func _ready() -> void:
@@ -126,6 +132,7 @@ func water() -> bool:
 	if state != State.PLANTED or watered_today:
 		return false
 	watered_today = true
+	_water_elapsed = GameTime.elapsed
 	_soil_mesh.material_override = _mat_wet
 	if not quiet:
 		SFX.play("water")
@@ -194,7 +201,24 @@ func is_being_eaten() -> bool:
 	return eat_progress > 0.0 and _eat_idle < 0.4
 
 
+## 0..1: cuanto del tramo "regado -> siguiente amanecer" ya paso.
+func _growth_fraction() -> float:
+	if not watered_today or _water_elapsed < 0.0:
+		return 0.0
+	var dawn := GameTime.DAWN_SECONDS
+	var target := dawn if _water_elapsed < dawn else GameTime.TOTAL_SECONDS + dawn
+	var now := GameTime.elapsed
+	if now < _water_elapsed - 0.5:
+		now += GameTime.TOTAL_SECONDS
+	return clampf((now - _water_elapsed) / maxf(1.0, target - _water_elapsed), 0.0, 1.0)
+
+
 func _process(delta: float) -> void:
+	if state == State.PLANTED and watered_today:
+		_grow_tick -= delta
+		if _grow_tick <= 0.0:
+			_grow_tick = 0.25
+			_update_crop_frame()
 	if eat_progress <= 0.0:
 		return
 	_eat_idle += delta
@@ -282,8 +306,21 @@ func damage() -> void:
 func _update_crop_frame() -> void:
 	var data: Dictionary = GameState.crops.get(crop_id, {})
 	var dias := int(data.get("dias_para_crecer", 1))
-	var stage := 3 if growth_day >= dias else int(round(float(growth_day) / float(dias) * 3.0))
-	stage = clampi(stage, 0, CROP_FRAMES - 1)
+	var stage := 3
+	var sy := 1.0
+	if growth_day < dias:
+		# progreso continuo; la etapa madura (3) solo llega al amanecer
+		var v := (float(growth_day) + _growth_fraction()) / float(dias)
+		var pos := v * 3.0
+		stage = clampi(int(floor(pos)), 0, 2)
+		sy = lerpf(0.72, 1.0, clampf(pos - stage, 0.0, 1.0))
+	if stage != _shown_stage:
+		if _shown_stage >= 0 and stage > _shown_stage and not quiet and is_inside_tree():
+			_stage_pop(stage == 3)
+		_shown_stage = stage
+	for q in _crop_quads:
+		q.scale.y = sy
+		q.position.y = CROP_SIZE.y * 0.5 * sy
 	var w := 1.0 / CROP_FRAMES
 	for i in range(_crop_mats.size()):
 		# la fila de adelante va espejada para que no se vean dos copias iguales
@@ -293,7 +330,18 @@ func _update_crop_frame() -> void:
 			_crop_mats[i].set_shader_parameter("region", Vector4(stage * w, 0, w, 1))
 
 
+## La planta "brota" al pasar de etapa: estiron y hojitas.
+func _stage_pop(mature: bool) -> void:
+	for q in _crop_quads:
+		var tw := create_tween()
+		tw.tween_property(q, "scale:x", 1.18, 0.12).set_trans(Tween.TRANS_SINE)
+		tw.tween_property(q, "scale:x", 1.0, 0.3).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	var col := Color(0.95, 0.82, 0.3) if mature else Color(0.5, 0.78, 0.32)
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.5, 0), col)
+
+
 func _hide_crop() -> void:
+	_shown_stage = -1
 	for q in _crop_quads:
 		q.visible = false
 
@@ -303,8 +351,9 @@ func _on_day_started() -> void:
 		return
 	if watered_today:
 		growth_day += 1
-		_update_crop_frame()
 	watered_today = false
+	_water_elapsed = -1.0
+	_update_crop_frame()
 	_soil_mesh.material_override = _mat_dry
 
 
