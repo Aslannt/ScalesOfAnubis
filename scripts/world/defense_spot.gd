@@ -103,6 +103,9 @@ func build(kind: String) -> void:
 	d.position.y = 0.3 if kind != "muro" else 0.0
 	if kind == "muro":
 		_base.visible = false
+		var wb = get_tree().get_first_node_in_group("world_builder")
+		if wb:
+			wb.rebake_navigation.call_deferred()
 	add_child(d)
 	SFX.play("build")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.6, 0), Color(1.0, 0.85, 0.4))

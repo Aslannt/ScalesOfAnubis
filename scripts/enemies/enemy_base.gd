@@ -40,10 +40,18 @@ var _village_tick: float = 0.0
 var _base_sprite_y: float = 0.0
 
 @onready var sprite: AnimatedSprite3D = $AnimatedSprite3D
+var _agent: NavigationAgent3D
+var _repath_t: float = 0.0
 
 
 func _ready() -> void:
 	add_to_group("enemies")
+	_agent = NavigationAgent3D.new()
+	_agent.path_desired_distance = 0.7
+	_agent.target_desired_distance = 0.8
+	_agent.radius = 0.6
+	_agent.avoidance_enabled = false
+	add_child(_agent)
 	health = max_health
 	CharacterFX.add_blob_shadow(self, shadow_radius)
 	if sheet_path != "":
@@ -87,8 +95,9 @@ func _physics_process(delta: float) -> void:
 		dir.y = 0
 		var stop := _stop_distance()
 		if dir.length() > stop:
-			move = dir.normalized() * speed
-			sprite.flip_h = dir.x < 0
+			var step := _nav_direction(dir, delta)
+			move = step * speed
+			sprite.flip_h = step.x < 0
 		move += _separation() * speed * 0.8
 	if move.length() > 0.1:
 		sprite.play(move_anim)
@@ -136,6 +145,27 @@ func _update_lunge(delta: float) -> bool:
 			create_tween().tween_property(sprite, "scale", Vector3(1.2, 0.8, 1.0), 0.35)
 			return true
 	return false
+
+
+## Direccion hacia el objetivo siguiendo la malla de navegacion. De cerca
+## (o si la malla aun no esta lista) va directo.
+func _nav_direction(direct: Vector3, delta: float) -> Vector3:
+	if direct.length() < 2.5 or _agent == null:
+		return direct.normalized()
+	var map := _agent.get_navigation_map()
+	if not map.is_valid() or NavigationServer3D.map_get_iteration_id(map) == 0:
+		return direct.normalized()
+	_repath_t -= delta
+	if _repath_t <= 0.0:
+		_repath_t = 0.35
+		_agent.target_position = target.global_position
+	if _agent.is_navigation_finished():
+		return direct.normalized()
+	var nxt := _agent.get_next_path_position() - global_position
+	nxt.y = 0
+	if nxt.length() < 0.05:
+		return direct.normalized()
+	return nxt.normalized()
 
 
 func _stop_distance() -> float:

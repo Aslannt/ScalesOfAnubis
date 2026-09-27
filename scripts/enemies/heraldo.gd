@@ -99,10 +99,13 @@ func _physics_process(delta: float) -> void:
 				_enter(S.CHASE)
 		S.CHASE:
 			if p:
+				target = p
 				var dir := p.global_position - global_position
 				dir.y = 0
 				if dir.length() > 2.0:
-					move = dir.normalized() * (speed * (1.3 if _enraged else 1.0))
+					var step := _nav_direction(dir, delta)
+					move = step * (speed * (1.3 if _enraged else 1.0))
+					_check_boss_stuck(delta, dir.length())
 				sprite.flip_h = dir.x < 0
 				_touch_damage(p)
 			_decide_t -= delta
@@ -154,6 +157,35 @@ func _physics_process(delta: float) -> void:
 	velocity.z = move.z + _knock.z
 	velocity.y = -9.8 if not is_on_floor() else -0.1
 	move_and_slide()
+
+
+# --- si se traba entre tumbas o casas, se abre paso (reporte de Deivid:
+# se quedo atascado y la pelea perdio toda la dificultad) ---
+var _stuck_acc: float = 0.0
+var _last_pos := Vector3.ZERO
+var _ghost_t: float = 0.0
+
+
+func _check_boss_stuck(delta: float, dist: float) -> void:
+	if _ghost_t > 0.0:
+		_ghost_t -= delta
+		if _ghost_t <= 0.0:
+			collision_mask = 1
+		return
+	var moved := global_position.distance_to(_last_pos)
+	_last_pos = global_position
+	if dist > 3.0 and moved < speed * delta * 0.25:
+		_stuck_acc += delta
+	else:
+		_stuck_acc = maxf(0.0, _stuck_acc - delta)
+	if _stuck_acc > 1.0:
+		_stuck_acc = 0.0
+		# atraviesa el obstaculo un momento (como si lo derribara)
+		collision_mask = 0
+		_ghost_t = 0.9
+		SFX.play("slam", -4.0)
+		_shake(0.1, 0.2)
+		CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.4, 0), 12, Color(0.8, 0.65, 0.45, 0.9))
 
 
 func _player() -> Node3D:

@@ -37,6 +37,27 @@ func _ready() -> void:
 	Input.action_release("move_left")
 	var d := Vector2(player.global_position.x - house_pos.x, player.global_position.z - house_pos.z).length()
 	check(d > 1.5, "jugador encerrado sale solo (%.1f m)" % d)
+	# una sombra con el templo en medio debe rodearlo y llegar al jugador
+	var nd = farm.get_node("NightDirector")
+	GameTime.force_phase(GameTime.Phase.NIGHT)
+	nd._schedule.clear()
+	await _secs(1.5)
+	var temple_pos := Vector3.ZERO
+	for n in farm.get_node("WorldBuilder/Props").get_children():
+		if n.name.begins_with("TemploMaat"):
+			temple_pos = n.global_position
+	player.global_position = temple_pos + Vector3(0, 0.3, 7.5)   # frente al templo
+	GameState.max_health = 99999
+	GameState.full_heal()
+	var e = nd.spawn("sombra", "", "", temple_pos + Vector3(0, 0, -6.5))  # detras
+	e.can_lunge = false
+	var reached := false
+	for i in range(30):
+		await _secs(0.5)
+		if is_instance_valid(e) and e.global_position.distance_to(player.global_position) < 2.5:
+			reached = true
+			break
+	check(reached, "una sombra rodea el templo y llega al jugador (navegacion)")
 	print("TEST ROBUSTEZ: ", "OK" if ok else "FALLO")
 	get_tree().quit(0 if ok else 1)
 

@@ -132,6 +132,45 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 
 	var spawn: Array = data.get("player_spawn_tile", [world_w / 2, world_h / 2])
 	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)
+	_build_navigation()
+
+
+# ------------------------------------------------------------ navegacion
+## Malla de navegacion horneada al cargar (a partir de las colisiones del
+## mapa): las criaturas rodean casas, tumbas y muros en vez de quedar
+## atascadas (reporte de Deivid: enemigos y el Heraldo trabados).
+var nav_region: NavigationRegion3D
+
+
+func _build_navigation() -> void:
+	add_to_group("navmesh_source")
+	add_to_group("world_builder")
+	nav_region = NavigationRegion3D.new()
+	nav_region.name = "Navegacion"
+	var nm := NavigationMesh.new()
+	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN
+	nm.geometry_source_group_name = "navmesh_source"
+	nm.cell_size = 0.25
+	nm.cell_height = 0.25
+	nm.agent_radius = 0.75
+	nm.agent_height = 1.5
+	nm.agent_max_climb = 0.25
+	var hw := world_w * tile_size * 0.5
+	var hh := world_h * tile_size * 0.5
+	nm.filter_baking_aabb = AABB(Vector3(-hw, -1, -hh), Vector3(hw * 2, 4, hh * 2))
+	nav_region.navigation_mesh = nm
+	add_child(nav_region)
+	rebake_navigation()
+
+
+## Se vuelve a hornear cuando cambia el mapa (p. ej. al construir un muro).
+func rebake_navigation() -> void:
+	if nav_region == null:
+		return
+	if nav_region.is_baking():
+		await nav_region.bake_finished
+	nav_region.bake_navigation_mesh(true)
 
 
 ## Suelo de desierto exterior (bajo el mapa jugable) y piramides lejanas:
