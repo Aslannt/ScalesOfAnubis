@@ -180,6 +180,14 @@ func _setup(kind: String) -> void:
 			for k in range(4):
 				nd.spawn("sombra" if k % 2 == 0 else "cria", "", "", player.global_position + Vector3(-2.5 + k * 1.6, 0, -2.0))
 			await get_tree().create_timer(1.2).timeout
+			var banner = get_tree().get_first_node_in_group("combat_banner")
+			banner.announce(Textos.t("oleada_desierto"), Textos.t("oleada_sub_sombra"))
+			for k in range(6):
+				banner.add_hit()
+			var es := get_tree().get_nodes_in_group("enemies")
+			if es.size() > 0:
+				es[0].take_hit(999)
+			await get_tree().create_timer(0.35).timeout
 			player._start_attack()
 			await get_tree().create_timer(0.08).timeout
 

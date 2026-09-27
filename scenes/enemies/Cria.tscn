@@ -11,12 +11,13 @@ collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_cria")
 max_health = 10
-speed = 3.4
+speed = 3.6
 contact_damage = 10
 contact_range = 1.0
 contact_cooldown = 0.9
 sheet_path = "res://assets/sprites/enemies/cria.png"
 layout_path = "res://assets/sprites/enemies/cria_layout.json"
+coin_value = 3
 idle_anim = "idle"
 move_anim = "move"
 

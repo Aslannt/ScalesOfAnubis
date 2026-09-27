@@ -19,6 +19,13 @@ extends CharacterBody3D
 @export var idle_anim: String = "idle"
 @export var move_anim: String = "move"
 @export var shadow_radius: float = 0.5
+@export var coin_value: int = 2
+## Embestida corta: a media distancia se preparan (rojo) y se lanzan.
+@export var can_lunge: bool = false
+var _lunge_cd: float = 2.0
+var _lunge_t: float = 0.0
+var _lunge_dir := Vector3.ZERO
+var _lunge_windup: float = -1.0
 
 var group_id: String = ""
 var health: int
@@ -69,6 +76,8 @@ func _physics_process(delta: float) -> void:
 
 	target = _choose_target()
 	var move := Vector3.ZERO
+	if can_lunge and _update_lunge(delta):
+		return
 	if _windup_t >= 0.0:
 		_windup_t -= delta
 		if _windup_t < 0.0:
@@ -90,6 +99,43 @@ func _physics_process(delta: float) -> void:
 	velocity.y = -9.8 if not is_on_floor() else -0.1
 	move_and_slide()
 	_check_contact(delta)
+
+
+## Maneja la embestida; devuelve true si este frame la controla.
+func _update_lunge(delta: float) -> bool:
+	_lunge_cd -= delta
+	if _lunge_t > 0.0:
+		_lunge_t -= delta
+		velocity = _lunge_dir * 9.0 + Vector3(0, -0.1, 0)
+		move_and_slide()
+		if target and target.has_method("take_hit") and _contact_t <= 0.0 and global_position.distance_to(target.global_position) < contact_range:
+			target.take_hit(contact_damage, _lunge_dir * 4.0)
+			_contact_t = contact_cooldown
+		if _lunge_t <= 0.0:
+			sprite.modulate = Color.WHITE
+			sprite.scale = Vector3.ONE
+		return true
+	if _lunge_windup >= 0.0:
+		_lunge_windup -= delta
+		velocity = Vector3(0, -0.1, 0)
+		move_and_slide()
+		if _lunge_windup < 0.0:
+			_lunge_t = 0.28
+			SFX.play("dodge", -6.0)
+			CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.1, 0), 4, Color(0.3, 0.2, 0.4, 0.9))
+		return true
+	if target and target.is_in_group("player") and _lunge_cd <= 0.0 and _windup_t < 0.0:
+		var d := target.global_position - global_position
+		d.y = 0
+		if d.length() > 2.2 and d.length() < 4.5:
+			_lunge_cd = randf_range(3.0, 4.5)
+			_lunge_windup = 0.45
+			_lunge_dir = d.normalized()
+			sprite.flip_h = d.x < 0
+			sprite.modulate = Color(1.9, 0.5, 0.45)
+			create_tween().tween_property(sprite, "scale", Vector3(1.2, 0.8, 1.0), 0.35)
+			return true
+	return false
 
 
 func _stop_distance() -> float:
@@ -167,7 +213,11 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, stun: float = 0.0)
 	health -= amount
 	_knock = knockback
 	_stun_t = maxf(_stun_t, stun)
-	# un golpe interrumpe el aviso de ataque
+	# un golpe interrumpe el aviso de ataque y la embestida
+	if _lunge_windup >= 0.0 or _lunge_t > 0.0:
+		_lunge_windup = -1.0
+		_lunge_t = 0.0
+		sprite.scale = Vector3.ONE
 	if _windup_t >= 0.0:
 		_windup_t = -1.0
 		_contact_t = contact_cooldown * 0.5
@@ -196,6 +246,10 @@ func die() -> void:
 	SFX.play("enemy_death")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.6, 0), Color(0.5, 0.3, 0.7))
 	CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), 8, Color(0.25, 0.15, 0.35, 0.9))
+	CoinPickup.burst(get_tree().current_scene, global_position, coin_value)
+	var cam := get_viewport().get_camera_3d()
+	if cam and cam.has_method("shake"):
+		cam.shake(0.1, 0.12)
 	_fade_out()
 
 

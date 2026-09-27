@@ -266,8 +266,19 @@ def crop_lost():
     save_wav(os.path.join(OUT, "crop_lost.wav"), lowpass(s, 3))
 
 
+def drum_hit():
+    # golpe de tambor grande + sistro: anuncio de oleada
+    t = t_array(0.9)
+    f = 70 * np.exp(-t * 5) + 45
+    boom = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 4)
+    rng = np.random.RandomState(9)
+    n = rng.uniform(-1, 1, len(t))
+    n = (n - lowpass(n, 3)) * np.exp(-t * 18) * 0.25
+    save_wav(os.path.join(OUT, "drum_hit.wav"), boom + n, peak_dbfs=-9.0)
+
+
 if __name__ == "__main__":
-    for fn in (alarm, crop_lost, swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
+    for fn in (drum_hit, alarm, crop_lost, swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
         fn()
     plant()
     hit_enemy()

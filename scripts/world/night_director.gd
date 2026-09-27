@@ -41,7 +41,12 @@ func _on_night_started() -> void:
 	GameState.village_damage = 0
 	GameState.village_kills = 0
 	GameState.village_raiders_total = 0
-	for entry in _waves.get(key, []):
+	var banner = get_tree().get_first_node_in_group("combat_banner")
+	if banner:
+		banner.announce(Textos.t("noche_titulo", {"n": day}), Textos.t("noche_sub"))
+	var entries: Array = _waves.get(key, [])
+	for ei in range(entries.size()):
+		var entry: Dictionary = entries[ei]
 		var n := int(entry.get("n", 1))
 		var win: Array = entry.get("ventana", [0.0, 0.5])
 		for i in range(n):
@@ -51,6 +56,7 @@ func _on_night_started() -> void:
 				"tipo": entry.get("tipo", "sombra"),
 				"desde": entry.get("desde", "desierto"),
 				"grupo": entry.get("grupo", ""),
+				"entrada": ei,
 			})
 			if entry.get("grupo", "") == "aldea":
 				GameState.village_raiders_total += 1
@@ -71,7 +77,31 @@ func _process(delta: float) -> void:
 	_night_t += delta
 	while not _schedule.is_empty() and _schedule[0]["t"] <= _night_t:
 		var s: Dictionary = _schedule.pop_front()
+		_announce_entry(s)
 		spawn(s["tipo"], s["desde"], s["grupo"])
+
+
+var _announced: Dictionary = {}
+
+
+## Cartel grande la primera vez que aparece cada grupo de la oleada.
+func _announce_entry(s: Dictionary) -> void:
+	var key := "%d_%d" % [GameState.current_day, s["entrada"]]
+	if _announced.has(key):
+		return
+	_announced[key] = true
+	var banner = get_tree().get_first_node_in_group("combat_banner")
+	if banner == null:
+		return
+	var title := Textos.t("oleada_" + String(s["desde"]))
+	var sub := Textos.t("oleada_sub_cria") if s["tipo"] == "cria" else Textos.t("oleada_sub_sombra")
+	if s["grupo"] == "aldea":
+		title = Textos.t("oleada_noreste")
+		sub = Textos.t("oleada_sub_aldea")
+	if s["tipo"] == "jefe":
+		title = Textos.t("oleada_jefe")
+		sub = ""
+	banner.announce(title, sub)
 
 
 func spawn_point(nombre: String) -> Vector3:

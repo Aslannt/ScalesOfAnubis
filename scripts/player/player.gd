@@ -10,8 +10,8 @@ extends CharacterBody3D
 
 signal died()
 
-@export var speed: float = 4.2
-@export var dodge_speed: float = 11.0
+@export var speed: float = 5.4
+@export var dodge_speed: float = 13.0
 @export var dodge_duration: float = 0.22
 @export var dodge_cooldown: float = 0.6
 @export var interact_range: float = 2.2
@@ -298,6 +298,9 @@ class StaffBolt extends Node3D:
 			if d.length() < 0.9:
 				_hits.append(e)
 				e.take_hit(damage, dir * 2.0)
+				var banner = get_tree().get_first_node_in_group("combat_banner")
+				if banner:
+					banner.add_hit()
 				CombatFX.spawn_damage_number(get_tree().current_scene, e.global_position + Vector3(0, 1.0, 0), damage, Color(0.6, 0.85, 1.0))
 				CombatFX.spawn_hit_particles(get_tree().current_scene, global_position, Color(0.6, 0.85, 1.0))
 				if _hits.size() >= 2:
@@ -378,6 +381,9 @@ func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool) 
 			dir.y = 0
 			dir = dir.normalized() if dir.length() > 0.01 else _facing_vector()
 			body.take_hit(dano, dir * empuje, aturde)
+			var banner = get_tree().get_first_node_in_group("combat_banner")
+			if banner:
+				banner.add_hit()
 			CombatFX.spawn_damage_number(fx_root, body.global_position + Vector3(0, 1.0, 0), dano, Color(1.0, 0.85, 0.35) if heavy else Color.WHITE)
 			CombatFX.spawn_hit_particles(fx_root, body.global_position + Vector3(0, 0.9, 0))
 	if hit_any:

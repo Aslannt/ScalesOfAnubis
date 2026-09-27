@@ -20,6 +20,7 @@ layout_path = "res://assets/sprites/enemies/heraldo_layout.json"
 idle_anim = "idle"
 move_anim = "walk"
 shadow_radius = 1.8
+coin_value = 40
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 1.2, 0)

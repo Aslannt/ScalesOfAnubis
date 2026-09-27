@@ -29,6 +29,8 @@ func _ready() -> void:
 	nd.boss_spawned.connect(func(b): $HUD.show_boss(b))
 	$StoryDirector.setup(player, nd, $DawnSummary)
 
+	add_child(preload("res://scripts/ui/combat_banner.gd").new())
+
 	var ambient := AmbientFX.new()
 	ambient.name = "AmbientFX"
 	ambient.river_shore_x = world_builder.river_shore_x

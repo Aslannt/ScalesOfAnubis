@@ -233,6 +233,7 @@ func die() -> void:
 	GameState.total_enemies_defeated += 1
 	GameState.enemies_defeated_tonight += 1
 	GameState.boss_defeated = true
+	CoinPickup.burst(get_tree().current_scene, global_position, coin_value)
 	Codex.unlock("heraldo")
 	collision_layer = 0
 	collision_mask = 0

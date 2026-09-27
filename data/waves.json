@@ -1,19 +1,100 @@
 {
   "_doc": "Oleadas por noche (GDD 6.4 y 7). 'desde' = punto de aparicion de map_layout.json -> spawns. 'grupo' aldea = decision moral 2 (van al centro de la aldea). 'ventana' = fraccion de la noche en que aparecen [inicio, fin]. 'jefe' aparece en 'al' (fraccion de la noche) y retiene la noche hasta morir.",
   "1": [
-    {"tipo": "sombra", "n": 3, "desde": "desierto", "ventana": [0.02, 0.3]},
-    {"tipo": "sombra", "n": 3, "desde": "necropolis", "ventana": [0.3, 0.6]}
+    {
+      "tipo": "sombra",
+      "n": 4,
+      "desde": "desierto",
+      "ventana": [
+        0.03,
+        0.25
+      ]
+    },
+    {
+      "tipo": "sombra",
+      "n": 5,
+      "desde": "necropolis",
+      "ventana": [
+        0.35,
+        0.6
+      ]
+    }
   ],
   "2": [
-    {"tipo": "sombra", "n": 6, "desde": "noreste", "grupo": "aldea", "ventana": [0.02, 0.35]},
-    {"tipo": "cria", "n": 3, "desde": "sur", "ventana": [0.05, 0.3]},
-    {"tipo": "cria", "n": 3, "desde": "desierto", "ventana": [0.3, 0.6]},
-    {"tipo": "sombra", "n": 3, "desde": "necropolis", "ventana": [0.35, 0.65]}
+    {
+      "tipo": "sombra",
+      "n": 6,
+      "desde": "noreste",
+      "grupo": "aldea",
+      "ventana": [
+        0.03,
+        0.3
+      ]
+    },
+    {
+      "tipo": "cria",
+      "n": 4,
+      "desde": "sur",
+      "ventana": [
+        0.05,
+        0.3
+      ]
+    },
+    {
+      "tipo": "sombra",
+      "n": 5,
+      "desde": "desierto",
+      "ventana": [
+        0.35,
+        0.55
+      ]
+    },
+    {
+      "tipo": "cria",
+      "n": 4,
+      "desde": "necropolis",
+      "ventana": [
+        0.5,
+        0.7
+      ]
+    }
   ],
   "3": [
-    {"tipo": "sombra", "n": 5, "desde": "desierto", "ventana": [0.02, 0.25]},
-    {"tipo": "cria", "n": 4, "desde": "sur", "ventana": [0.05, 0.3]},
-    {"tipo": "sombra", "n": 3, "desde": "necropolis", "ventana": [0.15, 0.3]},
-    {"tipo": "jefe", "n": 1, "desde": "necropolis", "ventana": [0.32, 0.32]}
+    {
+      "tipo": "sombra",
+      "n": 6,
+      "desde": "desierto",
+      "ventana": [
+        0.02,
+        0.2
+      ]
+    },
+    {
+      "tipo": "cria",
+      "n": 5,
+      "desde": "sur",
+      "ventana": [
+        0.05,
+        0.25
+      ]
+    },
+    {
+      "tipo": "sombra",
+      "n": 4,
+      "desde": "necropolis",
+      "ventana": [
+        0.18,
+        0.3
+      ]
+    },
+    {
+      "tipo": "jefe",
+      "n": 1,
+      "desde": "necropolis",
+      "ventana": [
+        0.34,
+        0.34
+      ]
+    }
   ]
 }

@@ -110,5 +110,15 @@
   "obj_lino": "Lleva 3 manojos de lino a Meret ({n}/3)",
   "obj_gran_noche": "Prepárate: esta noche viene algo grande",
   "obj_jefe": "Derrota al Heraldo de Ammit",
-  "hud_peso": "Corazón {n}"
+  "hud_peso": "Corazón {n}",
+  "oleada_desierto": "¡Sombras desde el desierto!",
+  "oleada_necropolis": "¡Algo sale de la necrópolis!",
+  "oleada_noreste": "¡Van hacia la aldea!",
+  "oleada_sur": "¡Crías por el sur!",
+  "oleada_jefe": "¡EL HERALDO DE AMMIT!",
+  "oleada_sub_cria": "Van por tus cultivos",
+  "oleada_sub_sombra": "Van por ti",
+  "oleada_sub_aldea": "Defiende la aldea... o tus cultivos",
+  "noche_titulo": "NOCHE {n}",
+  "noche_sub": "Sobrevive hasta el amanecer"
 }
