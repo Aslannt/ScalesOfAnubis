@@ -3,9 +3,12 @@ extends Node3D
 ## Brasero sagrado (GDD 6.5): quema en area a las criaturas que pasan
 ## cerca. De noche arde fuerte e ilumina alrededor.
 
-const RADIUS := 2.0
 const TICK := 0.5
-const DAMAGE := 4
+## Numeros por nivel en data/defenses.json (set_level los aplica).
+var radius: float = 1.8
+var damage: int = 3
+var slows := false
+var level: int = 1
 
 var _flame: AnimatedSprite3D
 var _light: OmniLight3D
@@ -53,8 +56,8 @@ func _ready() -> void:
 	# circulo de alcance tenue en el suelo (se ve de noche)
 	_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = RADIUS - 0.06
-	torus.outer_radius = RADIUS
+	torus.inner_radius = radius - 0.06
+	torus.outer_radius = radius
 	torus.ring_segments = 3
 	torus.rings = 32
 	_ring.mesh = torus
@@ -66,6 +69,26 @@ func _ready() -> void:
 	_ring.position.y = -0.26
 	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_ring)
+
+
+func set_level(lv: int, st: Dictionary) -> void:
+	level = lv
+	radius = float(st.get("radio", radius))
+	damage = int(st.get("dano", damage))
+	slows = bool(st.get("lento", false))
+	if _ring:
+		var torus := _ring.mesh as TorusMesh
+		torus.inner_radius = radius - 0.06
+		torus.outer_radius = radius
+	if _flame:
+		_flame.pixel_size = 0.07 + 0.012 * (lv - 1)
+		_flame.position.y = 1.55 + 0.08 * (lv - 1)
+		# fuego de Ra: llama azul-blanca
+		_flame.modulate = Color(0.6, 0.85, 1.6) if slows else Color.WHITE
+	if _light:
+		_light.omni_range = 6.0 + lv
+		_light.light_color = Color(0.55, 0.75, 1.0) if slows else Color(1.0, 0.6, 0.25)
+		(_ring.material_override as StandardMaterial3D).albedo_color = Color(0.5, 0.75, 1.0, 0.35) if slows else Color(1.0, 0.55, 0.2, 0.35)
 
 
 func _process(delta: float) -> void:
@@ -83,6 +106,8 @@ func _process(delta: float) -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
 		var dv: Vector3 = e.global_position - global_position
 		dv.y = 0
-		if dv.length() <= RADIUS:
-			e.take_hit(DAMAGE, dv.normalized() * 1.5)
-			CombatFX.spawn_hit_particles(get_tree().current_scene, e.global_position + Vector3(0, 0.5, 0), Color(1.0, 0.55, 0.2))
+		if dv.length() <= radius:
+			if slows and e.has_method("slow"):
+				e.slow(1.0)
+			e.take_hit(damage, dv.normalized() * 1.5)
+			CombatFX.spawn_hit_particles(get_tree().current_scene, e.global_position + Vector3(0, 0.5, 0), Color(0.55, 0.8, 1.0) if slows else Color(1.0, 0.55, 0.2))

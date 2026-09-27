@@ -69,14 +69,18 @@ func _ready() -> void:
 	var spots: Array = wb.defense_spots
 	spots[0].interact()
 	await _frames(3)
-	choice._choose(0)
+	choice._choose(0)  # muro Nv1
 	spots[1].interact()
 	await _frames(3)
-	choice._choose(1)
+	choice._choose(1)  # brasero Nv1
 	spots[2].interact()
 	await _frames(3)
-	choice._choose(2)
-	check(spots[0].built == "estatua" and spots[1].built == "brasero" and spots[2].built == "muro", "estatua, brasero y muro construidos")
+	choice._choose(2)  # estatua: bloqueada el dia 1 (se ve como ???)
+	await _frames(2)
+	check(choice.visible and spots[2].built == "", "la estatua esta bloqueada el dia 1 y el menu no se cierra")
+	choice._choose(3)
+	await _frames(2)
+	check(spots[0].built == "muro" and spots[1].built == "brasero" and spots[1].level == 1, "muro y brasero Nv1 construidos")
 
 	print("NOCHE 1")
 	await _go_night()
@@ -84,12 +88,12 @@ func _ready() -> void:
 	await _secs(1.5)
 	var n1 := get_tree().get_nodes_in_group("enemies").size()
 	check(n1 >= 5, "aparecen sombras en la noche 1 (%d)" % n1)
-	# que la estatua dispare: poner un enemigo cerca
+	# que el brasero queme: poner un enemigo cerca
 	var e0 = get_tree().get_nodes_in_group("enemies")[0]
-	e0.global_position = spots[0].global_position + Vector3(2, 0.2, 0)
+	e0.global_position = spots[1].global_position + Vector3(1.0, 0.2, 0)
 	var hp0: int = e0.health
-	await _secs(2.0)
-	check(not is_instance_valid(e0) or e0.health < hp0, "la estatua de chacal dispara")
+	await _secs(0.7)
+	check(not is_instance_valid(e0) or e0.health < hp0, "el brasero quema")
 	# una cria comiendose un cultivo: tarda, muestra barra y avisa
 	_kill_all()
 	await _secs(0.5)
@@ -131,6 +135,27 @@ func _ready() -> void:
 	print("DIA 2")
 	await _go_day()
 	check(GameState.current_day == 2, "es el dia 2")
+	# defensas: mejorar el brasero y cambiar el muro por una estatua
+	GameState.add_deben(80)
+	var dd0 := GameState.deben
+	spots[1].interact()
+	await _frames(3)
+	choice._choose(0)
+	await _frames(2)
+	check(spots[1].level == 2 and GameState.deben == dd0 - 22, "brasero mejorado a Nv2")
+	spots[1].interact()
+	await _frames(3)
+	choice._choose(0)  # Nv3 bloqueado hasta el dia 3
+	await _frames(2)
+	check(choice.visible and spots[1].level == 2, "Nv3 bloqueado el dia 2")
+	choice._choose(-1)
+	await _frames(2)
+	dd0 = GameState.deben
+	spots[0].interact()
+	await _frames(3)
+	choice._choose(2)  # muro -> estatua (orden: mejorar, brasero, estatua)
+	await _frames(2)
+	check(spots[0].built == "estatua" and spots[0].level == 1 and GameState.deben == dd0 - (26 - 4), "muro cambiado por estatua con reembolso")
 	var ready_n := trigo_plots.filter(func(p): return p.is_ready()).size()
 	check(ready_n == 4, "trigo maduro al dia 2 (%d/4)" % ready_n)
 	for p in trigo_plots:

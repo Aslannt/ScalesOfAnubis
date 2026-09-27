@@ -21,17 +21,17 @@ func _ready() -> void:
 	dim.color = Color(0.06, 0.03, 0.02, 0.55)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(dim)
-	_panel = UIStyle.make_panel(self, Vector2(240 - 120, 135 - 84), Vector2(240, 168))
+	_panel = UIStyle.make_panel(self, Vector2(240 - 120, 135 - 98), Vector2(240, 196))
 	UIStyle.make_icon(_panel, "res://assets/sprites/icons/phase_dawn.png", Vector2(112, 4))
 	_title = UIStyle.make_label(_panel, "", Vector2(0, 22), UIStyle.BIG, Color(0.98, 0.8, 0.35))
 	_title.size = Vector2(240, 18)
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_lines = VBoxContainer.new()
 	_lines.position = Vector2(14, 44)
-	_lines.size = Vector2(212, 100)
+	_lines.size = Vector2(212, 128)
 	_lines.add_theme_constant_override("separation", 2)
 	_panel.add_child(_lines)
-	_cont = UIStyle.make_label(_panel, Textos.t("amanecer_continuar"), Vector2(0, 152), UIStyle.SMALL, UIStyle.TEXT_DIM)
+	_cont = UIStyle.make_label(_panel, Textos.t("amanecer_continuar"), Vector2(0, 180), UIStyle.SMALL, UIStyle.TEXT_DIM)
 	_cont.size = Vector2(240, 10)
 	_cont.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 

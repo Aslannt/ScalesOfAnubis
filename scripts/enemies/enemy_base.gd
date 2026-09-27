@@ -42,6 +42,10 @@ var _base_sprite_y: float = 0.0
 @onready var sprite: AnimatedSprite3D = $AnimatedSprite3D
 var _agent: NavigationAgent3D
 var _repath_t: float = 0.0
+## Dificultad incremental: cada noche las criaturas comunes son mas duras
+## (el jefe tiene sus propios numeros y lo apaga).
+var night_scaling := true
+var _slow_t: float = 0.0
 
 
 func _ready() -> void:
@@ -52,6 +56,12 @@ func _ready() -> void:
 	_agent.radius = 0.6
 	_agent.avoidance_enabled = false
 	add_child(_agent)
+	if night_scaling:
+		var d := clampi(GameState.current_day, 1, 5) - 1
+		max_health = int(round(max_health * (1.0 + 0.35 * d)))
+		contact_damage = int(round(contact_damage * (1.0 + 0.15 * d)))
+		speed *= 1.0 + 0.06 * d
+		coin_value += d
 	health = max_health
 	CharacterFX.add_blob_shadow(self, shadow_radius)
 	if sheet_path != "":
@@ -83,6 +93,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	target = _choose_target()
+	_slow_t = maxf(0.0, _slow_t - delta)
 	var move := Vector3.ZERO
 	if can_lunge and _update_lunge(delta):
 		return
@@ -99,6 +110,8 @@ func _physics_process(delta: float) -> void:
 			move = step * speed
 			sprite.flip_h = step.x < 0
 		move += _separation() * speed * 0.8
+		if _slow_t > 0.0:
+			move *= 0.5
 	if move.length() > 0.1:
 		sprite.play(move_anim)
 	else:
@@ -235,6 +248,11 @@ func _strike() -> void:
 		target.take_hit(contact_damage, kb)
 	elif target.has_method("damage"):
 		target.damage()
+
+
+## Fuego de Ra (brasero Nv3): frena a la criatura un momento.
+func slow(t: float) -> void:
+	_slow_t = maxf(_slow_t, t)
 
 
 func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, stun: float = 0.0) -> void:

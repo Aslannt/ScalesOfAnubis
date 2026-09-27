@@ -497,7 +497,9 @@ func get_interact_hint() -> String:
 		if npc.npc_id == "altar":
 			return Textos.t("hint_altar")
 		if npc.npc_id == "defensa":
-			return "" if (npc.built != "" or GameTime.is_night()) else Textos.t("hint_defensa")
+			if GameTime.is_night():
+				return ""
+			return Textos.t("hint_defensa_mejorar") if npc.built != "" else Textos.t("hint_defensa")
 		if npc.npc_id == "campamento":
 			return Textos.t("hint_camp") if GameTime.phase == GameTime.Phase.DAY else ""
 		if npc.npc_id == "shabti" or npc.npc_id == "senet":

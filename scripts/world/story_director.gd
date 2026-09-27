@@ -105,7 +105,7 @@ func autosave() -> void:
 		plots.append(p.to_dict())
 	var defs: Array = []
 	for d in wb.defense_spots:
-		defs.append(d.built)
+		defs.append(d.save_code())
 	GameState.save_game({"plots": plots, "defenses": defs})
 
 
@@ -122,8 +122,7 @@ func _apply_pending_world() -> void:
 	FarmPlot.quiet = false
 	var defs: Array = w.get("defenses", [])
 	for i in range(mini(defs.size(), wb.defense_spots.size())):
-		if String(defs[i]) != "":
-			wb.defense_spots[i].build(String(defs[i]))
+		wb.defense_spots[i].load_code(String(defs[i]))
 	for c in get_tree().get_nodes_in_group("collectibles"):
 		if c.already_taken():
 			c.queue_free()
@@ -224,6 +223,14 @@ func _on_dawn() -> void:
 			GameState.shift_heart(8.0, "abandonar_aldea")
 			extra.append([Textos.t("amanecer_aldea_saqueada"), Color(1, 0.5, 0.4)])
 	if dawn_summary:
+		for kind in DefenseSpot.data().get("orden", []):
+			var nuevas := false
+			for lv in range(1, DefenseSpot.max_level(kind) + 1):
+				if int(DefenseSpot.tier(kind, lv).get("dia", 0)) == GameState.current_day:
+					nuevas = true
+			if nuevas:
+				extra.append([Textos.t("defensas_nuevas"), UIStyle.GOLD])
+				break
 		dawn_summary.show_summary(GameState.current_day, extra)
 		await dawn_summary.closed
 	GameState.thot_once("amanecer", Dialogos.thot("amanecer"))

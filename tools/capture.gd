@@ -21,6 +21,7 @@ const SCENARIOS := [
 	{"name": "14_jefe", "tile": Vector2(14, 22), "phase": 3, "wide": false, "setup": "jefe", "bark": true},
 	{"name": "15_defensas_noche", "tile": Vector2(16, 14), "phase": 3, "wide": false, "setup": "defensas"},
 	{"name": "16_ptahmose_menu", "tile": Vector2(6, 5.8), "phase": 1, "wide": false, "setup": "ptahmose"},
+	{"name": "16b_defensa_menu", "tile": Vector2(16, 14), "phase": 1, "wide": false, "setup": "defensa_menu"},
 	{"name": "17_resumen_amanecer", "tile": Vector2(13, 14), "phase": 0, "wide": false, "setup": "amanecer"},
 	{"name": "18_combate_noche", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "combate", "bark": true},
 	{"name": "19_dialogo_meret", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "dialogo"},
@@ -149,11 +150,22 @@ func _setup(kind: String) -> void:
 			await get_tree().create_timer(0.35).timeout
 		"defensas":
 			GameState.add_deben(200)
-			world_builder.defense_spots[0].build("estatua")
-			world_builder.defense_spots[1].build("brasero")
+			GameState.current_day = 3
+			world_builder.defense_spots[0].build("estatua", 3)
+			world_builder.defense_spots[1].build("brasero", 3)
+			world_builder.defense_spots[2].build("muro", 3)
 			for k in range(3):
 				nd.spawn("sombra", "", "", world_builder.defense_spots[0].global_position + Vector3(2.5 + k, 0, k - 1.0))
 			await get_tree().create_timer(1.6).timeout
+		"defensa_menu":
+			GameState.current_day = 2
+			GameState.add_deben(40)
+			world_builder.defense_spots[1].build("brasero")
+			await get_tree().create_timer(0.5).timeout
+			world_builder.defense_spots[1].interact()
+			await get_tree().create_timer(0.5).timeout
+			get_tree().get_first_node_in_group("choice_box")._focus(1)
+			await get_tree().create_timer(0.3).timeout
 		"ptahmose":
 			GameState.ptahmose_intro_shown = true
 			GameState.add_item("trigo", 4)

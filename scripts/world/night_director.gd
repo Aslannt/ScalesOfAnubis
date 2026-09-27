@@ -43,7 +43,7 @@ func _on_night_started() -> void:
 	GameState.village_raiders_total = 0
 	var banner = get_tree().get_first_node_in_group("combat_banner")
 	if banner:
-		banner.announce(Textos.t("noche_titulo", {"n": day}), Textos.t("noche_sub"))
+		banner.announce(Textos.t("noche_titulo", {"n": day}), Textos.t("noche_mas_fuerte") if day > 1 else Textos.t("noche_sub"))
 	var entries: Array = _waves.get(key, [])
 	for ei in range(entries.size()):
 		var entry: Dictionary = entries[ei]

@@ -3,9 +3,12 @@ extends Node3D
 ## Estatua de chacal (GDD 6.5): de noche dispara proyectiles dorados a las
 ## criaturas cercanas. Los ojos brillan al disparar.
 
-const RANGE := 8.0
-const COOLDOWN := 1.3
-const DAMAGE := 6
+## Numeros por nivel en data/defenses.json (set_level los aplica).
+var range_m: float = 7.0
+var cooldown: float = 1.4
+var damage: int = 5
+var rays: int = 1
+var level: int = 1
 
 var _sprite: AnimatedSprite3D
 var _cd: float = 0.5
@@ -31,27 +34,41 @@ func _ready() -> void:
 	add_child(_light)
 
 
+func set_level(lv: int, st: Dictionary) -> void:
+	level = lv
+	range_m = float(st.get("rango", range_m))
+	cooldown = float(st.get("cadencia", cooldown))
+	damage = int(st.get("dano", damage))
+	rays = int(st.get("rayos", 1))
+	if _sprite:
+		# cada nivel la estatua es un poco mas grande y mas dorada
+		_sprite.pixel_size = 0.05 + 0.004 * (lv - 1)
+		_sprite.modulate = Color(1, 1, 1).lerp(Color(1.25, 1.1, 0.75), (lv - 1) * 0.5)
+	if _light:
+		_light.omni_range = 3.0 + lv
+
+
 func _process(delta: float) -> void:
 	if not GameTime.is_night():
 		return
 	_cd -= delta
 	if _cd > 0.0:
 		return
-	var best: Node3D = null
-	var best_d := RANGE
+	var near: Array = []
 	for e in get_tree().get_nodes_in_group("enemies"):
 		var dd: float = global_position.distance_to(e.global_position)
-		if dd < best_d:
-			best_d = dd
-			best = e
-	if best == null:
+		if dd < range_m:
+			near.append([dd, e])
+	if near.is_empty():
 		_cd = 0.25
 		return
-	_cd = COOLDOWN
-	_fire(best)
+	near.sort_custom(func(a, b): return a[0] < b[0])
+	_cd = cooldown
+	for i in range(mini(rays, near.size())):
+		_fire(near[i][1], i)
 
 
-func _fire(enemy: Node3D) -> void:
+func _fire(enemy: Node3D, idx: int = 0) -> void:
 	_sprite.play("fire")
 	_sprite.flip_h = enemy.global_position.x < global_position.x
 	_light.light_energy = 2.0
@@ -61,9 +78,9 @@ func _fire(enemy: Node3D) -> void:
 	SFX.play("bolt", -4.0)
 	var bolt := Bolt.new()
 	get_tree().current_scene.add_child(bolt)
-	bolt.global_position = global_position + Vector3(0.5 * (-1.0 if _sprite.flip_h else 1.0), 1.25, 0)
+	bolt.global_position = global_position + Vector3(0.5 * (-1.0 if _sprite.flip_h else 1.0), 1.25 + 0.2 * idx, 0)
 	bolt.target = enemy
-	bolt.damage = DAMAGE
+	bolt.damage = damage
 
 
 class Bolt extends Node3D:

@@ -3,6 +3,8 @@ extends CanvasLayer
 ## el juego. W/S o flechas para moverse, E / Enter / clic para elegir, Esc
 ## cancela (devuelve -1).
 ## Uso: get_tree().get_first_node_in_group("choice_box").ask(titulo, [..], cb)
+## Opcional: 'descs' (una descripcion por opcion, se muestra la de la opcion
+## enfocada) y 'locked' (true = se ve pero no se puede elegir).
 
 var _panel: PanelContainer
 var _title: Label
@@ -10,6 +12,9 @@ var _box: VBoxContainer
 var _buttons: Array = []
 var _cb: Callable = Callable()
 var _idx: int = 0
+var _desc: Label
+var _descs: Array = []
+var _locked: Array = []
 
 
 func _ready() -> void:
@@ -37,16 +42,27 @@ func _ready() -> void:
 	_box = VBoxContainer.new()
 	_box.add_theme_constant_override("separation", 2)
 	v.add_child(_box)
+	_desc = Label.new()
+	_desc.add_theme_font_size_override("font_size", UIStyle.SMALL)
+	_desc.add_theme_color_override("font_color", Color(0.85, 0.78, 0.62))
+	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_desc.custom_minimum_size = Vector2(200, 0)
+	_desc.visible = false
+	v.add_child(_desc)
 
 
 func is_open() -> bool:
 	return visible
 
 
-func ask(title: String, options: Array, cb: Callable) -> void:
+func ask(title: String, options: Array, cb: Callable, descs: Array = [], locked: Array = []) -> void:
 	for b in _buttons:
 		b.queue_free()
 	_buttons.clear()
+	_descs = descs
+	_locked = locked
+	_desc.visible = not descs.is_empty()
+	_desc.text = ""
 	_title.text = title
 	for i in range(options.size()):
 		var b := Button.new()
@@ -54,6 +70,10 @@ func ask(title: String, options: Array, cb: Callable) -> void:
 		b.add_theme_font_size_override("font_size", UIStyle.SMALL)
 		b.custom_minimum_size = Vector2(200, 16)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		if _is_locked(i):
+			b.add_theme_color_override("font_color", Color(0.55, 0.5, 0.45))
+			b.add_theme_color_override("font_focus_color", Color(0.7, 0.62, 0.55))
+			b.add_theme_color_override("font_hover_color", Color(0.7, 0.62, 0.55))
 		var idx := i
 		b.pressed.connect(func(): _choose(idx))
 		b.mouse_entered.connect(func(): _focus(idx))
@@ -74,6 +94,17 @@ func _focus(i: int) -> void:
 		return
 	_idx = clampi(i, 0, _buttons.size() - 1)
 	_buttons[_idx].grab_focus()
+	if _idx < _descs.size():
+		_desc.text = String(_descs[_idx])
+		# el panel cambia de alto segun la descripcion: recentrar
+		await get_tree().process_frame
+		if visible:
+			_panel.reset_size()
+			_panel.position = (Vector2(480, 270) - _panel.size) * 0.5 + Vector2(0, 20)
+
+
+func _is_locked(i: int) -> bool:
+	return i >= 0 and i < _locked.size() and bool(_locked[i])
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -96,6 +127,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _choose(i: int) -> void:
 	if not visible:
+		return
+	if _is_locked(i):
+		SFX.play("hit_player", -12.0)
+		var b: Button = _buttons[i]
+		var tw := create_tween()
+		tw.tween_property(b, "position:x", b.position.x + 3, 0.04)
+		tw.tween_property(b, "position:x", b.position.x - 3, 0.04)
+		tw.tween_property(b, "position:x", b.position.x, 0.04)
 		return
 	visible = false
 	GameState.lock_player_input(0.25)

@@ -12,9 +12,9 @@ enum S { INTRO, CHASE, CHARGE_WINDUP, CHARGE, RECOVER, ROAR, SLAM_WINDUP, SLAM }
 
 const CHARGE_SPEED := 13.0
 const CHARGE_TIME := 1.1
-const CHARGE_DAMAGE := 22
+const CHARGE_DAMAGE := 18
 const SLAM_RADIUS := 3.4
-const SLAM_DAMAGE := 18
+const SLAM_DAMAGE := 14
 const MAX_CRIAS := 6
 
 var state: S = S.INTRO
@@ -29,6 +29,7 @@ var _intro_done := false
 
 
 func _ready() -> void:
+	night_scaling = false
 	super._ready()
 	add_to_group("boss")
 	_spawn_t = 1.2
