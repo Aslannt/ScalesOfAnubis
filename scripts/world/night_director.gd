@@ -1,66 +1,96 @@
 extends Node
-## Dirige las oleadas de criaturas de Ammit cada noche (GDD 6.4 y 7).
-## Noche 1: pocas sombras. Noche 2: sombras + crias. Noche 3+: oleada grande.
+## Dirige las oleadas de criaturas de Ammit cada noche (GDD 6.4 y 7), leidas
+## de data/waves.json. Noche 1: pocas sombras. Noche 2: sombras hacia la
+## aldea + crias hacia los cultivos (decision moral 2). Noche 3: oleadas y el
+## Heraldo de Ammit, que retiene la noche hasta morir.
 
-const SOMBRA_SCENE := preload("res://scenes/enemies/Sombra.tscn")
-const CRIA_SCENE := preload("res://scenes/enemies/Cria.tscn")
+signal boss_spawned(boss: Node)
 
-@export var spawn_center: Vector3 = Vector3(-10, 0, 0)
-@export var spawn_radius: float = 20.0
+const SCENES := {
+	"sombra": preload("res://scenes/enemies/Sombra.tscn"),
+	"cria": preload("res://scenes/enemies/Cria.tscn"),
+	"jefe": preload("res://scenes/enemies/Heraldo.tscn"),
+}
 
-var _queue: Array = []
-var _spawn_timer: float = 0.0
-var _spawn_interval: float = 6.0
+var world_builder: WorldBuilder = null
+var _waves: Dictionary = {}
+var _schedule: Array = []  # [{t, tipo, desde, grupo}] ordenado por t
+var _night_t: float = 0.0
 var _enemies_root: Node3D
+var boss: Node = null
 
 
 func _ready() -> void:
 	_enemies_root = Node3D.new()
 	_enemies_root.name = "Enemigos"
 	get_parent().add_child.call_deferred(_enemies_root)
+	var f := FileAccess.open("res://data/waves.json", FileAccess.READ)
+	if f:
+		var parsed = JSON.parse_string(f.get_as_text())
+		if parsed is Dictionary:
+			_waves = parsed
 	GameTime.night_started.connect(_on_night_started)
-	GameTime.day_started.connect(_on_day_started)
+	GameTime.dawn_summary_ready.connect(_on_dawn)
 
 
 func _on_night_started() -> void:
 	var day := GameState.current_day
-	_queue.clear()
-	if day <= 1:
-		for i in range(4):
-			_queue.append("sombra")
-	elif day == 2:
-		for i in range(6):
-			_queue.append("sombra")
-		for i in range(4):
-			_queue.append("cria")
-	else:
-		for i in range(9):
-			_queue.append("sombra")
-		for i in range(7):
-			_queue.append("cria")
-	_queue.shuffle()
-	_spawn_interval = GameTime.NIGHT_SECONDS / max(1, _queue.size() + 1)
-	_spawn_timer = 1.0
+	var key := str(clampi(day, 1, 3))
+	_schedule.clear()
+	_night_t = 0.0
+	GameState.village_damage = 0
+	GameState.village_kills = 0
+	GameState.village_raiders_total = 0
+	for entry in _waves.get(key, []):
+		var n := int(entry.get("n", 1))
+		var win: Array = entry.get("ventana", [0.0, 0.5])
+		for i in range(n):
+			var frac := lerpf(float(win[0]), float(win[1]), (i + 0.5) / n) if n > 1 else float(win[0])
+			_schedule.append({
+				"t": frac * GameTime.NIGHT_SECONDS + randf_range(-0.8, 0.8),
+				"tipo": entry.get("tipo", "sombra"),
+				"desde": entry.get("desde", "desierto"),
+				"grupo": entry.get("grupo", ""),
+			})
+			if entry.get("grupo", "") == "aldea":
+				GameState.village_raiders_total += 1
+	_schedule.sort_custom(func(a, b): return a["t"] < b["t"])
 
 
-func _on_day_started() -> void:
-	_queue.clear()
+## Al amanecer las criaturas que quedan se desvanecen (vuelven al Duat).
+func _on_dawn() -> void:
+	_schedule.clear()
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if e.has_method("vanish"):
+			e.vanish()
 
 
 func _process(delta: float) -> void:
-	if _queue.is_empty() or not GameTime.is_night():
+	if not GameTime.is_night():
 		return
-	_spawn_timer -= delta
-	if _spawn_timer <= 0.0:
-		_spawn_timer = _spawn_interval
-		_spawn_one(_queue.pop_back())
+	_night_t += delta
+	while not _schedule.is_empty() and _schedule[0]["t"] <= _night_t:
+		var s: Dictionary = _schedule.pop_front()
+		spawn(s["tipo"], s["desde"], s["grupo"])
 
 
-func _spawn_one(kind: String) -> void:
-	var scene: PackedScene = SOMBRA_SCENE if kind == "sombra" else CRIA_SCENE
-	var inst := scene.instantiate()
-	var angle := randf_range(-100.0, 100.0)
-	var rad := deg_to_rad(angle)
-	var pos := spawn_center + Vector3(cos(rad), 0, sin(rad)) * spawn_radius
-	inst.position = pos
+func spawn_point(nombre: String) -> Vector3:
+	if world_builder and world_builder.spawn_points.has(nombre):
+		return world_builder.spawn_points[nombre]
+	return Vector3(30, 0, 0)
+
+
+func spawn(tipo: String, desde: String, grupo: String = "", at: Vector3 = Vector3.INF) -> Node:
+	var scene: PackedScene = SCENES.get(tipo, SCENES["sombra"])
+	var inst: Node3D = scene.instantiate()
+	var base := spawn_point(desde) if at == Vector3.INF else at
+	var jitter := Vector3(randf_range(-2.5, 2.5), 0, randf_range(-2.5, 2.5)) if at == Vector3.INF else Vector3.ZERO
+	inst.position = base + jitter + Vector3(0, 0.1, 0)
+	if grupo != "":
+		inst.set("group_id", grupo)
 	_enemies_root.add_child(inst)
+	if tipo == "jefe":
+		boss = inst
+		GameTime.hold_night = true
+		boss_spawned.emit(inst)
+	return inst

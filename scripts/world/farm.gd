@@ -23,6 +23,12 @@ func _ready() -> void:
 	add_child(thot)
 	thot.set_target(player)
 
+	var nd := $NightDirector
+	nd.world_builder = world_builder
+	nd.add_to_group("night_director")
+	nd.boss_spawned.connect(func(b): $HUD.show_boss(b))
+	$StoryDirector.setup(player, nd, $DawnSummary)
+
 	var ambient := AmbientFX.new()
 	ambient.name = "AmbientFX"
 	ambient.river_shore_x = world_builder.river_shore_x

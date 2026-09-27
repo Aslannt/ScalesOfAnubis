@@ -179,4 +179,6 @@ func _on_nueva() -> void:
 	SFX.play("ui_select")
 	var tw := create_tween()
 	tw.tween_property(_fade, "color:a", 1.0, 0.6)
-	tw.tween_callback(func(): get_tree().change_scene_to_file("res://scenes/world/Farm.tscn"))
+	tw.tween_callback(func():
+		GameState.reset()
+		get_tree().change_scene_to_file("res://scenes/story/Intro.tscn"))

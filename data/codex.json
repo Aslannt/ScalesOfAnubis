@@ -78,5 +78,21 @@
     "thot": "Un amuleto que le tapa la boca a tu propio corazón. Los egipcios pensaban en todo.",
     "icono": "res://assets/sprites/icons/scarab.png",
     "desbloqueada": false
+  },
+  {
+    "id": "kemet",
+    "titulo": "Kemet",
+    "texto": "\"La tierra negra\": así llamaban los egipcios a su país, por el limo fértil que dejaba el Nilo. Las estaciones eran tres: Akhet (inundación), Peret (siembra y crecimiento) y Shemu (cosecha).",
+    "thot": "Estamos en Peret. Siembra. Es literalmente lo que dice el nombre.",
+    "icono": "res://assets/sprites/icons/item_trigo.png",
+    "desbloqueada": false
+  },
+  {
+    "id": "heraldo",
+    "titulo": "Heraldo de Ammit",
+    "texto": "Criatura de ESTA historia, no de los textos egipcios: ningún papiro habla de un heraldo de Ammit. Tiene sus rasgos (cocodrilo, león, hipopótamo) porque la sirve.",
+    "thot": "Lo anoto como ficción. Mi reputación de escriba no se mancha por un monstruo inventado.",
+    "icono": "res://assets/sprites/icons/codex_heraldo.png",
+    "desbloqueada": false
   }
 ]

@@ -41,8 +41,15 @@ var _slot_arma_icon: TextureRect
 var _slot_arma_key: Label
 var _slot_arma_panel: Panel
 var _slot_amuleto_icon: TextureRect
+var _slot_count: Label
 var _last_arma: String = ""
 var _last_amuleto: String = "?"
+
+# jefe
+var _boss_panel: Panel
+var _boss_fill: ColorRect
+var _boss_ghost: ColorRect
+const BOSS_W := 200.0
 
 # inventario / pista
 var _inv_box: HBoxContainer
@@ -63,6 +70,9 @@ func _ready() -> void:
 	_build_slots()
 	_build_inventario()
 	_build_hint()
+	_build_boss_bar()
+	var ind := preload("res://scripts/ui/threat_indicators.gd").new()
+	_root.add_child(ind)
 
 	GameState.deben_changed.connect(_on_deben_changed)
 	GameState.health_changed.connect(_on_health_changed)
@@ -264,21 +274,30 @@ func _build_slots() -> void:
 	_slot_arma_panel = a[0]
 	_slot_arma_icon = a[1]
 	_slot_arma_key = a[2]
-	var b := _slot(Vector2(34, 270 - 38), "Q")
+	_slot_count = UIStyle.make_label(_slot_arma_panel, "", Vector2(13, 14), UIStyle.SMALL)
+	GameState.seed_selected.connect(func(_id): _last_arma = "")
+	GameState.inventory_changed.connect(func(): _last_arma = "")
+	var b := _slot(Vector2(40, 270 - 38), "Q")
 	_slot_amuleto_icon = b[1]
 
 
 func _refresh_slots() -> void:
 	var night := GameTime.is_night()
-	var arma := GameState.equipped_weapon if night else "herramienta"
+	var arma := GameState.equipped_weapon if night else "semilla_" + GameState.selected_seed
 	if arma != _last_arma:
 		_last_arma = arma
-		var icon := "hoe"
+		var icon := "item_" + GameState.selected_seed
 		match arma:
 			"khopesh": icon = "khopesh"
 			"martillo": icon = "hammer"
 		_slot_arma_icon.texture = load(ICONS + icon + ".png")
-		_slot_arma_key.text = "1/2" if night else "E"
+		_slot_arma_key.text = "1/2" if night else "1/2/3"
+		if night:
+			_slot_count.text = ""
+		else:
+			var n := GameState.seed_count(GameState.selected_seed)
+			_slot_count.text = str(n)
+			_slot_count.add_theme_color_override("font_color", Color(1, 0.45, 0.35) if n == 0 else UIStyle.TEXT)
 		_slot_arma_panel.add_theme_stylebox_override("panel", UIStyle.panel_style(
 			Color(0.16, 0.1, 0.22, 0.9) if night else UIStyle.INK,
 			Color(0.7, 0.75, 1.0) if night else UIStyle.GOLD))
@@ -328,6 +347,51 @@ func _refresh_inventario() -> void:
 		_inv_box.add_child(cell)
 		UIStyle.make_icon(cell, ICONS + "item_%s.png" % id, Vector2(2, 2))
 		UIStyle.make_label(cell, str(n), Vector2(19, 5), UIStyle.SMALL)
+
+
+# ----------------------------------------------------------------- jefe
+func _build_boss_bar() -> void:
+	_boss_panel = UIStyle.make_panel(_root, Vector2(240 - BOSS_W * 0.5 - 4, 270 - 30), Vector2(BOSS_W + 8, 24))
+	var name_lbl := UIStyle.make_label(_boss_panel, Textos.t("jefe_nombre").to_upper(), Vector2(0, 2), UIStyle.SMALL, Color(1.0, 0.75, 0.35))
+	name_lbl.size = Vector2(BOSS_W + 8, 10)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var bg := ColorRect.new()
+	bg.color = Color(0.15, 0.04, 0.06)
+	bg.position = Vector2(4, 13)
+	bg.size = Vector2(BOSS_W, 7)
+	_boss_panel.add_child(bg)
+	_boss_ghost = ColorRect.new()
+	_boss_ghost.color = Color(1.0, 0.9, 0.6)
+	_boss_ghost.position = bg.position
+	_boss_ghost.size = bg.size
+	_boss_panel.add_child(_boss_ghost)
+	_boss_fill = ColorRect.new()
+	_boss_fill.color = Color(0.6, 0.12, 0.35)
+	_boss_fill.position = bg.position
+	_boss_fill.size = bg.size
+	_boss_panel.add_child(_boss_fill)
+	_boss_panel.visible = false
+
+
+## Lo llama farm.gd al conectar NightDirector.boss_spawned.
+func show_boss(boss: Node) -> void:
+	_boss_panel.visible = true
+	_boss_panel.modulate.a = 0.0
+	create_tween().tween_property(_boss_panel, "modulate:a", 1.0, 0.8)
+	_boss_fill.size.x = BOSS_W
+	_boss_ghost.size.x = BOSS_W
+	boss.health_changed_boss.connect(_on_boss_health)
+	boss.defeated.connect(func(): create_tween().tween_property(_boss_panel, "modulate:a", 0.0, 1.0))
+
+
+func _on_boss_health(hp: int, max_hp: int) -> void:
+	var w := roundf(BOSS_W * clampf(float(hp) / float(max_hp), 0.0, 1.0))
+	create_tween().tween_property(_boss_fill, "size:x", w, 0.08)
+	var tg := create_tween()
+	tg.tween_interval(0.4)
+	tg.tween_property(_boss_ghost, "size:x", w, 0.4)
+	if hp <= max_hp / 2:
+		_boss_fill.color = Color(0.85, 0.15, 0.2)
 
 
 # --------------------------------------------------------------- pista

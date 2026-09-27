@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://efarm00001"]
+[gd_scene load_steps=18 format=3 uid="uid://efarm00001"]
 
 [ext_resource type="Script" path="res://scripts/world/farm.gd" id="1_farm"]
 [ext_resource type="Script" path="res://scripts/world/world_builder.gd" id="2_wb"]
@@ -10,6 +10,10 @@
 [ext_resource type="Script" path="res://scripts/ui/codex_menu.gd" id="8_codex"]
 [ext_resource type="Script" path="res://scripts/ui/dialogue_box.gd" id="9_dlg"]
 [ext_resource type="Script" path="res://scripts/world/music_director.gd" id="10_music"]
+[ext_resource type="Script" path="res://scripts/world/story_director.gd" id="11_story"]
+[ext_resource type="Script" path="res://scripts/ui/dawn_summary.gd" id="12_dawn"]
+[ext_resource type="Script" path="res://scripts/ui/choice_box.gd" id="13_choice"]
+[ext_resource type="Script" path="res://scripts/ui/thot_bark.gd" id="14_bark"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.16, 0.29, 0.55, 1)
@@ -65,8 +69,6 @@ script = ExtResource("2_wb")
 
 [node name="NightDirector" type="Node" parent="."]
 script = ExtResource("4_nd")
-spawn_center = Vector3(-10, 0, 0)
-spawn_radius = 20.0
 
 [node name="CameraRig" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 7.5, 8.5)
@@ -88,3 +90,15 @@ script = ExtResource("9_dlg")
 
 [node name="MusicDirector" type="Node" parent="."]
 script = ExtResource("10_music")
+
+[node name="StoryDirector" type="Node" parent="."]
+script = ExtResource("11_story")
+
+[node name="DawnSummary" type="CanvasLayer" parent="."]
+script = ExtResource("12_dawn")
+
+[node name="ChoiceBox" type="CanvasLayer" parent="."]
+script = ExtResource("13_choice")
+
+[node name="ThotBark" type="CanvasLayer" parent="."]
+script = ExtResource("14_bark")

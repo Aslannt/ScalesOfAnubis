@@ -178,7 +178,76 @@ def plant():
     save_wav(os.path.join(OUT, "plant.wav"), s)
 
 
+def swing():
+    # tajo de khopesh: silbido de aire filtrado que baja de tono
+    n = noise(0.14, attack=0.005, decay=0.06, sustain=0.3, release=0.06)
+    t = t_array(0.14)
+    s = lowpass(n, 3) * (0.6 + 0.4 * np.sin(2 * np.pi * 30 * t)) + tone(900, 300, 0.14, "sine", attack=0.005, decay=0.05, sustain=0.2, release=0.06) * 0.25
+    save_wav(os.path.join(OUT, "swing.wav"), s)
+
+
+def swing_heavy():
+    n = lowpass(noise(0.25, attack=0.02, decay=0.1, sustain=0.3, release=0.1), 8)
+    s = mix(n * 1.4, tone(260, 90, 0.25, "sine", attack=0.01, decay=0.1, sustain=0.3, release=0.1) * 0.6)
+    save_wav(os.path.join(OUT, "swing_heavy.wav"), s)
+
+
+def slam():
+    # golpe contra el suelo: grave largo + crujido
+    s = mix(
+        tone(90, 30, 0.5, "sine", attack=0.002, decay=0.2, sustain=0.3, release=0.25),
+        lowpass(noise(0.3, attack=0.001, decay=0.1, sustain=0.2, release=0.15), 12) * 1.5,
+        tone(180, 60, 0.18, "square", attack=0.001, decay=0.06, sustain=0.2, release=0.08) * 0.3,
+    )
+    save_wav(os.path.join(OUT, "slam.wav"), s)
+
+
+def roar():
+    # rugido del Heraldo: sierra grave con vibrato + ruido rasposo
+    t = t_array(1.1)
+    vib = np.sin(2 * np.pi * 7 * t) * 12
+    freq = np.linspace(120, 70, len(t)) + vib
+    phase = np.cumsum(freq) / SR
+    saw = (2 * (phase % 1.0) - 1) * envelope(len(t), attack=0.08, decay=0.3, sustain=0.6, release=0.4)
+    rasp = lowpass(noise(1.1, attack=0.08, decay=0.3, sustain=0.5, release=0.4), 6) * (0.5 + 0.5 * np.sin(2 * np.pi * 23 * t))
+    s = mix(lowpass(saw, 4), rasp * 1.2, tone(60, 45, 1.1, "sine", attack=0.1, decay=0.3, sustain=0.6, release=0.4) * 0.8)
+    save_wav(os.path.join(OUT, "roar.wav"), s)
+
+
+def charge_windup():
+    s = tone(80, 220, 0.6, "saw", attack=0.05, decay=0.2, sustain=0.6, release=0.1)
+    save_wav(os.path.join(OUT, "charge_windup.wav"), lowpass(s, 5))
+
+
+def charge():
+    s = mix(lowpass(noise(0.5, attack=0.01, decay=0.2, sustain=0.5, release=0.2), 5) * 1.3,
+            tone(140, 70, 0.5, "square", attack=0.01, decay=0.2, sustain=0.4, release=0.2) * 0.3)
+    save_wav(os.path.join(OUT, "charge.wav"), s)
+
+
+def build():
+    # piedra que se asienta + campanita dorada
+    s = mix(
+        tone(140, 60, 0.2, "sine", attack=0.002, decay=0.08, sustain=0.3, release=0.1),
+        lowpass(noise(0.15, attack=0.001, decay=0.05, sustain=0.2, release=0.08), 8),
+    )
+    bell = mix(tone(988, 988, 0.5, "sine", attack=0.002, decay=0.2, sustain=0.2, release=0.25),
+               tone(1480, 1480, 0.4, "sine", attack=0.002, decay=0.15, sustain=0.1, release=0.2) * 0.5)
+    out = np.zeros(int(SR * 0.7))
+    out[:len(s)] += s
+    out[int(SR * 0.15):int(SR * 0.15) + len(bell)] += bell * 0.6
+    save_wav(os.path.join(OUT, "build.wav"), out)
+
+
+def bolt():
+    s = mix(tone(1200, 500, 0.18, "sine", attack=0.002, decay=0.06, sustain=0.3, release=0.08),
+            tone(1800, 900, 0.12, "square", attack=0.002, decay=0.04, sustain=0.2, release=0.05) * 0.2)
+    save_wav(os.path.join(OUT, "bolt.wav"), s)
+
+
 if __name__ == "__main__":
+    for fn in (swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
+        fn()
     plant()
     hit_enemy()
     hit_player()

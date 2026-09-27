@@ -25,17 +25,22 @@ func _find_dialogue_box() -> void:
 func interact() -> void:
 	if _dialogue == null:
 		_find_dialogue_box()
-	if GameState.decisiones.has("robo_altar"):
-		_dialogue.show_lines(["Thot: La ofrenda ya no está. Espero que lo recuerdes en el pesaje."])
+	if GameState.decisiones.get("robo_altar", "") == "robado":
+		_dialogue.show_lines(Dialogos.lines("altar", "ya_robado"))
 		return
 	if GameState.current_day < DIA_DISPONIBLE:
-		_dialogue.show_lines(["Thot: Ofrendas para Maat. No deberías ni pensarlo."])
+		_dialogue.show_lines(Dialogos.lines("altar", "bloqueado"))
 		return
-	_dialogue.show_lines([
-		"Thot: Esa ofrenda no es tuya, campesino.",
-		"Nakht toma la ofrenda del altar sin que nadie lo vea.",
-		"Thot: Lo vi yo. Siempre lo veo.",
-	], _robar)
+	# decision moral 1 (GDD 6.7): ahora es una eleccion explicita
+	var box = get_tree().get_first_node_in_group("choice_box")
+	var alt: Dictionary = Dialogos.data.get("altar", {})
+	box.ask(alt.get("pregunta", ""), [alt.get("op_robar", ""), alt.get("op_dejar", "")], func(i: int):
+		if i == 0:
+			_dialogue.show_lines(Dialogos.lines("altar", "robar"), _robar)
+		elif i == 1 and not GameState.decisiones.has("robo_altar"):
+			GameState.register_decision("robo_altar", "respetado")
+			GameState.shift_heart(-2.0, "respetar_altar")
+			_dialogue.show_lines(Dialogos.lines("altar", "dejar")))
 
 
 func _robar() -> void:

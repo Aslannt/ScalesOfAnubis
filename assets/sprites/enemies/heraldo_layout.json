@@ -1,1 +1,1 @@
-{"frame_w": 48, "frame_h": 48, "frames": ["idle_0", "idle_1", "attack_0", "attack_1", "attack_2"]}
+{"frame_w": 72, "frame_h": 52, "frames": ["idle_0", "idle_1", "walk_0", "walk_1", "walk_2", "walk_3", "windup_0", "windup_1", "charge_0", "charge_1", "roar_0", "roar_1", "slam_0", "slam_1", "hurt_0"]}

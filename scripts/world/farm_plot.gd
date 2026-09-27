@@ -79,6 +79,7 @@ func till() -> bool:
 	_soil_mesh.material_override = _mat_dry
 	_marker_mesh.visible = false
 	SFX.play("till")
+	Codex.unlock("kemet")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.15, 0), Color(0.37, 0.24, 0.15))
 	return true
 
@@ -135,7 +136,8 @@ func harvest() -> String:
 	if not is_ready():
 		return ""
 	var id := crop_id
-	GameState.add_item(id, 1)
+	# el papiro y el lino rinden mas por parcela (tardan dos dias)
+	GameState.add_item(id, 2 if id != "trigo" else 1)
 	Codex.unlock("cultivos")
 	SFX.play("harvest")
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.9, 0.75, 0.2))
@@ -158,6 +160,7 @@ func damage() -> void:
 	_hide_crop()
 	_soil_mesh.material_override = _mat_dry
 	GameState.crops_lost_tonight += 1
+	GameState.thot_once("cultivo_perdido", Dialogos.thot("cultivo_perdido"))
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.2, 0.45, 0.25))
 
 

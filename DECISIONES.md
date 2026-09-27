@@ -234,3 +234,60 @@ recomendados, con la base técnica ya lista para construirlos encima.
   personaje, respiración de 1 px en idle, polvo al caminar y al esquivar.
 - Verificado con 4 frames seguidos: miles de píxeles cambian entre frames
   (viento/agua/partículas se mueven).
+
+## Hitos del GDD (sesión en la nube)
+- **Infraestructura**: `ChoiceBox` (menú de opciones modal, W/S/E o
+  mouse), comentarios de Thot que **no pausan** (`ThotBark`, arriba al
+  centro, bajo la balanza, para no tapar la acción), `StoryDirector`
+  (estructura de 3 días y eventos), `GameState.reset()` (antes "salir al
+  menú + nueva partida" arrastraba el estado anterior porque los autoloads
+  sobreviven al cambio de escena).
+- **Oleadas por datos** en `data/waves.json`, puntos de aparición en el
+  mapa (desierto, necrópolis, noreste, sur) como pide el GDD 6.4, con
+  indicadores en el borde de la pantalla.
+- **Decisión moral 2 (noche 2)**: 6 sombras van a saquear el centro de la
+  aldea mientras crías van a tus cultivos. No hay menú: la decisión es
+  adónde vas. Si al amanecer la aldea no fue saqueada (daño < 14) y
+  venciste al menos la mitad de los saqueadores → "defendiste la aldea"
+  (−10 peso); si no → "salvaste tus cultivos" (+8 peso). Meret reacciona al
+  día siguiente. Elegí medirlo por resultado (y no por un botón) porque el
+  GDD la plantea como "la aldea y tus cultivos son atacados a la vez".
+- **Decisión moral 1** ahora es una elección explícita en el altar (tomar
+  la ofrenda / dejarla); dejarla da −2 de peso.
+- **Defensas**: 5 pedestales (4 junto al campo, 1 en la aldea, útil para la
+  noche 2). Estatua de chacal 30 deben (dispara proyectiles dorados, ojos
+  que brillan), brasero sagrado 18 deben (quema en área, ilumina). El
+  muro de adobe queda para después (opcional en el GDD).
+- **Heraldo de Ammit**: sprite rehecho (el anterior parecía una oveja):
+  cabeza de cocodrilo, delantera de león, trasera de hipopótamo. Embestida
+  con franja de aviso en el suelo, rugido que invoca crías, golpe de área
+  con círculo de aviso que crece, segunda fase al 50 % (más rápido), más
+  daño si le pegas mientras se recupera de la embestida. Barra grande con
+  nombre y música de jefe. Retiene la noche (`GameTime.hold_night`).
+- **Estructura de 3 días**: intro en el Duat (balanza que duda y queda
+  exacta, Anubis habla), tutorial por comentarios de Thot, resumen del
+  amanecer, Meret da el escarabajo el día 3 (antes lo tenías desde el
+  inicio), final con pesaje según el peso real, recuerdo del ba (niño con
+  los ojos de Iry, en sepia) y pantalla de gracias con estadísticas y
+  decisiones.
+- **Derrota** (antes no pasaba nada al llegar a 0 de vida): fundido,
+  Anubis te devuelve a la granja. De noche normal: pierdes 25 % del deben y
+  amanece. Contra el jefe: reintento con el jefe a vida llena.
+- **Semillas**: inventario de semillas (empiezas con 8 trigo, 3 lino, 2
+  papiro), 1/2/3 eligen semilla de día (de noche eligen arma), Ptahmose
+  vende packs de 3. **El lino ya es plantable** y la misión de Meret pide
+  lino de verdad (3 manojos). Lino y papiro rinden 2 por parcela porque
+  tardan dos días. Ptahmose no compra tu lino mientras la misión de Meret
+  siga abierta, para no venderte tu propia misión sin querer.
+- **Combate**: combo de 3 golpes del khopesh (el 3.º pega más), martillo en
+  área que aturde, arco de corte visible, buffer de clic, empuje real que
+  decae (antes duraba un frame), i-frames breves al recibir daño, aviso
+  visible antes de cada golpe enemigo (se tiñen de rojo y se agachan: si te
+  alejas o esquivas, fallan), enemigos que no se apilan, aparición desde el
+  suelo, se desvanecen al amanecer. Transformación de herramientas al
+  anochecer con destello y partículas.
+- El códice suma "Kemet" y "Heraldo de Ammit"; esta última dice
+  explícitamente que es ficción del juego (GDD 12).
+- Pruebas automatizadas: `tools/tests/test_demo.tscn` recorre los 3 días
+  completos (granja, compra/venta, defensas, noches, ambas decisiones,
+  Meret, jefe, derrota y final) y `test_story.tscn` la intro y el final.

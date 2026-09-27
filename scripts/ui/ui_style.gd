@@ -59,12 +59,14 @@ static func make_label(parent: Node, text: String, pos: Vector2, font_size: int 
 
 static func make_icon(parent: Node, tex_path: String, pos: Vector2, size: Vector2 = Vector2(16, 16)) -> TextureRect:
 	var t := TextureRect.new()
+	# expand_mode ANTES de size: si no, el tamano minimo es el de la textura
+	# y un retrato de 100x120 se dibujaba gigante
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	t.texture = load(tex_path)
 	t.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	t.position = pos
 	t.size = size
-	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(t)
 	return t

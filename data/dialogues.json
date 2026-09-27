@@ -3,23 +3,39 @@
     "intro": [
       "Meret: ¿Tú... caminas? Los muertos no deberían caminar.",
       "Meret: Y sin embargo Maat pesa los actos, no el aliento. Quizá haya algo bueno en ti todavía.",
-      "Meret: El templo necesita fibra para tejer vendas. Tráeme tres cosechas y lo sabremos con certeza."
+      "Meret: El templo necesita lino para tejer vendas. Tráeme tres manojos de lino y hablaremos de confianza.",
+      "Thot: El lino tarda dos días en crecer. Siémbralo hoy si quieres llegar a tiempo."
     ],
     "recordatorio": [
-      "Meret: El templo sigue esperando tu ofrenda. Tres cosechas, lo que sea que crezca en tu tierra."
+      "Meret: Tres manojos de lino. Las vendas no se tejen solas."
     ],
     "mision_completa": [
-      "Meret: Con esto alcanza para las vendas. No es lino, pero Maat no es quisquillosa esta semana.",
+      "Meret: Lino de verdad. Con esto se tejen las vendas de los que se van.",
       "Meret: Empiezo a pensar que no eres una amenaza, campesino. Empiezo, dije."
     ],
     "repeat": [
       "Meret: Que Maat te encuentre en equilibrio."
+    ],
+    "escarabajo": [
+      "Meret: Espera. Esta noche el aire huele a algo peor que sombras.",
+      "Meret: Toma este escarabajo del corazón. Se ponía sobre el pecho de los difuntos para que el corazón no hablara en su contra.",
+      "Meret: A ti te servirá de otra forma: si caes esta noche, te levantará una vez.",
+      "Thot: Equípalo con Q. Y procura no necesitarlo."
+    ],
+    "defendiste": [
+      "Meret: Anoche te vi pelear frente a nuestras casas. Perdiste parte de tu cosecha por nosotros.",
+      "Meret: Maat lo vio también. Eso pesa."
+    ],
+    "abandonaste": [
+      "Meret: Anoche las sombras entraron a la aldea. ¿Dónde estabas?",
+      "Meret: Ah, cuidando tu trigo. Claro."
     ]
   },
   "ptahmose": {
     "intro": [
       "Ptahmose: ¡Ah, un rostro nuevo en el muelle! Vendo semillas, compro cosechas, y si me invitas cerveza, cuento rumores.",
-      "Ptahmose: Tráeme lo que cultives y te pagaré en deben, como manda la costumbre."
+      "Ptahmose: Tráeme lo que cultives y te pagaré en deben, como manda la costumbre.",
+      "Thot: El deben es una unidad de peso. Aquí se paga en cobre, no en cariño."
     ],
     "repeat": [
       "Ptahmose: ¿Traes algo para vender hoy?"
@@ -29,6 +45,26 @@
     ],
     "vender_exito": [
       "Ptahmose: Buen trato. El río siempre da a quien sabe esperar."
+    ],
+    "sin_dinero": [
+      "Ptahmose: Con esa bolsa no compras ni el aire del muelle."
+    ],
+    "compra_ok": [
+      "Ptahmose: Semillas del mejor limo de Kemet. Bueno, del segundo mejor."
+    ],
+    "rumores": [
+      [
+        "Ptahmose: Dicen que en Tebas un escriba se quedó dormido sobre su papiro y despertó con el texto al revés.",
+        "Thot: Eso me pasó a mí. Una vez. Hace siglos."
+      ],
+      [
+        "Ptahmose: En el delta cuentan que Apep, la serpiente del caos, ataca cada noche la barca de Ra.",
+        "Thot: Eso sí es cierto. Y cada mañana el sol vuelve a salir, así que Apep pierde. Siempre."
+      ],
+      [
+        "Ptahmose: Los nobles se entierran con shabtis, figuritas que trabajarán la tierra por ellos en el más allá.",
+        "Thot: Tú no tienes shabtis, campesino. Tendrás que cosechar el Aaru con tus propias manos."
+      ]
     ]
   },
   "iry": {
@@ -40,6 +76,99 @@
     ],
     "repeat": [
       "Iry: Cuando crezca quiero cuidar cultivos como tú. O ser escriba. Aún no decido."
+    ],
+    "dia2": [
+      "Iry: ¡Anoche vi sombras desde el techo! Thot, ¿qué son?",
+      "Thot: El sheut. La sombra también es parte de una persona, según los egipcios. Estas son sombras sin dueño.",
+      "Iry: Qué miedo... pero qué interesante."
+    ],
+    "dia3": [
+      "Iry: Nakht... ¿nos conocíamos antes? Siento que te he visto junto al río.",
+      "Thot: ...",
+      "Iry: ¿Thot? ¿Por qué no dices nada? Tú siempre dices algo."
+    ]
+  },
+  "thot": {
+    "inicio": "Bienvenido de vuelta al mundo de los vivos. Muévete con WASD; yo te sigo, lamentablemente.",
+    "arar": "Esa es tu tierra. Mírala de frente y pulsa E para arar.",
+    "sembrar": "Tierra arada. E otra vez para sembrar. Con 1, 2 y 3 eliges la semilla.",
+    "regar": "Ahora riégala con E. Sin agua, nada crece. Ni siquiera en Kemet.",
+    "regado": "Bien. Crecerá al amanecer. El trigo tarda un día; el lino y el papiro, dos.",
+    "aldeanos": "La aldea queda al noreste. Meret, Ptahmose e Iry. Sé amable: los aldeanos notan cómo pesa tu corazón.",
+    "atardecer": "El sol se va. Ammit no perdona ni un crepúsculo: tus herramientas despertarán como armas.",
+    "noche1": "¡Ahí vienen! Clic para atacar hacia el ratón, Espacio para esquivar. 1 khopesh, 2 martillo.",
+    "primer_kill": "Una sombra menos. El sheut es parte del alma, pero estas no tienen dueño.",
+    "cultivo_perdido": "¡Las crías de Ammit van por tus cultivos! Protégelos.",
+    "vida_baja": "Tu vida se apaga. Esquiva, retrocede, o equipa el Anj con Q.",
+    "amanecer": "Sobreviviste. Mira el resumen: la balanza no olvida nada.",
+    "dia2": "Día dos. Cosecha lo maduro y véndelo a Ptahmose. Con deben puedes construir defensas en los pedestales junto al campo.",
+    "defensa": "En esos pedestales se pueden levantar defensas. Estatua de chacal o brasero sagrado. Pulsa E cerca.",
+    "altar_d2": "Nadie vigila el altar hoy. Solo lo menciono. Por documentar.",
+    "noche2": "¡Nakht! Unas sombras van hacia la aldea... y crías hacia tus cultivos. No puedes estar en los dos sitios.",
+    "aldea_atacada": "¡Están saqueando la aldea!",
+    "aldea_salvada": "La aldea resiste. Tus cultivos... bueno. El trigo vuelve a crecer; la gente no.",
+    "dia3": "Día tres. Siento algo grande acercándose desde la necrópolis. Prepárate: defensas, amuletos, lo que tengas.",
+    "noche3": "Esta noche viene el heraldo de Ammit. No es mitología, es un problema. Mantente vivo.",
+    "jefe": "¡El Heraldo! Cabeza de cocodrilo, cuerpo de león, ancas de hipopótamo. Como su ama. Cuidado con su embestida.",
+    "jefe_rugido": "¡Está llamando a sus crías!",
+    "jefe_mitad": "¡Está herido y furioso! Sigue así.",
+    "jefe_muerto": "Cayó. Ammit tendrá que esperar... por ahora.",
+    "derrota": "Casi te devoran. Anubis te levanta otra vez... pero no será gratis.",
+    "estatua": "Una estatua de Anubis. Él protege las necrópolis; hoy protege tu trigo.",
+    "brasero": "Fuego sagrado. A las sombras no les gusta la luz. A nadie le gusta quemarse, en realidad.",
+    "escarabajo_uso": "El escarabajo te devolvió el aliento. No cuentes con él dos veces esta noche.",
+    "robo": "Lo anoté. Todo queda anotado."
+  },
+  "anubis": {
+    "intro": [
+      "Anubis: Nakht, hijo de la tierra negra.",
+      "Anubis: Tu corazón pesó lo mismo que la pluma de Maat. Ni justo, ni condenado.",
+      "Anubis: Eso nunca había ocurrido.",
+      "Anubis: Vuelve al mundo de los vivos. Inclina la balanza con tus actos.",
+      "Anubis: Ammit no aceptará quedarse sin su presa. Vendrá cada noche.",
+      "Thot: Yo iré contigo. Alguien tiene que anotar todo esto."
+    ]
+  },
+  "final": {
+    "pesaje_intro": [
+      "Anubis: Tres días han pasado. Veamos qué pesa ahora tu corazón."
+    ],
+    "liviano": [
+      "Anubis: Más liviano que la pluma. El camino a Aaru se abre... un poco.",
+      "Thot: Lo anoto con letra bonita."
+    ],
+    "empate": [
+      "Anubis: Otra vez en equilibrio. Tus actos aún no deciden nada.",
+      "Thot: Qué terquedad tiene tu corazón."
+    ],
+    "pesado": [
+      "Anubis: Tu corazón pesa más que la pluma. Ammit ya huele tu nombre.",
+      "Thot: Todavía hay tiempo. No mucho."
+    ],
+    "ba": [
+      "Un recuerdo de tu ba vuelve como un pájaro con rostro humano.",
+      "Un río. Un niño riendo en la orilla, con una rama de papiro en la mano.",
+      "El niño se da vuelta. Tiene los ojos de Iry.",
+      "Thot: ...Así que empiezas a recordar."
+    ]
+  },
+  "altar": {
+    "ya_robado": [
+      "Thot: La ofrenda ya no está. Espero que lo recuerdes en el pesaje."
+    ],
+    "bloqueado": [
+      "Thot: Ofrendas para Maat. No deberías ni pensarlo."
+    ],
+    "robar": [
+      "Thot: Esa ofrenda no es tuya, campesino.",
+      "Nakht toma la ofrenda del altar sin que nadie lo vea.",
+      "Thot: Lo vi yo. Siempre lo veo."
+    ],
+    "pregunta": "El altar de ofrendas no tiene vigilancia.",
+    "op_robar": "Tomar la ofrenda (+20 deben)",
+    "op_dejar": "Dejarla en paz",
+    "dejar": [
+      "Thot: Bien. Maat también mira lo que no haces."
     ]
   }
 }

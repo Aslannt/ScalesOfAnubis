@@ -1,0 +1,180 @@
+extends Node
+## Estructura de la demo de 3 dias (GDD 7) y reacciones de Thot (GDD 4, M7):
+## - Dia 1: tutorial suave con comentarios de Thot segun lo que haces.
+## - Noche 1: pocas sombras. Noche 2: decision moral 2 (aldea vs cultivos).
+## - Dia 3: Meret da el escarabajo. Noche 3: Heraldo de Ammit.
+## - Amanecer: resumen de la noche. Final: pesaje, recuerdo del ba, gracias.
+## - Derrota: Anubis te devuelve a la granja (o reintentas el jefe).
+
+const FINAL_SCENE := "res://scenes/story/Final.tscn"
+
+var player: Player
+var night_director: Node
+var dawn_summary: Node
+var _fade: ColorRect
+var _fade_lbl: Label
+var _t: float = 0.0
+var _moved := false
+var _village_warned := false
+var _ending := false
+
+
+func _ready() -> void:
+	GameTime.phase_changed.connect(_on_phase)
+	GameState.village_damaged.connect(_on_village_damaged)
+	var layer := CanvasLayer.new()
+	layer.layer = 30
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(layer)
+	_fade = ColorRect.new()
+	_fade.color = Color(0, 0, 0, 0)
+	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_fade)
+	_fade_lbl = UIStyle.make_label(layer, "", Vector2(0, 118), UIStyle.BIG, Color(0.98, 0.8, 0.35))
+	_fade_lbl.size = Vector2(480, 40)
+	_fade_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_fade_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_fade_lbl.modulate.a = 0.0
+
+
+func setup(p: Player, nd: Node, ds: Node) -> void:
+	player = p
+	night_director = nd
+	dawn_summary = ds
+	player.died.connect(_on_player_died)
+	nd.boss_spawned.connect(_on_boss_spawned)
+	# fundido de entrada al despertar en la granja
+	_fade.color.a = 1.0
+	create_tween().tween_property(_fade, "color:a", 0.0, 1.2)
+
+
+func _process(delta: float) -> void:
+	if player == null or get_tree().paused:
+		return
+	_t += delta
+	var day := GameState.current_day
+	if day == 1 and GameTime.phase == GameTime.Phase.DAY:
+		if _t > 1.5:
+			GameState.thot_once("inicio", Dialogos.thot("inicio"))
+		if not _moved and player.velocity.length() > 0.5:
+			_moved = true
+		if _moved and _t > 6.0:
+			GameState.thot_once("t_arar", Dialogos.thot("arar"))
+		if _t > 55.0:
+			GameState.thot_once("aldeanos", Dialogos.thot("aldeanos"))
+	if day == 2 and GameTime.phase == GameTime.Phase.DAY and GameTime.phase_progress() > 0.35:
+		GameState.thot_once("altar_d2", Dialogos.thot("altar_d2"))
+
+
+func _on_phase(phase: int) -> void:
+	var day := GameState.current_day
+	match phase:
+		GameTime.Phase.DUSK:
+			GameState.thot_once("dusk_%d" % day, Dialogos.thot("atardecer"))
+		GameTime.Phase.NIGHT:
+			var key: String = ["noche1", "noche2", "noche3"][clampi(day, 1, 3) - 1]
+			GameState.thot_once("night_%d" % day, Dialogos.thot(key))
+			_village_warned = false
+		GameTime.Phase.DAWN:
+			_on_dawn()
+		GameTime.Phase.DAY:
+			if day == 2:
+				GameState.thot_once("dia2", Dialogos.thot("dia2"))
+			elif day == 3:
+				GameState.thot_once("dia3", Dialogos.thot("dia3"))
+
+
+func _on_village_damaged(total: int) -> void:
+	if not _village_warned and total >= 1:
+		_village_warned = true
+		GameState.thot(Dialogos.thot("aldea_atacada"))
+
+
+## Amanecer: evalua la decision 2 (si fue la noche 2) y muestra el resumen.
+## Tras la noche 3 con el jefe vencido, pasa al final de la demo.
+func _on_dawn() -> void:
+	var night_of := GameState.current_day - 1  # next_day ya corrio
+	if night_of >= 3 and GameState.boss_defeated:
+		_go_final()
+		return
+	var extra: Array = []
+	if night_of == 2 and GameState.village_raiders_total > 0 and not GameState.decisiones.has("noche2"):
+		var defended := not GameState.village_sacked() and GameState.village_kills >= int(GameState.village_raiders_total * 0.5)
+		if defended:
+			GameState.register_decision("noche2", "aldea")
+			GameState.shift_heart(-10.0, "defender_aldea")
+			extra.append([Textos.t("amanecer_aldea_salvada"), Color(0.55, 0.9, 1.0)])
+		else:
+			GameState.register_decision("noche2", "cultivos")
+			GameState.shift_heart(8.0, "abandonar_aldea")
+			extra.append([Textos.t("amanecer_aldea_saqueada"), Color(1, 0.5, 0.4)])
+	if dawn_summary:
+		dawn_summary.show_summary(GameState.current_day, extra)
+		await dawn_summary.closed
+	GameState.thot_once("amanecer", Dialogos.thot("amanecer"))
+	if night_of == 2:
+		GameState.thot(Dialogos.thot("aldea_salvada") if GameState.decisiones.get("noche2", "") == "aldea" else Dialogos.thot("robo"))
+
+
+func _on_boss_spawned(boss: Node) -> void:
+	get_tree().call_group("music_director", "set_boss", true)
+	boss.defeated.connect(_on_boss_defeated)
+
+
+func _on_boss_defeated() -> void:
+	get_tree().call_group("music_director", "set_boss", false)
+	await get_tree().create_timer(4.0).timeout
+	GameTime.skip_to_dawn()
+
+
+func _go_final() -> void:
+	if _ending:
+		return
+	_ending = true
+	GameState.demo_finished = true
+	GameTime.paused = true
+	var tw := create_tween()
+	tw.tween_property(_fade, "color:a", 1.0, 1.5)
+	tw.tween_callback(func(): get_tree().change_scene_to_file(FINAL_SCENE))
+
+
+# ------------------------------------------------------------- derrota
+func _on_player_died() -> void:
+	GameState.thot(Dialogos.thot("derrota"))
+	var boss = night_director.boss if night_director else null
+	var boss_alive: bool = boss != null and is_instance_valid(boss) and not GameState.boss_defeated
+	var lost := 0
+	if not boss_alive:
+		lost = int(GameState.deben * 0.25)
+	await get_tree().create_timer(0.8).timeout
+	_fade_lbl.text = Textos.t("derrota_titulo")
+	var tw := create_tween()
+	tw.tween_property(_fade, "color:a", 1.0, 0.8)
+	tw.parallel().tween_property(_fade_lbl, "modulate:a", 1.0, 0.8)
+	await tw.finished
+	GameTime.paused = true
+	await get_tree().create_timer(1.2).timeout
+	_fade_lbl.text = Textos.t("derrota_jefe") if boss_alive else Textos.t("derrota_texto", {"n": lost})
+	await get_tree().create_timer(1.8).timeout
+	# volver a la granja
+	if lost > 0:
+		GameState.add_deben(-lost)
+	GameState.full_heal()
+	player.global_position = player.world_builder.player_spawn_world + Vector3(0, 0.3, 0)
+	player.revive()
+	if boss_alive:
+		# reintentar al jefe: vuelve a su punto, con vida llena, sin crias
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if e != boss and e.has_method("vanish"):
+				e.vanish()
+		boss.health = boss.max_health
+		boss.health_changed_boss.emit(boss.health, boss.max_health)
+		boss.global_position = night_director.spawn_point("necropolis")
+		GameTime.paused = false
+	else:
+		GameTime.paused = false
+		GameTime.skip_to_dawn()
+	var tw2 := create_tween()
+	tw2.tween_property(_fade, "color:a", 0.0, 1.0)
+	tw2.parallel().tween_property(_fade_lbl, "modulate:a", 0.0, 0.6)

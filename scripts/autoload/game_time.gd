@@ -20,6 +20,9 @@ const TOTAL_SECONDS := DAWN_SECONDS + DAY_SECONDS + DUSK_SECONDS + NIGHT_SECONDS
 var elapsed: float = DAWN_SECONDS  # arrancamos ya en pleno dia 1
 var phase: Phase = Phase.DAY
 var paused: bool = false
+## Mientras sea true la noche no termina (el jefe sigue vivo, GDD 7 noche 3):
+## el reloj se queda en el ultimo tramo de la noche.
+var hold_night: bool = false
 
 var _bounds := {}
 
@@ -37,6 +40,8 @@ func _process(delta: float) -> void:
 	if paused:
 		return
 	elapsed += delta
+	if hold_night and phase == Phase.NIGHT and elapsed > TOTAL_SECONDS - 6.0:
+		elapsed = TOTAL_SECONDS - 6.0
 	if elapsed >= TOTAL_SECONDS:
 		elapsed -= TOTAL_SECONDS
 		GameState.next_day()
@@ -86,6 +91,19 @@ func phase_name(p: Phase = phase) -> String:
 
 func is_night() -> bool:
 	return phase == Phase.NIGHT
+
+
+func reset() -> void:
+	elapsed = DAWN_SECONDS + 0.01
+	phase = Phase.DAY
+	paused = false
+	hold_night = false
+
+
+## Salta al amanecer del dia siguiente (derrota de noche, o fin del jefe).
+func skip_to_dawn() -> void:
+	hold_night = false
+	elapsed = TOTAL_SECONDS - 0.01
 
 
 func force_phase(p: Phase) -> void:

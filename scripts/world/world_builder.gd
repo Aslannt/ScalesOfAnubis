@@ -10,6 +10,9 @@ var player_spawn_world: Vector3 = Vector3.ZERO
 
 var farm_plots: Array = []
 var river_shore_x: float = -26.0
+var spawn_points: Dictionary = {}
+var village_center: Vector3 = Vector3.ZERO
+var defense_spots: Array = []
 var river_min_x: float = -36.0
 var npcs: Array = []
 
@@ -93,6 +96,25 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		npc.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
 		npcs_node.add_child(npc)
 		npcs.append(npc)
+
+	for nombre in data.get("spawns", {}):
+		var t: Array = data["spawns"][nombre]
+		spawn_points[nombre] = _tile_to_world(float(t[0]), float(t[1]))
+	var vc: Array = data.get("aldea_centro", [26, 8])
+	village_center = _tile_to_world(float(vc[0]), float(vc[1]))
+	var marker := Marker3D.new()
+	marker.name = "CentroAldea"
+	marker.add_to_group("village_center")
+	add_child(marker)
+	marker.position = village_center
+
+	for dd in data.get("defensas", []):
+		var tt: Array = dd["tile"]
+		var spot := DefenseSpot.new()
+		spot.position = _tile_to_world(float(tt[0]), float(tt[1]))
+		npcs_node.add_child(spot)
+		npcs.append(spot)
+		defense_spots.append(spot)
 
 	var spawn: Array = data.get("player_spawn_tile", [world_w / 2, world_h / 2])
 	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)

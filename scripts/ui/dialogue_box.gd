@@ -23,6 +23,7 @@ const PORTRAITS := {
 	"ptahmose": "res://assets/sprites/portraits/ptahmose.png",
 	"iry": "res://assets/sprites/portraits/iry.png",
 	"thot": "res://assets/sprites/portraits/thot.png",
+	"anubis": "res://assets/sprites/portraits/anubis.png",
 }
 
 

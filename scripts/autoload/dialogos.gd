@@ -16,3 +16,8 @@ func _ready() -> void:
 
 func lines(npc_id: String, key: String) -> Array:
 	return data.get(npc_id, {}).get(key, [])
+
+
+## Comentario suelto de Thot (seccion "thot" de dialogues.json).
+func thot(key: String) -> String:
+	return String(data.get("thot", {}).get(key, ""))

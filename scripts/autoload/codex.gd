@@ -43,3 +43,10 @@ func unlocked_count() -> int:
 		if e["desbloqueada"]:
 			n += 1
 	return n
+
+
+func reset() -> void:
+	for e in entries:
+		e["desbloqueada"] = false
+	unlock("anubis")
+	unlock("thot")
