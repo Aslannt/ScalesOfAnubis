@@ -38,6 +38,8 @@ func _ready() -> void:
 	add_child(ambient)
 	ambient.set_target(player)
 
+	PlaytestLog.start_session()
+
 	var seasons := SeasonDirector.new()
 	seasons.name = "SeasonDirector"
 	seasons.add_to_group("season_director")

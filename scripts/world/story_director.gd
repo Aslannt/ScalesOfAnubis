@@ -335,6 +335,7 @@ func _go_final() -> void:
 
 # ------------------------------------------------------------- derrota
 func _on_player_died() -> void:
+	PlaytestLog.event("muerte", "%s, pos (%.0f, %.0f), jefe %s" % [GameTime.phase_name(), player.global_position.x, player.global_position.z, night_director != null and night_director.boss != null and is_instance_valid(night_director.boss)])
 	GameState.thot(Dialogos.thot("derrota"), true)
 	var boss = night_director.boss if night_director else null
 	var boss_alive: bool = boss != null and is_instance_valid(boss) and not GameState.boss_defeated

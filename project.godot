@@ -21,6 +21,7 @@ GameTime="*res://scripts/autoload/game_time.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 Codex="*res://scripts/autoload/codex.gd"
 MenuMusic="*res://scripts/autoload/menu_music.gd"
+PlaytestLog="*res://scripts/autoload/playtest_log.gd"
 
 [audio]
 

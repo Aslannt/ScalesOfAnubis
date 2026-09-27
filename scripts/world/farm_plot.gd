@@ -309,6 +309,7 @@ func _update_bar() -> void:
 func damage() -> void:
 	if state != State.PLANTED:
 		return
+	var lost := crop_id
 	crop_id = ""
 	growth_day = 0
 	watered_today = false
@@ -322,6 +323,7 @@ func damage() -> void:
 		q.rotation.z = 0.0
 	SFX.play("crop_lost", -2.0, 0.0)
 	GameState.crops_lost_tonight += 1
+	PlaytestLog.event("cultivo_perdido", lost)
 	GameState.thot_once("cultivo_perdido", Dialogos.thot("cultivo_perdido"))
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.2, 0.45, 0.25))
 

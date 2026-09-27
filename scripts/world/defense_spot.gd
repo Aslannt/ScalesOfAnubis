@@ -196,6 +196,7 @@ func build(kind: String, lv: int = 1) -> void:
 	d.scale = Vector3(1, 0.1, 1)
 	create_tween().tween_property(d, "scale", Vector3.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	GameState.register_decision("defensa_" + str(get_index()), kind)
+	PlaytestLog.event("defensa", "%s nv%d" % [kind, level])
 	GameState.thot_once("thot_" + kind, Dialogos.thot(kind))
 
 
@@ -210,6 +211,7 @@ func set_level(lv: int) -> void:
 		_defense.scale = Vector3(1.25, 0.8, 1.25)
 		create_tween().tween_property(_defense, "scale", Vector3.ONE, 0.4).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	GameState.thot(Textos.t("def_mejorada", {"n": Textos.t("def_nombre_" + built), "l": lv}))
+	PlaytestLog.event("defensa_mejora", "%s nv%d" % [built, lv])
 
 
 func _set_level_quiet(lv: int) -> void:
