@@ -169,7 +169,17 @@ def dialogue_blip():
     save_wav(os.path.join(OUT, "dialogue_blip.wav"), s)
 
 
+def plant():
+    # semilla que entra en la tierra: "pop" suave y breve
+    s = mix(
+        tone(260, 420, 0.07, "sine", attack=0.002, decay=0.03, sustain=0.3, release=0.03),
+        lowpass(noise(0.05, attack=0.001, decay=0.02, sustain=0.1, release=0.02), 10) * 0.8,
+    )
+    save_wav(os.path.join(OUT, "plant.wav"), s)
+
+
 if __name__ == "__main__":
+    plant()
     hit_enemy()
     hit_player()
     enemy_death()

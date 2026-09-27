@@ -190,3 +190,47 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - El panel "DEBUG teclado" que mencionaba CLAUDE_NUBE.md no existe en el
   repositorio (se buscó "debug" en `scripts/` y `scenes/`): probablemente
   fue una prueba local que nunca se commiteó. No hubo nada que borrar.
+
+## Capturas con Forward+ en la nube
+- Además del renderer de compatibilidad (OpenGL) que sugería CLAUDE_NUBE.md,
+  instalé `mesa-vulkan-drivers` (lavapipe, Vulkan por software, gratis) y
+  las capturas corren con `--rendering-driver vulkan` = **Forward+**, el
+  mismo renderer que usa el PC de Deivid. Así las sombras, el SSAO, la
+  niebla y el glow se ven como allá (solo más lento). Script local `cap`.
+
+## Pirámides lejanas y borde del mundo (punto 1 pendiente)
+- Revisadas en captura: se veían como montañas gris azuladas flotando sobre
+  el vacío (no había suelo más allá del mapa). Ahora: plano de desierto
+  exterior de 520 m bajo el mapa, y 7 pirámides con 4 caras planas de
+  caliza (el sol ilumina un lado y el otro queda en sombra), dos con
+  piramidión dorado. Datos en `data/map_layout.json → horizonte`
+  (regenerable con `tools/gen_horizon.py`, idempotente).
+
+## Punto 3: vida y movimiento
+- Shaders propios en `assets/shaders/`: `terrain` (textura + sombras de
+  nubes que pasan), `water` (Nilo con ondas que corren con la corriente,
+  crestas, destellos y espuma en la orilla), `wind_foliage` (juncos,
+  papiros, palmeras, flores, pasto alto: se doblan según la altura, con
+  ráfagas que recorren el mapa), `grass_blades` (MultiMesh de ~2000
+  mechones de pasto con viento) y `sprite_wind` (cultivos).
+- Dos *shader globals* en `project.godot`: `wind_strength` y
+  `cloud_shadow_strength` (el ciclo día/noche apaga las nubes de noche).
+- Campo de cultivo más chico (9×7 + orilla 2×10) y con **tierra negra del
+  Nilo** en vez de pasto con cuadrícula: antes el campo ocupaba toda la
+  pantalla y parecía un piso de baldosas verdes. El resto es pasto con
+  viento. Las palmeras que quedaban dentro de las parcelas se movieron.
+- Pasto más cálido (paleta `grass*`): el `nile_green` anterior se veía menta.
+- Cultivos redibujados tallo por tallo (`tools/gen_foliage.py`, 24×32 por
+  etapa), dos filas por parcela, sin contorno (el contorno empastaba los
+  tallos finos: en su lugar, sombra de contacto en la base).
+- La orilla ahora tiene colisión: antes se podía caminar sobre el Nilo.
+- Luz ambiental por color propio en vez de tomarla del cielo: el radiance
+  del cielo se actualiza con retraso y la noche quedaba teñida de rojo
+  varios segundos después del atardecer (se vio en capturas en serie).
+  Atardecer menos saturado.
+- `AmbientFX`: polvo de día, luciérnagas de noche, hojas al viento, bandadas
+  de ibis (el animal de Thot) volando bajo sobre los campos, peces que
+  saltan del Nilo con salpicadura. `CharacterFX`: sombra circular bajo cada
+  personaje, respiración de 1 px en idle, polvo al caminar y al esquivar.
+- Verificado con 4 frames seguidos: miles de píxeles cambian entre frames
+  (viento/agua/partículas se mueven).

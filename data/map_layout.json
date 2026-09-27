@@ -29,23 +29,23 @@
       "nombre": "orilla_papiro",
       "rect": [
         5,
-        6,
+        9,
         7,
-        22
+        19
       ],
-      "textura": "grass_nile",
+      "textura": "field",
       "orilla": true,
       "farmland": true
     },
     {
       "nombre": "campo_principal",
       "rect": [
-        7,
         8,
-        19,
-        20
+        10,
+        17,
+        17
       ],
-      "textura": "grass_nile",
+      "textura": "field",
       "orilla": false,
       "farmland": true
     },
@@ -195,30 +195,6 @@
         12
       ],
       "rot": 90
-    },
-    {
-      "tipo": "palm",
-      "tile": [
-        6,
-        9
-      ],
-      "rot": 0
-    },
-    {
-      "tipo": "palm",
-      "tile": [
-        6,
-        13
-      ],
-      "rot": 0
-    },
-    {
-      "tipo": "palm",
-      "tile": [
-        6,
-        17
-      ],
-      "rot": 0
     },
     {
       "tipo": "reed",
@@ -1189,74 +1165,58 @@
       "rot": 14.079679924393176
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        14.490012482872542,
-        -11.17111541448109
+        6.2,
+        8.2
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        19.044186125573546,
-        -9.38107377740491
+        5.6,
+        19.8
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        24.21282760350658,
-        -8.060909081129196
+        7.8,
+        21.5
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        31.264141403157524,
-        -9.260585760944481
+        18.2,
+        8.6
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        36.749282745575854,
-        -9.133833462198899
+        18.6,
+        18.4
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        45.36215606028091,
-        4.200369536407123
+        10.5,
+        7.4
       ],
       "rot": 0
     },
     {
-      "tipo": "distant_pyramid",
+      "tipo": "palm",
       "tile": [
-        44.47877428903461,
-        13.143733396630697
-      ],
-      "rot": 0
-    },
-    {
-      "tipo": "distant_pyramid",
-      "tile": [
-        45.915533660279344,
-        17.573249222450126
-      ],
-      "rot": 0
-    },
-    {
-      "tipo": "distant_pyramid",
-      "tile": [
-        45.2372537150987,
-        24.72176126042441
+        14.8,
+        19.2
       ],
       "rot": 0
     }
@@ -1299,5 +1259,70 @@
   "player_spawn_tile": [
     12,
     14
-  ]
+  ],
+  "horizonte": {
+    "suelo_exterior": {
+      "textura": "sand",
+      "tamano_m": 520,
+      "repeticiones": 130
+    },
+    "piramides": [
+      {
+        "tile": [
+          27,
+          -26
+        ],
+        "size": 34,
+        "cap": true
+      },
+      {
+        "tile": [
+          37,
+          -30
+        ],
+        "size": 28,
+        "cap": false
+      },
+      {
+        "tile": [
+          45,
+          -27
+        ],
+        "size": 16,
+        "cap": false
+      },
+      {
+        "tile": [
+          4,
+          -34
+        ],
+        "size": 22,
+        "cap": false
+      },
+      {
+        "tile": [
+          62,
+          4
+        ],
+        "size": 26,
+        "cap": true
+      },
+      {
+        "tile": [
+          66,
+          16
+        ],
+        "size": 18,
+        "cap": false
+      },
+      {
+        "tile": [
+          30,
+          52
+        ],
+        "size": 24,
+        "cap": false
+      }
+    ]
+  }
 }

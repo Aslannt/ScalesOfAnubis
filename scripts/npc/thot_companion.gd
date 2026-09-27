@@ -4,7 +4,7 @@ extends Node3D
 ## alrededor del jugador". Companero visual, sin dialogo propio en la demo
 ## (sus lineas aparecen dentro de las conversaciones, ver data/dialogues.json).
 
-@export var follow_distance: float = 1.6
+@export var follow_distance: float = 0.9
 @export var lag: float = 3.0
 @export var bob_speed: float = 3.0
 @export var bob_height: float = 0.12
@@ -38,13 +38,18 @@ func _ready() -> void:
 
 	GameTime.phase_changed.connect(_on_phase_changed)
 	_on_phase_changed(GameTime.phase)
+	_shadow = CharacterFX.add_blob_shadow(self, 0.25)
+	_shadow.top_level = true
+
+
+var _shadow: MeshInstance3D = null
 
 
 func set_target(node: Node3D) -> void:
 	target = node
 	if target:
 		_orbit_angle = randf() * TAU
-		global_position = target.global_position + Vector3(follow_distance, 1.2, 0)
+		global_position = target.global_position + Vector3(0, 1.75, -0.8)
 
 
 func _on_phase_changed(phase: int) -> void:
@@ -57,12 +62,19 @@ func _process(delta: float) -> void:
 	if target == null:
 		return
 	_t += delta
-	_orbit_angle += delta * 0.6
+	_orbit_angle += delta * 0.45
+	# PROMPT_PULIDO.md punto 6: Thot va DETRAS y ARRIBA del jugador (z
+	# negativa = mas lejos de la camara), nunca delante tapandolo. Solo se
+	# balancea de lado a lado detras del hombro.
 	var desired := target.global_position + Vector3(
-		cos(_orbit_angle) * follow_distance,
-		1.15 + sin(_t * bob_speed) * bob_height,
-		sin(_orbit_angle) * follow_distance
+		sin(_orbit_angle) * follow_distance,
+		1.75 + sin(_t * bob_speed) * bob_height,
+		-0.75 - absf(cos(_orbit_angle)) * 0.25
 	)
-	var moving := global_position.distance_to(desired) > 0.05
+	var moving := global_position.distance_to(desired) > 0.08
 	global_position = global_position.lerp(desired, clampf(lag * delta, 0.0, 1.0))
 	sprite.play("fly" if moving else "idle")
+	sprite.flip_h = global_position.x > target.global_position.x
+	# sombra en el suelo (Thot flota)
+	if _shadow:
+		_shadow.global_position = Vector3(global_position.x, 0.035, global_position.z)

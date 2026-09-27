@@ -7,7 +7,7 @@ var _cache: Dictionary = {}
 
 const NOMBRES := [
 	"hit_enemy", "hit_player", "enemy_death", "till", "water", "harvest",
-	"ui_select", "dusk_transform", "coin", "heart_shift", "dodge", "dialogue_blip",
+	"ui_select", "dusk_transform", "coin", "heart_shift", "dodge", "dialogue_blip", "plant",
 ]
 
 

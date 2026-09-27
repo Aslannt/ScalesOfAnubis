@@ -12,6 +12,7 @@ extends CharacterBody3D
 @export var idle_anim: String = "idle"
 @export var move_anim: String = "move"
 
+@export var shadow_radius: float = 0.5
 var health: int
 var _contact_t: float = 0.0
 var target: Node3D = null
@@ -22,6 +23,7 @@ var target: Node3D = null
 func _ready() -> void:
 	add_to_group("enemies")
 	health = max_health
+	CharacterFX.add_blob_shadow(self, shadow_radius)
 	if sheet_path != "":
 		sprite.sprite_frames = SpritesheetLoader.build(sheet_path, layout_path, 6.0)
 		sprite.play(idle_anim)

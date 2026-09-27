@@ -28,6 +28,16 @@ PALETTE = {
     "nile_green_dark": (36, 81, 47, 255),
     "nile_water": (41, 98, 105, 255),
     "nile_water_dark": (24, 66, 72, 255),
+    # Pasto calido de la franja verde (menos azulado que nile_green: el
+    # pasto se veia turquesa/menta bajo el cielo)
+    "grass_dark": (58, 96, 40, 255),
+    "grass": (82, 124, 50, 255),
+    "grass_light": (112, 150, 62, 255),
+    "grass_dry": (150, 150, 74, 255),
+    # Tierra negra del Nilo (Kemet) para el campo de cultivo
+    "kemet": (70, 50, 36, 255),
+    "kemet_dark": (48, 34, 25, 255),
+    "kemet_light": (98, 72, 50, 255),
     # Negro de Anubis / neutros
     "anubis_black": (20, 16, 15, 255),
     "outline": (24, 18, 16, 255),

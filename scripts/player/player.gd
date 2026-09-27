@@ -27,6 +27,8 @@ const ANJ_INTERVAL := 6.0
 const ANJ_HEAL := 15
 
 var world_builder: WorldBuilder = null
+var _anim_t: float = 0.0
+var _step_t: float = 0.0
 
 const WEAPON_STATS := {
 	"khopesh": {"dano": 8, "alcance": 1.6, "cooldown": 0.28, "golpes": 3, "empuje": 1.5},
@@ -47,6 +49,7 @@ func _ready() -> void:
 	sprite.play("south_idle")
 	attack_area.monitoring = false
 	GameState.health_changed.connect(_on_health_changed)
+	CharacterFX.add_blob_shadow(self, 0.42)
 
 
 func _physics_process(delta: float) -> void:
@@ -118,6 +121,7 @@ func _start_dodge() -> void:
 	_dodge_t = dodge_duration
 	_dodge_cd_t = dodge_cooldown
 	SFX.play("dodge")
+	CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.1, 0), 7)
 
 
 func _start_attack() -> void:
@@ -228,13 +232,25 @@ func _facing_group() -> String:
 
 func _update_animation() -> void:
 	sprite.flip_h = facing == "west"
+	var delta := get_physics_process_delta_time()
+	_anim_t += delta
 	if _attacking:
+		sprite.offset.y = 0.0
 		return
 	var group := _facing_group()
-	if velocity.length() > 0.3 and not _dodging:
+	var hvel := Vector2(velocity.x, velocity.z).length()
+	if hvel > 0.3 and not _dodging:
 		sprite.play("%s_walk" % group)
+		sprite.offset.y = 0.0
+		# polvo a los pies cada ~2 pasos
+		_step_t -= delta
+		if _step_t <= 0.0:
+			_step_t = 0.32
+			CharacterFX.dust_puff(get_tree().current_scene, global_position + Vector3(0, 0.08, 0), 3)
 	else:
 		sprite.play("%s_idle" % group)
+		sprite.offset.y = CharacterFX.breathe_offset(_anim_t)
+		_step_t = 0.0
 
 
 func _cycle_amulet() -> void:

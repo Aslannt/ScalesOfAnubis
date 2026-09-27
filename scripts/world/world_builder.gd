@@ -9,6 +9,8 @@ var world_h: int = 28
 var player_spawn_world: Vector3 = Vector3.ZERO
 
 var farm_plots: Array = []
+var river_shore_x: float = -26.0
+var river_min_x: float = -36.0
 var npcs: Array = []
 
 
@@ -38,7 +40,15 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		var z1: float = rect[3]
 		var tiles := Vector2(x1 - x0, z1 - z0)
 		var center_tile := Vector2((x0 + x1) * 0.5, (z0 + z1) * 0.5)
-		var plane := BuildingFactory.ground_plane(tiles * tile_size, zone["textura"], tiles)
+		var plane: MeshInstance3D
+		if zone.get("textura") == "water":
+			var shore_x: float = _tile_to_world(x1, 0).x
+			river_shore_x = shore_x
+			river_min_x = _tile_to_world(x0, 0).x
+			plane = BuildingFactory.water_plane(tiles * tile_size, shore_x)
+			_build_river_bank(shore_x)
+		else:
+			plane = BuildingFactory.ground_plane(tiles * tile_size, zone["textura"], tiles)
 		plane.position = _tile_to_world(center_tile.x, center_tile.y)
 		plane.position.y = y_offset
 		zones_node.add_child(plane)
@@ -58,6 +68,8 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 		node.position = _tile_to_world(float(tile[0]) + 0.5, float(tile[1]) + 0.5)
 		node.rotation_degrees.y = float(prop.get("rot", 0))
 		props_node.add_child(node)
+
+	_build_horizon(data.get("horizonte", {}))
 
 	var npcs_node := Node3D.new()
 	npcs_node.name = "NPCs"
@@ -86,6 +98,31 @@ func build(layout_path: String = "res://data/map_layout.json") -> void:
 	player_spawn_world = _tile_to_world(float(spawn[0]) + 0.5, float(spawn[1]) + 0.5)
 
 
+## Suelo de desierto exterior (bajo el mapa jugable) y piramides lejanas:
+## el borde del mundo nunca muestra vacio (PROMPT_PULIDO.md punto 2).
+func _build_horizon(h: Dictionary) -> void:
+	if h.is_empty():
+		return
+	var node := Node3D.new()
+	node.name = "Horizonte"
+	add_child(node)
+	var suelo: Dictionary = h.get("suelo_exterior", {})
+	if not suelo.is_empty():
+		var size := float(suelo.get("tamano_m", 400))
+		var reps := float(suelo.get("repeticiones", 100))
+		var plane := BuildingFactory.ground_plane(Vector2(size, size), suelo.get("textura", "sand"), Vector2(reps, reps))
+		plane.position.y = -0.03
+		plane.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		node.add_child(plane)
+	for p in h.get("piramides", []):
+		var tile: Array = p["tile"]
+		var pyr := BuildingFactory.distant_pyramid(float(p.get("size", 24)), bool(p.get("cap", false)))
+		pyr.position = _tile_to_world(float(tile[0]), float(tile[1]))
+		pyr.position.y = -0.05
+		pyr.rotation_degrees.y = float(p.get("rot", 12.0))
+		node.add_child(pyr)
+
+
 func _build_farmland(rect: Array, orilla: bool) -> void:
 	var plots_node := Node3D.new()
 	plots_node.name = "Parcelas"
@@ -100,46 +137,83 @@ func _build_farmland(rect: Array, orilla: bool) -> void:
 			farm_plots.append(plot)
 
 
-const _TUFT_TEXTURES := [
-	"res://assets/sprites/fx/grass_tuft_0.png",
-	"res://assets/sprites/fx/grass_tuft_1.png",
-]
+const GRASS_ATLAS := preload("res://assets/sprites/fx/grass_atlas.png")
+const GRASS_FRAMES := 6
 
 
+## Pasto denso que se mece con el viento: un solo MultiMesh con miles de
+## mechones (antes eran ~150 Sprite3D quietos). Evita parcelas y caminos.
 func _scatter_foliage(rect: Array, all_zones: Array) -> void:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 1337
-	var foliage_node := Node3D.new()
-	foliage_node.name = "Vegetacion"
-	add_child(foliage_node)
-
-	var area: float = float(rect[2]) - float(rect[0])
-	area *= float(rect[3]) - float(rect[1])
-	var count: int = int(area * 0.35)
-	var textures := [load(_TUFT_TEXTURES[0]), load(_TUFT_TEXTURES[1])]
-
-	for i in range(count):
+	rng.seed = 1337 + int(rect[0]) * 31 + int(rect[1])
+	var area: float = (float(rect[2]) - float(rect[0])) * (float(rect[3]) - float(rect[1]))
+	var target: int = int(area * 7.0)
+	var transforms: Array[Transform3D] = []
+	var customs: Array[Color] = []
+	var tries := 0
+	while transforms.size() < target and tries < target * 3:
+		tries += 1
 		var tx: float = rng.randf_range(rect[0], rect[2])
 		var tz: float = rng.randf_range(rect[1], rect[3])
-		if _inside_any_farmland(tx, tz, all_zones):
+		if _inside_any_farmland(tx, tz, all_zones, 0.25) or _inside_texture(tx, tz, all_zones, ["path", "water"]):
 			continue
-		var sprite := Sprite3D.new()
-		sprite.texture = textures[rng.randi_range(0, 1)]
-		sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-		sprite.pixel_size = 0.05 * rng.randf_range(0.8, 1.3)
-		sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		sprite.shaded = true
-		sprite.position = _tile_to_world(tx, tz)
-		sprite.position.y = 0.02
-		foliage_node.add_child(sprite)
+		var s := rng.randf_range(0.7, 1.25)
+		var pos := _tile_to_world(tx, tz)
+		pos.y = 0.3 * s
+		transforms.append(Transform3D(Basis().scaled(Vector3(s, s, s)), pos))
+		var frame := rng.randi_range(0, GRASS_FRAMES - 1)
+		if rng.randf() < 0.55:
+			frame = rng.randi_range(0, 1)
+		customs.append(Color(frame, rng.randf(), rng.randf(), 0))
+
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.use_custom_data = true
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.69, 0.6)
+	mm.mesh = quad
+	mm.instance_count = transforms.size()
+	for i in range(transforms.size()):
+		mm.set_instance_transform(i, transforms[i])
+		mm.set_instance_custom_data(i, customs[i])
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = "Pasto"
+	mmi.multimesh = mm
+	mmi.material_override = WorldMaterials.grass(GRASS_ATLAS, GRASS_FRAMES)
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mmi)
 
 
-func _inside_any_farmland(tx: float, tz: float, all_zones: Array) -> bool:
+func _inside_texture(tx: float, tz: float, all_zones: Array, textures: Array) -> bool:
+	for z in all_zones:
+		if not textures.has(z.get("textura", "")):
+			continue
+		var r: Array = z["rect"]
+		if tx >= r[0] and tx < r[2] and tz >= r[1] and tz < r[3]:
+			return true
+	return false
+
+
+## Borde invisible en la orilla para que el jugador no camine sobre el Nilo
+## (antes se podia entrar al rio).
+func _build_river_bank(shore_x: float) -> void:
+	var body := StaticBody3D.new()
+	body.name = "OrillaNilo"
+	var col := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(1.0, 3.0, world_h * tile_size)
+	col.shape = shape
+	col.position = Vector3(shore_x - 0.8, 1.5, 0)
+	body.add_child(col)
+	add_child(body)
+
+
+func _inside_any_farmland(tx: float, tz: float, all_zones: Array, margin: float = 0.0) -> bool:
 	for z in all_zones:
 		if not z.get("farmland", false):
 			continue
 		var r: Array = z["rect"]
-		if tx >= r[0] and tx < r[2] and tz >= r[1] and tz < r[3]:
+		if tx >= r[0] - margin and tx < r[2] + margin and tz >= r[1] - margin and tz < r[3] + margin:
 			return true
 	return false
 

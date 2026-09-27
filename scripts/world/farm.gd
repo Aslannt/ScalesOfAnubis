@@ -22,3 +22,10 @@ func _ready() -> void:
 	var thot := ThotCompanion.new()
 	add_child(thot)
 	thot.set_target(player)
+
+	var ambient := AmbientFX.new()
+	ambient.name = "AmbientFX"
+	ambient.river_shore_x = world_builder.river_shore_x
+	ambient.river_min_x = world_builder.river_min_x
+	add_child(ambient)
+	ambient.set_target(player)

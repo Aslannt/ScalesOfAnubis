@@ -113,3 +113,14 @@ pause={
 
 textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.06, 0.05, 0.08, 1)
+
+[shader_globals]
+
+wind_strength={
+"type": "float",
+"value": 1.0
+}
+cloud_shadow_strength={
+"type": "float",
+"value": 0.3
+}

@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 from palette import c
 
-OUT = os.path.join("..", "assets", "textures")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "textures")
 os.makedirs(OUT, exist_ok=True)
 
 SIZE = 48
@@ -110,31 +110,44 @@ def make_sand():
 
 
 def make_grass():
-    img = organic_patches(["nile_green_dark", "nile_green", "nile_green_light"], seed=2)
-    img = add_sparse_detail(img, "nile_green_dark", seed=2, count=16, blob_w=(1, 1), blob_h=(2, 3))
+    # verde calido de pasto (antes nile_green: se veia menta/turquesa)
+    img = organic_patches(["grass_dark", "grass", "grass_light"], seed=2)
+    img = add_sparse_detail(img, "grass_dark", seed=2, count=16, blob_w=(1, 1), blob_h=(2, 3))
+    img = add_sparse_detail(img, "grass_dry", seed=9, count=6, blob_w=(1, 2), blob_h=(1, 1))
+    return img
+
+
+def _furrows(img, ridge=18, groove=-26, period=8):
+    """Surcos horizontales: una fila clara (lomo) y dos oscuras (surco)."""
+    px = img.load()
+    for y in range(SIZE):
+        k = y % period
+        delta = ridge if k == 0 else (groove if k in (period // 2, period // 2 + 1) else 0)
+        if delta == 0:
+            continue
+        for x in range(SIZE):
+            r, g, b, a = px[x, y]
+            px[x, y] = (max(0, min(255, r + delta)), max(0, min(255, g + delta)), max(0, min(255, b + delta)), a)
+    return img
+
+
+def make_field():
+    """Tierra negra del Nilo sin arar (Kemet): el campo se lee como campo de
+    cultivo y no como un piso de baldosas verdes."""
+    img = organic_patches(["kemet_dark", "kemet", "kemet_light"], seed=12)
+    img = add_sparse_detail(img, "grass", seed=12, count=7, blob_w=(1, 1), blob_h=(1, 2))
+    img = add_sparse_detail(img, "kemet_light", seed=13, count=10)
     return img
 
 
 def make_soil_dry():
-    img = organic_patches(["soil_dark", "soil", "ochre_dark"], seed=3)
-    px = img.load()
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if y % 8 in (0, 1):
-                r, g, b, a = px[x, y]
-                px[x, y] = (max(r - 20, 0), max(g - 20, 0), max(b - 20, 0), a)
-    return img
+    img = organic_patches(["kemet_dark", "kemet", "soil"], seed=3)
+    return _furrows(img)
 
 
 def make_soil_wet():
-    img = organic_patches(["soil_dark", "soil_wet", "soil"], seed=4)
-    px = img.load()
-    for y in range(SIZE):
-        for x in range(SIZE):
-            if y % 8 in (0, 1):
-                r, g, b, a = px[x, y]
-                px[x, y] = (max(r - 15, 0), max(g - 15, 0), max(b - 15, 0), a)
-    return img
+    img = organic_patches(["soil_wet", "kemet_dark", "soil_wet"], seed=4)
+    return _furrows(img, ridge=12, groove=-18)
 
 
 def make_path():
@@ -217,8 +230,10 @@ def make_plot_marker():
     note que es tierra de cultivo aunque el jugador todavia no haya arado."""
     img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     px = img.load()
-    border_col = c("soil_dark")
-    inset = 3
+    # lomo de tierra (bordo de riego) entre parcelas, claro y semitransparente
+    r, g, b, _ = c("kemet_light")
+    border_col = (r, g, b, 150)
+    inset = 0
     thick = 2
     for y in range(SIZE):
         for x in range(SIZE):
@@ -253,6 +268,7 @@ TEXTURES = {
     "wall_papyrus": make_wall_papyrus,
     "necropolis_sand": make_necropolis_sand,
     "plot_marker": make_plot_marker,
+    "field": make_field,
 }
 
 if __name__ == "__main__":

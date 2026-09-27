@@ -23,7 +23,17 @@ func _ready() -> void:
 	add_child(sprite)
 	sprite.sprite_frames = SpritesheetLoader.build(sheet_path, layout_path, 6.0)
 	sprite.play("south_idle")
+	CharacterFX.add_blob_shadow(self, 0.4)
+	_t = randf() * 10.0
 	call_deferred("_find_dialogue_box")
+
+
+var _t: float = 0.0
+
+
+func _process(delta: float) -> void:
+	_t += delta
+	sprite.offset.y = CharacterFX.breathe_offset(_t, 1.9)
 
 
 func _find_dialogue_box() -> void:

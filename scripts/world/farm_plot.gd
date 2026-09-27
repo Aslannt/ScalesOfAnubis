@@ -16,16 +16,22 @@ var tile_size: float = 2.0
 
 var _soil_mesh: MeshInstance3D
 var _marker_mesh: MeshInstance3D
-var _crop_sprite: Sprite3D
-var _mat_dry: StandardMaterial3D
-var _mat_wet: StandardMaterial3D
+## Dos quads por parcela (fila de atras y de adelante) con el shader de
+## viento, para que el cultivo se vea tupido y se meza (PROMPT_PULIDO.md 3).
+var _crop_quads: Array[MeshInstance3D] = []
+var _crop_mats: Array[ShaderMaterial] = []
+const CROP_FRAME_W := 24.0
+const CROP_FRAMES := 4
+const CROP_SIZE := Vector2(1.5, 2.0)
+var _mat_dry: Material
+var _mat_wet: Material
 
 
 func _ready() -> void:
 	add_to_group("farm_plots")
 
-	_mat_dry = BuildingFactory._mat("soil_dry")
-	_mat_wet = BuildingFactory._mat("soil_wet")
+	_mat_dry = WorldMaterials.terrain("soil_dry", Vector2.ONE)
+	_mat_wet = WorldMaterials.terrain("soil_wet", Vector2.ONE)
 
 	_soil_mesh = MeshInstance3D.new()
 	var mesh := PlaneMesh.new()
@@ -51,14 +57,16 @@ func _ready() -> void:
 	_marker_mesh.position = Vector3(0, 0.015, 0)
 	add_child(_marker_mesh)
 
-	_crop_sprite = Sprite3D.new()
-	_crop_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_crop_sprite.pixel_size = 0.09
-	_crop_sprite.position = Vector3(0, 0.05, 0)
-	_crop_sprite.region_enabled = true
-	_crop_sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	_crop_sprite.visible = false
-	add_child(_crop_sprite)
+	var offsets := [Vector3(-0.12, 0, -0.45), Vector3(0.14, 0, 0.35)]
+	for i in range(2):
+		var q := MeshInstance3D.new()
+		var qm := QuadMesh.new()
+		qm.size = CROP_SIZE
+		q.mesh = qm
+		q.position = offsets[i] + Vector3(0, CROP_SIZE.y * 0.5, 0)
+		q.visible = false
+		add_child(q)
+		_crop_quads.append(q)
 
 	GameTime.day_started.connect(_on_day_started)
 
@@ -93,9 +101,16 @@ func plant(id: String) -> bool:
 	growth_day = 0
 	watered_today = false
 	state = State.PLANTED
-	_crop_sprite.texture = load(GameState.crops[id]["sprite"])
+	var sheet: Texture2D = load(GameState.crops[id]["sprite"])
+	_crop_mats.clear()
+	for q in _crop_quads:
+		var m := WorldMaterials.sprite_wind(sheet, 0.12)
+		q.material_override = m
+		_crop_mats.append(m)
+		q.visible = true
 	_update_crop_frame()
-	_crop_sprite.visible = true
+	SFX.play("plant")
+	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.1, 0), Color(0.45, 0.62, 0.28))
 	return true
 
 
@@ -128,7 +143,7 @@ func harvest() -> String:
 	growth_day = 0
 	watered_today = false
 	state = State.TILLED
-	_crop_sprite.visible = false
+	_hide_crop()
 	_soil_mesh.material_override = _mat_dry
 	return id
 
@@ -140,7 +155,7 @@ func damage() -> void:
 	growth_day = 0
 	watered_today = false
 	state = State.TILLED
-	_crop_sprite.visible = false
+	_hide_crop()
 	_soil_mesh.material_override = _mat_dry
 	GameState.crops_lost_tonight += 1
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.2, 0.45, 0.25))
@@ -150,8 +165,19 @@ func _update_crop_frame() -> void:
 	var data: Dictionary = GameState.crops.get(crop_id, {})
 	var dias := int(data.get("dias_para_crecer", 1))
 	var stage := 3 if growth_day >= dias else int(round(float(growth_day) / float(dias) * 3.0))
-	stage = clampi(stage, 0, 3)
-	_crop_sprite.region_rect = Rect2(stage * 16, 0, 16, 20)
+	stage = clampi(stage, 0, CROP_FRAMES - 1)
+	var w := 1.0 / CROP_FRAMES
+	for i in range(_crop_mats.size()):
+		# la fila de adelante va espejada para que no se vean dos copias iguales
+		if i == 1:
+			_crop_mats[i].set_shader_parameter("region", Vector4((stage + 1) * w, 0, -w, 1))
+		else:
+			_crop_mats[i].set_shader_parameter("region", Vector4(stage * w, 0, w, 1))
+
+
+func _hide_crop() -> void:
+	for q in _crop_quads:
+		q.visible = false
 
 
 func _on_day_started() -> void:
