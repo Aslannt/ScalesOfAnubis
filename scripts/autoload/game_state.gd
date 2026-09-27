@@ -11,6 +11,7 @@ signal decision_tomada(id: String, valor: String)
 signal thot_says(texto: String)
 signal village_damaged(total: int)
 signal seed_selected(id: String)
+signal crop_attacked(plot: Node)
 
 const HEART_START := 50.0
 const HEART_MIN := 0.0
@@ -198,6 +199,11 @@ func seed_count(id: String) -> int:
 func select_seed(id: String) -> void:
 	selected_seed = id
 	seed_selected.emit(id)
+
+
+func crop_under_attack(plot: Node) -> void:
+	crop_attacked.emit(plot)
+	thot_once("cultivo_atacado", Dialogos.thot("cultivo_atacado"))
 
 
 func damage_village(n: int = 1) -> void:

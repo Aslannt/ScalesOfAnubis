@@ -118,7 +118,8 @@
     "brasero": "Fuego sagrado. A las sombras no les gusta la luz. A nadie le gusta quemarse, en realidad.",
     "escarabajo_uso": "El escarabajo te devolvió el aliento. No cuentes con él dos veces esta noche.",
     "robo": "Lo anoté. Todo queda anotado.",
-    "muro": "Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar."
+    "muro": "Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar.",
+    "cultivo_atacado": "¡Una cría se está comiendo tu cosecha! Mira la barra roja sobre la parcela: golpéala antes de que se vacíe."
   },
   "anubis": {
     "intro": [

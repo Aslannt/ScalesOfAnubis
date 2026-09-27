@@ -245,8 +245,29 @@ def bolt():
     save_wav(os.path.join(OUT, "bolt.wav"), s)
 
 
+def alarm():
+    # dos golpes de sistro y un tono de cuerno: urgente sin ser estridente
+    out = np.zeros(int(SR * 0.6))
+    for k, f in enumerate((660, 880)):
+        tn = tone(f, f, 0.12, "square", attack=0.002, decay=0.04, sustain=0.5, release=0.05) * 0.6
+        n = lowpass(noise(0.1, attack=0.001, decay=0.03, sustain=0.2, release=0.05), 2) * 0.4
+        i = int(k * 0.16 * SR)
+        out[i:i + len(tn)] += tn
+        out[i:i + len(n)] += n
+    horn = tone(220, 210, 0.3, "saw", attack=0.02, decay=0.1, sustain=0.5, release=0.1)
+    i = int(0.3 * SR)
+    out[i:i + len(horn)] += lowpass(horn, 6) * 0.7
+    save_wav(os.path.join(OUT, "alarm.wav"), out)
+
+
+def crop_lost():
+    s = mix(tone(420, 90, 0.35, "saw", attack=0.002, decay=0.15, sustain=0.3, release=0.15),
+            lowpass(noise(0.25, attack=0.001, decay=0.1, sustain=0.3, release=0.1), 4))
+    save_wav(os.path.join(OUT, "crop_lost.wav"), lowpass(s, 3))
+
+
 if __name__ == "__main__":
-    for fn in (swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
+    for fn in (alarm, crop_lost, swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
         fn()
     plant()
     hit_enemy()

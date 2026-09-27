@@ -18,3 +18,16 @@ func _choose_target() -> Node3D:
 	if best:
 		return best
 	return get_tree().get_first_node_in_group("player")
+
+
+
+## Con un cultivo como objetivo, la cria se queda comiendoselo (barra
+## sobre la parcela) en vez de destruirlo de un mordisco.
+func _check_contact(delta: float) -> void:
+	if target is FarmPlot:
+		if global_position.distance_to(target.global_position) <= contact_range + 0.3:
+			target.gnaw(delta)
+			sprite.play("idle")
+			sprite.position.x = sin(Time.get_ticks_msec() * 0.04) * 0.04
+		return
+	super._check_contact(delta)

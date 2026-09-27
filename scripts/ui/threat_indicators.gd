@@ -32,6 +32,12 @@ func _draw() -> void:
 		if e.get("group_id") == "aldea":
 			col = Color(1.0, 0.55, 0.2, 0.85)
 		_arrow_to(cam, e.global_position + Vector3(0, 0.8, 0), rect, col, 5.0 if not is_boss else 8.0, "")
+	# cultivos que se estan comiendo: flecha verde-roja que parpadea
+	for plot in get_tree().get_nodes_in_group("farm_plots"):
+		if plot.is_being_eaten():
+			var blink2 := 0.5 + 0.5 * sin(_t * 12.0)
+			_arrow_to(cam, plot.global_position + Vector3(0, 1.0, 0), rect, Color(1.0, 0.3, 0.2, 0.6 + 0.4 * blink2), 9.0, Textos.t("cultivos_bajo_ataque"))
+			break
 	if _village_alert > 0.0:
 		var vc := get_tree().get_first_node_in_group("village_center")
 		if vc:

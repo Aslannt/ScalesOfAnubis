@@ -10,8 +10,6 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_p = AudioStreamPlayer.new()
 	var s: AudioStreamWAV = load("res://assets/audio/music/titulo.wav")
-	if s:
-		s.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	_p.stream = s
 	_p.bus = "Music"
 	_p.volume_db = -60.0

@@ -90,6 +90,22 @@ func _ready() -> void:
 	var hp0: int = e0.health
 	await _secs(2.0)
 	check(not is_instance_valid(e0) or e0.health < hp0, "la estatua de chacal dispara")
+	# una cria comiendose un cultivo: tarda, muestra barra y avisa
+	_kill_all()
+	await _secs(0.5)
+	var victim = trigo_plots[0]
+	var cr = nd.spawn("cria", "", "", victim.global_position + Vector3(0.5, 0, 0))
+	cr.max_health = 999
+	cr.health = 999
+	await _secs(2.5)
+	check(victim.state == FarmPlot.State.PLANTED and victim.eat_progress > 0.1 and victim.is_being_eaten(), "la cria tarda en comerse el cultivo (%.2f)" % victim.eat_progress)
+	await _secs(4.5)
+	check(victim.state != FarmPlot.State.PLANTED, "si nadie la detiene, el cultivo se pierde")
+	cr.take_hit(99999)
+	victim.till()
+	GameState.add_item("semilla_trigo", 1)
+	victim.plant("trigo")
+	victim.water()
 	# baston: el proyectil hiere a distancia
 	var e1 = null
 	for e in get_tree().get_nodes_in_group("enemies"):

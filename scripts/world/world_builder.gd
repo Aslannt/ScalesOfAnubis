@@ -245,11 +245,32 @@ func _build_ground_collision() -> void:
 	body.name = "SueloColision"
 	var col := CollisionShape3D.new()
 	var shape := BoxShape3D.new()
-	shape.size = Vector3(world_w * tile_size, 0.2, world_h * tile_size)
+	# el suelo es mucho mas grande que el mapa: aunque algo empuje al jugador
+	# fuera del borde, nunca cae al vacio (bug real: se caia por el sur)
+	shape.size = Vector3(world_w * tile_size * 3.0, 0.2, world_h * tile_size * 3.0)
 	col.shape = shape
 	col.position = Vector3(0, -0.1, 0)
 	body.add_child(col)
 	add_child(body)
+	# muros invisibles en los cuatro bordes del mapa jugable
+	var half_w := world_w * tile_size * 0.5
+	var half_h := world_h * tile_size * 0.5
+	var walls := [
+		[Vector3(0, 2, -half_h - 0.5), Vector3(world_w * tile_size + 2, 4, 1)],
+		[Vector3(0, 2, half_h + 0.5), Vector3(world_w * tile_size + 2, 4, 1)],
+		[Vector3(-half_w - 0.5, 2, 0), Vector3(1, 4, world_h * tile_size + 2)],
+		[Vector3(half_w + 0.5, 2, 0), Vector3(1, 4, world_h * tile_size + 2)],
+	]
+	for wd in walls:
+		var wb := StaticBody3D.new()
+		wb.name = "BordeMapa"
+		var wc := CollisionShape3D.new()
+		var ws := BoxShape3D.new()
+		ws.size = wd[1]
+		wc.shape = ws
+		wb.position = wd[0]
+		wb.add_child(wc)
+		add_child(wb)
 
 
 func _tile_to_world(tx: float, tz: float) -> Vector3:

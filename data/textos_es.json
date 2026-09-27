@@ -91,5 +91,6 @@
   "codex_cerrar": "[TAB] CERRAR",
   "codex_vacia": "Esta página todavía está en blanco.",
   "defensa_muro": "Muro de adobe · {p} deben",
-  "partida_cargada": "Día {n}. Retomamos donde lo dejaste; yo lo tengo todo anotado."
+  "partida_cargada": "Día {n}. Retomamos donde lo dejaste; yo lo tengo todo anotado.",
+  "cultivos_bajo_ataque": "¡Cultivos!"
 }

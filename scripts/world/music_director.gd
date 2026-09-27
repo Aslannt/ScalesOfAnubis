@@ -42,9 +42,9 @@ func set_boss(active: bool) -> void:
 
 func _make_player(path: String) -> AudioStreamPlayer:
 	var p := AudioStreamPlayer.new()
+	# el loop se define en la importacion (edit/loop_mode=2 en el .import):
+	# fijarlo aqui dejaba loop_end en 0 y la musica no sonaba
 	var stream: AudioStreamWAV = load(path)
-	if stream:
-		stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	p.stream = stream
 	p.bus = "Music"
 	add_child(p)

@@ -158,6 +158,107 @@ func harvest() -> String:
 	return id
 
 
+# --- crias comiendose el cultivo (antes era instantaneo y el jugador ni
+# se enteraba: bug de feedback reportado por Deivid) ---
+signal under_attack(plot: FarmPlot)
+const EAT_TIME := 5.0
+var eat_progress: float = 0.0
+var _eat_idle: float = 1.0
+var _bar_root: Node3D = null
+var _bar_fill: MeshInstance3D
+var _alert: Label3D
+
+
+## Lo llama la cria mientras esta pegada a la parcela.
+func gnaw(delta: float) -> void:
+	if state != State.PLANTED:
+		return
+	if eat_progress <= 0.0:
+		_show_bar(true)
+		SFX.play("alarm", -2.0, 0.0)
+		under_attack.emit(self)
+		GameState.crop_under_attack(self)
+	_eat_idle = 0.0
+	eat_progress += delta / EAT_TIME
+	# el cultivo se sacude mientras lo muerden
+	for q in _crop_quads:
+		q.rotation.z = sin(Time.get_ticks_msec() * 0.03) * 0.12
+	_update_bar()
+	if eat_progress >= 1.0:
+		eat_progress = 0.0
+		_show_bar(false)
+		damage()
+
+
+func is_being_eaten() -> bool:
+	return eat_progress > 0.0 and _eat_idle < 0.4
+
+
+func _process(delta: float) -> void:
+	if eat_progress <= 0.0:
+		return
+	_eat_idle += delta
+	if _eat_idle > 0.4:
+		# si nadie la muerde, el cultivo se recupera poco a poco
+		eat_progress = maxf(0.0, eat_progress - delta * 0.15)
+		for q in _crop_quads:
+			q.rotation.z = 0.0
+		_update_bar()
+		if eat_progress <= 0.0:
+			_show_bar(false)
+	if _alert and _alert.visible:
+		_alert.position.y = 2.6 + absf(sin(Time.get_ticks_msec() * 0.008)) * 0.3
+
+
+func _show_bar(v: bool) -> void:
+	if _bar_root == null:
+		_bar_root = Node3D.new()
+		add_child(_bar_root)
+		_bar_root.position.y = 2.25
+		var bg := _bar_quad(Color(0.1, 0.05, 0.05, 0.9), Vector2(1.3, 0.2))
+		_bar_root.add_child(bg)
+		_bar_fill = _bar_quad(Color(0.95, 0.25, 0.15), Vector2(1.2, 0.12))
+		_bar_fill.position.z = 0.01
+		_bar_root.add_child(_bar_fill)
+		_alert = Label3D.new()
+		_alert.text = "!"
+		_alert.font_size = 96
+		_alert.outline_size = 18
+		_alert.modulate = Color(1.0, 0.3, 0.2)
+		_alert.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_alert.no_depth_test = true
+		_alert.pixel_size = 0.01
+		_alert.position.y = 2.6
+		add_child(_alert)
+	_bar_root.visible = v
+	_alert.visible = v
+
+
+func _bar_quad(col: Color, size: Vector2) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var q := QuadMesh.new()
+	q.size = size
+	mi.mesh = q
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = col
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.no_depth_test = true
+	m.render_priority = 2
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+
+func _update_bar() -> void:
+	if _bar_fill == null:
+		return
+	var k := clampf(1.0 - eat_progress, 0.0, 1.0)
+	_bar_fill.scale.x = maxf(0.01, k)
+	_bar_fill.position.x = -0.6 * (1.0 - k)
+
+
 func damage() -> void:
 	if state != State.PLANTED:
 		return
@@ -167,6 +268,12 @@ func damage() -> void:
 	state = State.TILLED
 	_hide_crop()
 	_soil_mesh.material_override = _mat_dry
+	eat_progress = 0.0
+	if _bar_root:
+		_show_bar(false)
+	for q in _crop_quads:
+		q.rotation.z = 0.0
+	SFX.play("crop_lost", -2.0, 0.0)
 	GameState.crops_lost_tonight += 1
 	GameState.thot_once("cultivo_perdido", Dialogos.thot("cultivo_perdido"))
 	CombatFX.spawn_hit_particles(get_tree().current_scene, global_position + Vector3(0, 0.3, 0), Color(0.2, 0.45, 0.25))
