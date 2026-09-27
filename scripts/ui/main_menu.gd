@@ -20,6 +20,12 @@ var _starting := false
 
 
 func _ready() -> void:
+	# Gancho de pruebas para builds exportados (las plantillas release no
+	# aceptan una escena por linea de comandos): juego -- --autotest=demo
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--autotest="):
+			get_tree().change_scene_to_file.call_deferred("res://tools/tests/test_%s.tscn" % a.get_slice("=", 1))
+			return
 	MenuMusic.play_theme()
 	theme = UIStyle.theme()
 	get_tree().paused = false
