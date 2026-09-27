@@ -1,0 +1,72 @@
+{
+  "anubis": {
+    "titulo": "Anubis",
+    "texto": "Jackal-headed god, protector of the necropolis and patron of mummification. He performs the weighing of the dead person's heart against the feather of Maat.",
+    "thot": "Solemn, yes. But you should see him try to dance at a festival. Not another word."
+  },
+  "thot": {
+    "titulo": "Thoth",
+    "texto": "God of writing, wisdom and the moon. He is shown as an ibis, or as a man with an ibis head. He recorded the result of your weighing.",
+    "thot": "I wrote this entry. In all humility, it's the best one in the book."
+  },
+  "maat": {
+    "titulo": "Maat and the feather",
+    "texto": "Maat is the goddess and the idea of truth, order and justice. Her symbol is the ostrich feather. The opposite of Maat is Isfet, chaos.",
+    "thot": "A heart lighter than her feather. Sounds poetic until it's literally your life at stake."
+  },
+  "ammit": {
+    "titulo": "Ammit",
+    "texto": "The devourer of hearts: crocodile head, lion forequarters, hippopotamus hindquarters. She devours the hearts that weigh too much at the judgment.",
+    "thot": "Don't invite her to dinner. It's literally the only thing she does."
+  },
+  "duat": {
+    "titulo": "Duat",
+    "texto": "The Egyptian underworld that the dead travel through on their way to the final judgment.",
+    "thot": "Cold, dark, and with a frankly outrageous waiting line."
+  },
+  "aaru": {
+    "titulo": "Aaru",
+    "texto": "The Field of Reeds, ruled by Osiris: the paradise of the righteous. An eternal, abundant version of the fields of Egypt, where people still farmed.",
+    "thot": "Yes, even in paradise you keep plowing. The Egyptians loved their land even after death."
+  },
+  "ba": {
+    "titulo": "Ba",
+    "texto": "One of the parts of the Egyptian soul, depicted as a bird with a human head.",
+    "thot": "Your ba wanders around keeping memories even you don't remember. Handy and a little unsettling."
+  },
+  "sheut": {
+    "titulo": "Sheut",
+    "texto": "The shadow, another of the parts that make up a person in Egyptian belief.",
+    "thot": "Don't confuse your sheut with the creatures that chase you at night. Although, to be fair, the confusion is understandable."
+  },
+  "cultivos": {
+    "titulo": "Crops of the Nile",
+    "texto": "Emmer wheat was the base of bread and beer. Flax was used for clothing and mummy bandages. Papyrus grew in the Nile marshes and gave the material for writing.",
+    "thot": "Three plants, a whole civilization on top. Not bad for mere green stalks."
+  },
+  "amuletos": {
+    "titulo": "Ankh and heart scarab",
+    "texto": "The ankh is the symbol of life. The heart scarab was placed on the mummy's chest so the heart would not speak against the deceased during the judgment.",
+    "thot": "An amulet that covers your own heart's mouth. The Egyptians thought of everything."
+  },
+  "kemet": {
+    "titulo": "Kemet",
+    "texto": "\"The black land\": that's what the Egyptians called their country, for the fertile silt the Nile left behind. There were three seasons: Akhet (flood), Peret (sowing and growth) and Shemu (harvest).",
+    "thot": "We're in Peret. Sowing. It's literally what the name says."
+  },
+  "heraldo": {
+    "titulo": "Herald of Ammit",
+    "texto": "A creature from THIS story, not from Egyptian texts: no papyrus mentions a herald of Ammit. It has her features (crocodile, lion, hippo) because it serves her.",
+    "thot": "I'm filing this as fiction. My reputation as a scribe won't be stained by an invented monster."
+  },
+  "shabti": {
+    "titulo": "Shabtis",
+    "texto": "Small figures buried with the dead. Their job: doing the farm work for them in the afterlife, so they could rest.",
+    "thot": "An army of little dolls working for free for all eternity. Enviable."
+  },
+  "senet": {
+    "titulo": "Senet",
+    "texto": "One of the oldest known Egyptian board games. It was associated with the soul's journey after death.",
+    "thot": "Iry cheats. I saw it. I wrote it down."
+  }
+}

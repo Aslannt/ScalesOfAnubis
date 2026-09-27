@@ -23,6 +23,7 @@ const PORTRAITS := {
 	"ptahmose": "res://assets/sprites/portraits/ptahmose.png",
 	"iry": "res://assets/sprites/portraits/iry.png",
 	"thot": "res://assets/sprites/portraits/thot.png",
+	"thoth": "res://assets/sprites/portraits/thot.png",
 	"anubis": "res://assets/sprites/portraits/anubis.png",
 }
 
@@ -124,7 +125,7 @@ func _process(delta: float) -> void:
 	_next_icon.visible = not _typing and fmod(_blink_t, 0.8) < 0.5
 	if _typing:
 		_timer += delta
-		var target := int(_timer / CHAR_SPEED)
+		var target := int(_timer / (CHAR_SPEED * (0.35 if bool(Opciones.get_v("texto_rapido")) else 1.0)))
 		_char_i = mini(target, _full_text.length())
 		_lbl_texto.text = _full_text.substr(0, _char_i)
 		if _char_i >= _full_text.length():

@@ -1,0 +1,448 @@
+{
+  "intro_cards": [
+    {
+      "texto": "Egypt, more than 3,000 years ago.",
+      "imagen": "desierto"
+    },
+    {
+      "texto": "The Egyptians believed that, when you died, the gods weighed your heart on a scale.",
+      "imagen": "corazon"
+    },
+    {
+      "texto": "On the other side they placed a feather: the feather of Maat, goddess of truth and justice.",
+      "imagen": "pluma"
+    },
+    {
+      "texto": "If your heart weighed LESS than the feather, you had lived well: you went to Aaru, a paradise of endless fields.",
+      "imagen": "aaru"
+    },
+    {
+      "texto": "If it weighed MORE, it was devoured by Ammit, a monster part crocodile, part lion and part hippopotamus. And you vanished forever.",
+      "imagen": "ammit"
+    },
+    {
+      "texto": "You are Nakht, a farmer who lived by the river Nile. You have just died.",
+      "imagen": "nakht"
+    }
+  ],
+  "intro_mision": [
+    "YOUR MISSION",
+    "Survive 3 nights against the creatures of Ammit.",
+    "Do good deeds: your heart gets lighter.",
+    "Bad deeds make it heavier.",
+    "In the end, your heart must weigh less than the feather (under 50)."
+  ],
+  "anubis": {
+    "intro": [
+      "Anubis: I am Anubis, guardian of the dead. I weigh the hearts.",
+      "Anubis: Nakht... your heart weighed exactly the same as the feather. That has never happened before.",
+      "Anubis: Neither good nor bad. I cannot judge you like this.",
+      "Anubis: I return you to life for three days. What you do will decide which way your heart tips.",
+      "Anubis: But Ammit does not want to go hungry. Every night she will send her creatures after you.",
+      "Anubis: Thoth, scribe of the gods. You recorded this judgment. You will go with him and write down everything he does.",
+      "Thoth: ...As you command. I am Thoth, Nakht. Wherever you go, I go. Everything you do will be on my papyrus, and in the end Anubis will read it."
+    ]
+  },
+  "final": {
+    "pesaje_intro": [
+      "Anubis: Three days have passed. Let us see what your heart weighs now."
+    ],
+    "liviano": [
+      "Anubis: Lighter than the feather. The road to Aaru opens... a little.",
+      "Thoth: I'll write that in my best handwriting."
+    ],
+    "empate": [
+      "Anubis: In balance once again. Your deeds still decide nothing.",
+      "Thoth: What a stubborn heart you have."
+    ],
+    "pesado": [
+      "Anubis: Your heart weighs more than the feather. Ammit can already smell your name.",
+      "Thoth: There is still time. Not much."
+    ],
+    "ba": [
+      "A memory of your ba returns, like a bird with a human face.",
+      "A river. A child laughing on the bank, holding a papyrus stalk.",
+      "The child turns around. He has Iry's eyes.",
+      "Thoth: ...So you are starting to remember."
+    ]
+  },
+  "altar": {
+    "ya_robado": [
+      "Thoth: The offering is gone. I hope you remember that at the weighing."
+    ],
+    "bloqueado": [
+      "Thoth: Offerings for Maat. Don't even think about it."
+    ],
+    "robar": [
+      "Thoth: That offering isn't yours, farmer.",
+      "Nakht takes the offering from the altar without anyone seeing.",
+      "Thoth: I saw it. I always see."
+    ],
+    "pregunta": "The offering altar is unguarded.",
+    "op_robar": "Take the offering (+20 deben)",
+    "op_dejar": "Leave it be",
+    "dejar": [
+      "Thoth: Good. Maat also watches what you don't do."
+    ]
+  },
+  "meret": {
+    "intro": [
+      "Meret (sorpresa): You... are walking? The dead should not walk.",
+      "Meret: I am Meret, priestess of this temple. Here we serve Maat, goddess of truth and justice.",
+      "Meret (feliz): Maat judges what you do, not whether you breathe. Perhaps there is still some good in you.",
+      "Meret: I need flax to weave bandages. Bring me three bundles and you will earn my trust.",
+      "Thoth: Flax is sown with seed 2. It takes two days to grow: plant it today."
+    ],
+    "recordatorio": [
+      "Meret: Three bundles of flax. Bandages don't weave themselves."
+    ],
+    "mision_completa": [
+      "Meret: Real flax. With this we weave the bandages for those who depart.",
+      "Meret (feliz): I'm starting to think you're not a threat, farmer. Starting, I said."
+    ],
+    "repeat": [
+      "Meret: May Maat find you in balance."
+    ],
+    "escarabajo": [
+      "Meret (triste): Wait. Tonight the air smells of something worse than shadows.",
+      "Meret: Take this heart scarab. It was placed on the chest of the dead so the heart would not speak against them.",
+      "Meret: For you it will work differently: if you fall tonight, it will raise you once.",
+      "Thoth: Equip it with Q. And try not to need it."
+    ],
+    "defendiste": [
+      "Meret: Last night I saw you fight in front of our homes. You lost part of your harvest for us.",
+      "Meret (feliz): Maat saw it too. That carries weight."
+    ],
+    "abandonaste": [
+      "Meret (enojo): Last night the shadows got into the village. Where were you?",
+      "Meret (enojo): Ah, looking after your wheat. Of course."
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Meret: Every morning I sweep the temple courtyard, even if no one comes. Maat doesn't need an audience."
+        ],
+        [
+          "Meret: Did you know the feather of Maat is an ostrich feather? White, light, straight. That's how a heart should be."
+        ],
+        [
+          "Meret: As a girl I counted the stars from the temple roof. I always got forty-two. Like the judges of the Duat."
+        ],
+        [
+          "Meret: Farmers think priests don't eat. We do. Bread, onions and a lot of patience."
+        ],
+        [
+          "Meret: Last night I dreamed of the Nile in flood. A good sign. Or so I want to believe."
+        ]
+      ],
+      "ya_charlaste": [
+        "Meret: We've already talked today, Nakht. Go to your fields; tomorrow you'll have more to tell me."
+      ],
+      "regalo_ama": [
+        "Meret (feliz): Flax! This is what the sacred bandages are woven from. I'll keep it in the sanctuary. Thank you, truly."
+      ],
+      "regalo_gusta": [
+        "Meret (feliz): Papyrus... it will do for copying prayers. You're thoughtful."
+      ],
+      "regalo_normal": [
+        "Meret: Thank you. I'll share it with whoever needs it."
+      ],
+      "ya_regalaste": [
+        "Meret: You already gave me something today. Keep the rest; your farm needs it more than I do."
+      ],
+      "nada_que_regalar": [
+        "Meret: You're not carrying any harvest. It doesn't matter: your company is an offering too."
+      ],
+      "nivel1": [
+        "Meret: There used to be seven priests. When the temple cracked, the others fled downriver.",
+        "Meret: I stayed. Someone had to light the lamp every night.",
+        "Meret: Here, flax seeds. If you ever want to help me rebuild this place, the sanctuary bandages will come first."
+      ],
+      "nivel2": [
+        "Meret: Nakht... there's something I haven't told you.",
+        "Meret (triste): I was the one who prepared your body for burial. I washed you with natron, I started wrapping you in linen...",
+        "Meret (triste): But that night the shadows came. I ran and left you half-wrapped, with the rites unfinished.",
+        "Meret (triste): Maybe that's why your heart was left undecided on the scale. Because of me.",
+        "Meret: This amulet of Maat was meant for your chest. Wear it now. It will give you strength."
+      ],
+      "nivel3": [
+        "Meret (triste): For years I doubted Maat. I thought she had abandoned us, that the scale was a children's tale.",
+        "Meret (sorpresa): And then a dead man came back to plow the earth, to defend strangers, to rebuild a temple that wasn't even his.",
+        "Meret (feliz): You gave me back my faith. This feather is from my first day as a priestess. Now it's yours."
+      ],
+      "templo_intro": [
+        "Meret: The temple is falling apart. With harvests and deben we could restore it, piece by piece.",
+        "Meret: And believe me: Maat rewards those who raise her house."
+      ],
+      "templo_hecho_columnas": [
+        "Meret (feliz): The columns stand again! I can feel the temple breathing once more.",
+        "Meret: Maat blesses you: your body will take more blows."
+      ],
+      "templo_hecho_estatua": [
+        "Meret: The statue of Maat watches over us again. Her justice guides your defenses: they'll hit harder."
+      ],
+      "templo_hecho_estandartes": [
+        "Meret: The banners fly above the pylon. Even the river seems happier.",
+        "Meret: Your fields will receive Maat's flood more often."
+      ],
+      "templo_hecho_santuario": [
+        "Meret (sorpresa): The sanctuary shines. I haven't seen this light in years.",
+        "Meret (feliz): Nakht... the temple is complete. Maat looks kindly on you. Your heart is lighter."
+      ],
+      "templo_falta": [
+        "Meret: You don't have what's needed yet. Check the list: harvests and deben."
+      ],
+      "templo_completo": [
+        "Meret: The temple is complete thanks to you. Come pray whenever you like; I'm not alone anymore."
+      ]
+    }
+  },
+  "ptahmose": {
+    "intro": [
+      "Ptahmose (feliz): A new face on my dock! I'm Ptahmose, river merchant.",
+      "Ptahmose: I buy your harvests and sell you seeds. And if you stay a while, I'll tell you stories from other cities.",
+      "Thoth: Here you pay in 'deben': the copper money of Egypt."
+    ],
+    "repeat": [
+      "Ptahmose: Bringing anything to sell today?"
+    ],
+    "vender_vacio": [
+      "Ptahmose: Come back when your bag is full of something other than sand."
+    ],
+    "vender_exito": [
+      "Ptahmose (feliz): Good deal. The river always gives to those who know how to wait."
+    ],
+    "sin_dinero": [
+      "Ptahmose (enojo): With that purse you couldn't buy the air on this dock."
+    ],
+    "compra_ok": [
+      "Ptahmose (feliz): Seeds from the finest silt in Kemet. Well, the second finest."
+    ],
+    "rumores": [
+      [
+        "Ptahmose: They say in Thebes a scribe fell asleep on his papyrus and woke up with the text written backwards.",
+        "Thoth: That happened to me. Once. Centuries ago."
+      ],
+      [
+        "Ptahmose: In the delta they say Apep, the serpent of chaos, attacks Ra's boat every night.",
+        "Thoth: That one is true. And every morning the sun rises again, so Apep loses. Always."
+      ],
+      [
+        "Ptahmose: The nobles are buried with shabtis, little figures that will work the land for them in the afterlife.",
+        "Thoth: You have no shabtis, farmer. You'll have to harvest Aaru with your own hands."
+      ]
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Ptahmose: The price of wheat in Thebes doubled! Or so my cousin says. My cousin lies a lot."
+        ],
+        [
+          "Ptahmose: I once sold a donkey to a priest of Ptah. The donkey was wiser than he was."
+        ],
+        [
+          "Ptahmose: See this ring? Gold-plated copper. But don't tell anyone."
+        ],
+        [
+          "Ptahmose: Trade is trust, my friend. That's why I always count what I'm paid twice."
+        ],
+        [
+          "Ptahmose: At night I lock up with three bolts. Two for thieves and one for Ammit."
+        ]
+      ],
+      "ya_charlaste": [
+        "Ptahmose: You've had enough free chatter out of me for today! Come back tomorrow."
+      ],
+      "regalo_ama": [
+        "Ptahmose (sorpresa): First-rate papyrus! In Memphis they'd pay me in silver for this. Are you sure you're giving it to me? No regrets!"
+      ],
+      "regalo_gusta": [
+        "Ptahmose (feliz): Wheat. Honest and golden, like me. Well, almost like me."
+      ],
+      "regalo_normal": [
+        "Ptahmose: A gift... what a strange custom among merchants! Thank you."
+      ],
+      "ya_regalaste": [
+        "Ptahmose: One a day, friend. Otherwise I'll start thinking you want something."
+      ],
+      "nada_que_regalar": [
+        "Ptahmose (enojo): Give me what? Air? Bring me harvests."
+      ],
+      "nivel1": [
+        "Ptahmose (feliz): I like you, Nakht. The living haggle; at least you work.",
+        "Ptahmose: From today on, friend's price on seeds. Don't tell Iry, he'll bleed me dry."
+      ],
+      "nivel2": [
+        "Ptahmose (triste): I'm going to tell you something I've never told anyone. Not even my wife.",
+        "Ptahmose (triste): When I was young... I was a tomb robber. I'd sneak into the mastabas at night and take amulets, rings, anything that shone.",
+        "Ptahmose (triste): When I saw Ammit's creatures on the first night, I knew they were coming for people like me.",
+        "Ptahmose (feliz): Take these coins. I earned them honestly. Almost all of them."
+      ],
+      "nivel3": [
+        "Ptahmose (triste): Last night I went back to the necropolis. Alone.",
+        "Ptahmose (triste): I returned the last amulet I stole, a scarab-shaped one, to the tomb I took it from.",
+        "Ptahmose (sorpresa): I could swear I heard someone sigh with relief. Maybe it was me.",
+        "Ptahmose (feliz): From today on I'll buy your harvests at a better price. An honest merchant, who'd have thought?"
+      ]
+    }
+  },
+  "iry": {
+    "intro": [
+      "Iry (sorpresa): Hey! Is it true you were dead? That's so cool! I'm Iry.",
+      "Iry: Thoth, who is Anubis? Why does he have a dog's head?",
+      "Thoth: A jackal's, Iry. Anubis is the god who looks after the dead and the cemeteries. That's why he saw Nakht first.",
+      "Iry (sorpresa): And does he bark?",
+      "Thoth (sarcasmo): ...Not that I know of."
+    ],
+    "repeat": [
+      "Iry: When I grow up I want to tend crops like you. Or be a scribe. I haven't decided."
+    ],
+    "dia2": [
+      "Iry (sorpresa): Last night I saw shadows from the roof! Thoth, what are they?",
+      "Thoth: The sheut. To the Egyptians, the shadow was also part of a person. These are shadows with no owner.",
+      "Iry (triste): That's scary... but so interesting."
+    ],
+    "dia3": [
+      "Iry (triste): Nakht... did we know each other before? I feel like I've seen you by the river.",
+      "Thoth: ...",
+      "Iry (sorpresa): Thoth? Why aren't you saying anything? You always say something."
+    ],
+    "senet_pedido": [
+      "Iry (triste): Nakht... I lost my senet piece playing in the necropolis. My dad carved it for me!",
+      "Thoth: Senet is a very old board game. The Egyptians said it was like the soul's journey after death.",
+      "Iry: Will you bring it back? I'm scared to go there alone.",
+      "Thoth: The necropolis is the cemetery, to the south. Look for something shiny."
+    ],
+    "senet_gracias": [
+      "Iry (feliz): My piece! Thank you, thank you!",
+      "Iry (feliz): When I grow up I'm going to beat you at senet. You'll see."
+    ],
+    "amistad": {
+      "charla": [
+        [
+          "Iry: Today I learned to write my name in hieroglyphs. It's a duck, a mouth and an arm. I think."
+        ],
+        [
+          "Iry: Have you ever seen a hippo up close? I have. Well, from far away. Well, in a painting."
+        ],
+        [
+          "Iry: My mom says not to talk to dead people. But you're a nice dead person."
+        ],
+        [
+          "Iry: If I were pharaoh I'd ban onions. And naps."
+        ],
+        [
+          "Iry: The temple cat looks at me funny. I think it's a spy for Bastet."
+        ]
+      ],
+      "ya_charlaste": [
+        "Iry: We already played today! Tomorrow I'll tell you another secret. A real one."
+      ],
+      "regalo_ama": [
+        "Iry (feliz): Wheat?! My mom is going to make honey bread! You're the best dead person in the world!"
+      ],
+      "regalo_gusta": [
+        "Iry (feliz): Ooh, thanks. I'm going to make a little boat out of this."
+      ],
+      "regalo_normal": [
+        "Iry: For me? I'll hide it in my secret treasure."
+      ],
+      "ya_regalaste": [
+        "Iry (feliz): You already gave me a present today! My mom says not to be greedy."
+      ],
+      "nada_que_regalar": [
+        "Iry: Were you going to give me something? You don't have anything... It doesn't matter!"
+      ],
+      "nivel1": [
+        "Iry (feliz): I'll tell you a secret: I want to be your apprentice. Here, wheat seeds. I saved them for you."
+      ],
+      "nivel2": [
+        "Iry (triste): Nakht... one night my dad went to the necropolis to look for a lost dog. He never came back.",
+        "Iry (triste): Everyone says Ammit took him. I don't believe it.",
+        "Iry (feliz): Starting tomorrow I'll water your crops at dawn, before you wake up. That way you have more time to fight."
+      ],
+      "nivel3": [
+        "Iry (sorpresa): Last night I saw him. A bird with a man's face, sitting on the roof. It had my dad's smile.",
+        "Iry (feliz): That was his ba, right? He told me he was okay. That the scale had found him just.",
+        "Iry (sorpresa): And he told me something for you: \"The Herald fears the one who walks with a light heart\".",
+        "Iry (feliz): Don't cry, Nakht. Nice dead people don't cry."
+      ]
+    }
+  },
+  "thot": {
+    "inicio": "I'm Thoth, your scribe. Move with WASD. Your OBJECTIVES are at the top right.",
+    "arar": "Face a square of dark earth and press E to till it.",
+    "sembrar": "E again to sow. 1, 2 and 3 choose the seed.",
+    "regar": "E once more to water it.",
+    "regado": "Good. It will grow through the day and the night.",
+    "aldeanos": "The village is to the upper right. Those with a ! want to talk to you.",
+    "atardecer": "The sun is setting. Your tools become weapons: get ready.",
+    "noche1": "(sorpresa) Here they come! Click to attack, Space to dodge.",
+    "primer_kill": "One less shadow. Noted.",
+    "cultivo_perdido": "Ammit's spawn are going for your crops! Protect them.",
+    "vida_baja": "Your life is fading. Dodge, back off, or equip the Ankh with Q.",
+    "amanecer": "You survived. Let me read you what I wrote down tonight.",
+    "dia2": "Harvest, sell to Ptahmose and use the deben on defenses.",
+    "defensa": "See those stone pedestals by the field? Press E on one to build a defense.",
+    "altar_d2": "Nobody is guarding the temple altar today. It holds valuable offerings... Taking them would make you rich. And your heart, heavier.",
+    "noche2": "(sorpresa) Nakht! Some shadows are heading for the village and others for your crops. You can't be in both places. What will you protect?",
+    "aldea_atacada": "(sorpresa) They're looting the village!",
+    "aldea_salvada": "The village holds. Your crops... well. Wheat grows back; people don't.",
+    "dia3": "Last day. Something big is coming tonight. Meret is waiting for you at the temple.",
+    "noche3": "This is the great night. The Herald of Ammit is coming, her strongest messenger. Hold on.",
+    "jefe": "(sorpresa) The Herald! Crocodile head, lion body, hippo hindquarters. Just like its mistress. Watch out for its charge.",
+    "jefe_rugido": "(sorpresa) It's calling its spawn!",
+    "jefe_mitad": "It's wounded and furious! Keep going.",
+    "jefe_muerto": "It fell. Ammit will have to wait... for now.",
+    "derrota": "You were nearly devoured. Anubis raised you again, but it won't be free.",
+    "estatua": "A statue of Anubis. He protects the necropolis; today he protects your wheat.",
+    "brasero": "(sarcasmo) Sacred fire. Shadows don't like light. Nobody likes getting burned, really.",
+    "escarabajo_uso": "The scarab gave you back your breath. Don't count on it twice tonight.",
+    "robo": "(sarcasmo) Noted. Everything gets noted.",
+    "muro": "(sarcasmo) Mudbrick: mud, straw and sun. All of Egypt was built this way, except what was made of stone to impress people.",
+    "cultivo_atacado": "(sorpresa) A spawn is eating your harvest! Look at the red bar over the plot: hit it before it empties.",
+    "corazon_explica": "See the scale at the top? That's your heart. Under 50 = light, good. Over 50 = heavy, bad. Your deeds move it.",
+    "shabti": "A shabti! The Egyptians buried these little figures so they would work for them in the afterlife. {n} of 5 so far.",
+    "shabtis_todos": "(sorpresa) All five shabtis! Ptahmose would pay well... fate already paid you. And Maat notices.",
+    "senet_encontrado": "Iry's senet piece. Take it to him: he's in the village.",
+    "campamento_noche": "(sarcasmo) Nights aren't for resting, Nakht. Nights are for fighting.",
+    "ofrenda": "An offering to Maat. Your heart weighs a little less.",
+    "misterio_d2": "Your judgment... There's something on my papyrus from that day that doesn't add up. I'll tell you later. Maybe.",
+    "misterio_d3": "Nakht. If your heart tied, it wasn't by chance. But it's not my place to tell you. Not yet.",
+    "estado_pluma": "Look at your scale: you're lighter than the feather. Maat smiles on you. Make the most of it.",
+    "estado_equilibrio": "(sarcasmo) Back in balance. Neither saint nor monster. Which, believe me, is the most common thing in my records.",
+    "estado_sombra": "(sarcasmo) Your heart is darkening. Yes, you hit harder. No, that's not a compliment.",
+    "estado_hambre": "Nakht... Ammit is already licking her teeth. That power you feel is HER hunger. Think about the weighing.",
+    "iry_riega": "(sarcasmo) Iry came by at dawn and watered {n} of your crops. That boy likes you more than his onions.",
+    "templo_objetivo": "Meret can restore the temple if you bring her harvests and deben. Each part brings a blessing.",
+    "amistad_explica": "Chat with the villagers every day and give them gifts. Friends share secrets... and help.",
+    "estacion_peret": "Peret: the land rises out of the water, black and soft. The Egyptians called their country Kemet, 'the black land', because of this.",
+    "estacion_shemu": "(sarcasmo) Shemu: heat, harvest and full pockets. And the desert, which is hungry too.",
+    "estacion_akhet": "Akhet: the Nile overflows. Nobody works the riverbank these days; the river waters everything for you. Watch what crawls out of the water.",
+    "akhet_riego": "The high water reached your fields: no need to water today.",
+    "libre_inicio": "(sarcasmo) Shall we go on? The Herald will return every time a season ends, stronger. And I keep writing everything down, of course.",
+    "amb_necropolis": "The necropolis. Here sleep those who already faced the scale. Walk with respect... and quickly.",
+    "amb_rio": "(sarcasmo) The Nile. It gives life, food and, now and then, a crocodile. Sobek says hello.",
+    "amb_templo": "The temple of Maat. It keeps the idea that the world has an order. Lately, with cracks.",
+    "amb_quieto": [
+      "(sarcasmo) Meditating? Fields don't get watered with thoughts.",
+      "(sarcasmo) If you stand still much longer, someone will mistake you for a statue. And leave you offerings.",
+      "(sarcasmo) Noting: 'Nakht contemplates the horizon'. Very poetic. Not very productive."
+    ],
+    "amb_esquiva": "(sarcasmo) Practicing for the Opet festival? Because there's nothing to dodge in daylight.",
+    "amb_combo": "(sorpresa) Ten hits in a row! I'm writing that one in big letters.",
+    "amb_rico": "(sarcasmo) Ptahmose is smiling. That's almost never good news for your purse. Today, miraculously, it is.",
+    "amb_50": "Fifty creatures sent back to the Duat. Ammit must be drafting a formal complaint.",
+    "amb_noche_larga": "(sarcasmo) The night is long, but you're stubborn. Good combination.",
+    "recuerdos": [
+      "Thoth remembers: they say I invented writing. When I showed it to the king, he feared people would stop remembering because they trusted my letters. He had a point.",
+      "(sarcasmo) Thoth remembers: I once beat the Moon at senet. I won five days of her light, and that's how the year got 365. You're welcome.",
+      "Thoth remembers: when Set tore Osiris apart, I helped Isis find the words to bring him back to life. Words heal too.",
+      "Thoth remembers: I am the scribe of the judgment. When a heart is weighed, I write down the result. I have never been wrong. Except, perhaps, once.",
+      "Thoth remembers: the ibis walks through the mud searching for what is hidden. That's why I wear its head. I look for what others don't see.",
+      "(triste) Thoth remembers: your weighing, Nakht. I wrote 'tie' with a trembling hand. My hand never trembles.",
+      "Thoth remembers: Anubis didn't send me only to watch you. He sent me to understand why the scale hesitated. I think I know now: your story wasn't finished being written.",
+      "(sarcasmo) Thoth remembers: you ask why I'm still here if the order has been carried out. Let's say I like the way you write. With spelling mistakes, but I like it."
+    ]
+  }
+}

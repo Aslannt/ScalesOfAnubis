@@ -58,7 +58,7 @@ func _ready() -> void:
 	_face.size = Vector2(32, 32)
 	_face.name = "Retrato"
 	_panel.add_child(_face)
-	_name = UIStyle.make_label(_panel, "THOT", Vector2(37, 3), UIStyle.SMALL, UIStyle.GOLD)
+	_name = UIStyle.make_label(_panel, Textos.t("nombre_thot").to_upper(), Vector2(37, 3), UIStyle.SMALL, UIStyle.GOLD)
 	_lbl = UIStyle.make_label(_panel, "", Vector2(37, 13), UIStyle.SMALL, Color(0.86, 0.92, 1.0))
 	_lbl.size = Vector2(PANEL_W - 40, 36)
 	_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -140,7 +140,7 @@ func _process(delta: float) -> void:
 			_try_next()
 		return
 	_t += delta
-	var n := mini(int(_t / CHAR_SPEED), _full.length())
+	var n := mini(int(_t / (CHAR_SPEED * (0.35 if bool(Opciones.get_v("texto_rapido")) else 1.0))), _full.length())
 	_lbl.text = _full.substr(0, n)
 	# el pico se abre y cierra mientras escribe
 	var talking := n < _full.length() and int(_t / 0.11) % 2 == 0

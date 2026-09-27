@@ -254,5 +254,16 @@
   "obj_estacion": "{s}: día {d} de {t}",
   "obj_jefe_vuelve": "Esta noche vuelve el Heraldo",
   "obj_amistad": "Hazte amigo de los aldeanos ({n}/9)",
-  "amanecer_estacion": "Estación: {n}"
+  "amanecer_estacion": "Estación: {n}",
+  "nombre_thot": "Thot",
+  "combo_premio": "+{n} deben",
+  "opciones_titulo": "Opciones",
+  "opciones_vibracion": "Vibración del mando",
+  "opciones_sacudida": "Sacudida de cámara",
+  "opciones_texto_rapido": "Texto rápido",
+  "opciones_idioma": "Idioma",
+  "opciones_efectos_pantalla": "Destellos de pantalla",
+  "idioma_es": "Español",
+  "idioma_en": "English",
+  "opciones_idioma_nota": "El idioma se aplica al instante; algunos textos cambian al volver al menú."
 }

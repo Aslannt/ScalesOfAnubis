@@ -18,6 +18,27 @@ func _ready() -> void:
 		entries = parsed
 		for e in entries:
 			_by_id[e["id"]] = e
+	cargar_textos()
+
+
+var _es: Dictionary = {}
+
+
+## Titulos y textos del idioma elegido (data/i18n/codex_<idioma>.json:
+## {id: {campo: texto}}); lo que falte queda en espanol.
+func cargar_textos() -> void:
+	if _es.is_empty():
+		for e in entries:
+			_es[e["id"]] = e.duplicate()
+	var over = Textos.load_json("res://data/i18n/codex_%s.json" % Textos.idioma) if Textos.idioma != "es" else {}
+	for e in entries:
+		var src: Dictionary = _es[e["id"]]
+		for k in src:
+			if k != "desbloqueada" and k != "id":
+				e[k] = src[k]
+		if over is Dictionary and over.has(e["id"]):
+			for k in over[e["id"]]:
+				e[k] = over[e["id"]][k]
 
 
 func unlock(id: String) -> void:

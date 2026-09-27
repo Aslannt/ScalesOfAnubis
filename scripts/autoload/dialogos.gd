@@ -5,13 +5,20 @@ var data: Dictionary = {}
 
 
 func _ready() -> void:
-	var f := FileAccess.open("res://data/dialogues.json", FileAccess.READ)
-	if f == null:
+	cargar()
+
+
+## Dialogos en espanol con la traduccion del idioma elegido encima (fase 7).
+func cargar() -> void:
+	var base = Textos.load_json("res://data/dialogues.json")
+	if not (base is Dictionary):
 		push_error("No se pudo abrir data/dialogues.json")
 		return
-	var parsed = JSON.parse_string(f.get_as_text())
-	if parsed is Dictionary:
-		data = parsed
+	data = base
+	if Textos.idioma != "es":
+		var over = Textos.load_json("res://data/i18n/dialogues_%s.json" % Textos.idioma)
+		if over is Dictionary:
+			data = Textos.deep_merge(base, over)
 
 
 func lines(npc_id: String, key: String) -> Array:

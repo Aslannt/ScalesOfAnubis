@@ -12,6 +12,7 @@ const DEFAULTS := {
 	"vibracion": true,
 	"sacudida": 1.0,       # 0 = sin sacudidas de camara
 	"texto_rapido": false,
+	"efectos_pantalla": true,  # destellos rojos, bordes teñidos
 	"idioma": "es",
 }
 

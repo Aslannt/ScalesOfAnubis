@@ -79,7 +79,7 @@ func add_hit() -> void:
 	# premio cada 10 golpes seguidos
 	if _combo_n % 10 == 0:
 		GameState.add_deben(_combo_n / 2)
-		announce("COMBO x%d" % _combo_n, "+%d deben" % (_combo_n / 2))
+		announce("COMBO x%d" % _combo_n, Textos.t("combo_premio", {"n": _combo_n / 2}))
 
 
 func _process(delta: float) -> void:

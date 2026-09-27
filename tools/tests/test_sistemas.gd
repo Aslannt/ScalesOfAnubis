@@ -25,6 +25,7 @@ func _ready() -> void:
 	await _test_mejoras()
 	await _test_amistad()
 	await _test_estaciones()
+	_test_idioma()
 	print("TEST SISTEMAS: ", "OK" if ok else "FALLO")
 	get_tree().quit(0 if ok else 1)
 
@@ -196,6 +197,18 @@ func _test_estaciones() -> void:
 	await _secs(0.3)
 	check(not orilla.flooded and orilla.limo, "al bajar el agua queda limo fertil")
 	GameState.modo_libre = false
+
+
+func _test_idioma() -> void:
+	print("IDIOMA")
+	Textos.set_idioma("en")
+	check(Textos.t("menu_nueva_partida") == "New game", "interfaz en ingles")
+	check(String(Dialogos.lines("meret", "intro")[1]).contains("priestess"), "dialogos en ingles")
+	check(Codex.get_entry("thot").get("titulo", "") == "Thoth", "codice en ingles")
+	check(String(GameState.crops["trigo"]["nombre_corto"]) == "wheat", "cultivos en ingles")
+	check(Textos.t("amistad_sube", {"n": "Iry", "l": 2}) == "Friendship with Iry: level 2!", "marcadores en ingles")
+	Textos.set_idioma("es")
+	check(Textos.t("menu_nueva_partida") == "Nueva partida" and String(GameState.crops["trigo"]["nombre_corto"]) == "trigo" and Codex.get_entry("thot").get("titulo", "") == "Thot", "vuelve al espanol")
 
 
 func _npc(id: String) -> Node:

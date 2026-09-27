@@ -1,0 +1,14 @@
+{
+  "trigo": {
+    "nombre": "Wheat (emmer)",
+    "nombre_corto": "wheat"
+  },
+  "lino": {
+    "nombre": "Flax",
+    "nombre_corto": "flax"
+  },
+  "papiro": {
+    "nombre": "Papyrus",
+    "nombre_corto": "papyrus"
+  }
+}

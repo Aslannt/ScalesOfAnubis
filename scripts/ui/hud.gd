@@ -167,7 +167,7 @@ func _on_health_changed(v: int, m: int) -> void:
 		_vida_icon.modulate = Color(3, 3, 3)
 		create_tween().tween_property(_vida_icon, "modulate", Color.WHITE, 0.25)
 		# destello rojo en los bordes de la pantalla
-		_hurt.modulate = Color(1, 0.15, 0.1, 0.55)
+		_hurt.modulate = Color(1, 0.15, 0.1, 0.55 if bool(Opciones.get_v("efectos_pantalla")) else 0.0)
 		_hurt_flash_t = 0.35
 		create_tween().tween_property(_hurt, "modulate:a", 0.0, 0.35)
 	elif v > _vida_prev:
@@ -284,6 +284,8 @@ func _on_heart_state(id: String, _anterior: String) -> void:
 	_lbl_estado.text = Textos.t("estado_" + id)
 	_lbl_estado.add_theme_color_override("font_color", col)
 	var alpha := {"pluma": 0.35, "equilibrio": 0.0, "sombra": 0.45, "hambre": 0.65}.get(id, 0.0) as float
+	if not bool(Opciones.get_v("efectos_pantalla")):
+		alpha = 0.0
 	create_tween().tween_property(_vignette, "modulate", Color(col.r, col.g, col.b, alpha), 1.2)
 	if _anterior != "":
 		_lbl_estado.pivot_offset = Vector2(62, 5)
@@ -601,7 +603,8 @@ func _process(delta: float) -> void:
 	if _hurt_flash_t <= 0.0:
 		var low := GameState.health > 0 and GameState.health <= GameState.max_health * 0.3
 		var beat := pow(maxf(0.0, sin(_vig_t * 5.0)), 6.0)
-		_hurt.modulate = Color(1, 0.15, 0.1, (0.12 + beat * 0.3) if low else 0.0)
+		var fx := bool(Opciones.get_v("efectos_pantalla"))
+		_hurt.modulate = Color(1, 0.15, 0.1, (0.12 + beat * 0.3) if (low and fx) else 0.0)
 	_refresh_slots()
 	_refresh_hint()
 	_refresh_objectives(delta)

@@ -326,6 +326,22 @@ func _cargar_crops() -> void:
 	var parsed = JSON.parse_string(f.get_as_text())
 	if parsed is Dictionary:
 		crops = parsed
+	cargar_nombres_cultivos()
+
+
+var _crop_names_es: Dictionary = {}
+
+
+## Nombres de cultivos en el idioma elegido (data/i18n/crops_<idioma>.json).
+func cargar_nombres_cultivos() -> void:
+	if _crop_names_es.is_empty():
+		for id in crops:
+			if crops[id] is Dictionary:
+				_crop_names_es[id] = {"nombre": crops[id].get("nombre", id), "nombre_corto": crops[id].get("nombre_corto", id)}
+	var over = Textos.load_json("res://data/i18n/crops_%s.json" % Textos.idioma) if Textos.idioma != "es" else {}
+	for id in _crop_names_es:
+		for k in _crop_names_es[id]:
+			crops[id][k] = over[id][k] if (over is Dictionary and over.has(id) and over[id].has(k)) else _crop_names_es[id][k]
 
 
 func add_deben(cantidad: int) -> void:

@@ -42,7 +42,7 @@ func _ready() -> void:
 	_shadow.top_level = true
 	# cartel con su nombre mientras habla (Deivid: "ni me aprendi su nombre")
 	_nameplate = Label3D.new()
-	_nameplate.text = "THOT"
+	_nameplate.text = Textos.t("nombre_thot").to_upper()
 	_nameplate.font_size = 40
 	_nameplate.outline_size = 10
 	_nameplate.modulate = Color(0.98, 0.8, 0.35, 0.0)

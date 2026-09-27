@@ -146,6 +146,10 @@ func _build_buttons() -> void:
 	if not GameState.has_save():
 		_btn_nueva.grab_focus()
 
+	# al cambiar de idioma se rehace el menu con los textos nuevos
+	Textos.idioma_cambiado.connect(func():
+		if get_tree().current_scene == self:
+			get_tree().reload_current_scene.call_deferred())
 	_opciones = PanelContainer.new()
 	_opciones.set_script(OPTIONS_SCRIPT)
 	_opciones.position = Vector2(240 - 115, 120)
