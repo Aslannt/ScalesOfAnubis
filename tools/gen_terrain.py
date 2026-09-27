@@ -255,6 +255,48 @@ def make_necropolis_sand():
     return img
 
 
+def make_plaster():
+    """Revoque de barro claro de las casas de adobe (lo tipico en las aldeas
+    del Nilo): manchas suaves, un par de ladrillos asomando donde se cayo el
+    revoque, y unas grietas finas."""
+    img = organic_patches(["sand_dark", "sand", "sand_light"], seed=21, low_res=5)
+    px = img.load()
+    rng = np.random.RandomState(21)
+    for _ in range(3):
+        bx, by = rng.randint(0, SIZE - 12), rng.randint(0, SIZE - 8)
+        for row in range(2):
+            for col in range(2):
+                x0 = bx + col * 6 + (3 if row % 2 else 0)
+                y0 = by + row * 4
+                for y in range(y0, y0 + 3):
+                    for x in range(x0, x0 + 5):
+                        px[x % SIZE, y % SIZE] = c("ochre") if (x + y) % 5 else c("ochre_dark")
+    for _ in range(4):
+        x, y = rng.randint(0, SIZE), rng.randint(0, SIZE)
+        for k in range(rng.randint(3, 7)):
+            x += rng.choice([-1, 0, 1])
+            y += 1
+            r, g, b, a = px[x % SIZE, y % SIZE]
+            px[x % SIZE, y % SIZE] = (int(r * 0.8), int(g * 0.8), int(b * 0.8), a)
+    return img
+
+
+def make_palm_mat():
+    """Estera de hojas de palma para toldos y techos: tiras tejidas."""
+    img = Image.new("RGBA", (SIZE, SIZE))
+    px = img.load()
+    base = np.array(c("grass_dry")[:3], dtype=float)
+    for y in range(SIZE):
+        for x in range(SIZE):
+            band = (x // 4 + y // 4) % 2
+            k = 1.0 if band else 0.82
+            if (x % 4 == 0) or (y % 4 == 0 and band):
+                k *= 0.78
+            col = base * k
+            px[x, y] = (int(col[0]), int(col[1]), int(col[2]), 255)
+    return img
+
+
 TEXTURES = {
     "sand": make_sand,
     "grass_nile": make_grass,
@@ -269,6 +311,8 @@ TEXTURES = {
     "necropolis_sand": make_necropolis_sand,
     "plot_marker": make_plot_marker,
     "field": make_field,
+    "plaster": make_plaster,
+    "palm_mat": make_palm_mat,
 }
 
 if __name__ == "__main__":

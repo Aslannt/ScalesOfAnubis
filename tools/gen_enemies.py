@@ -198,7 +198,7 @@ def build_thot():
 
 
 if __name__ == "__main__":
-    build_sombra()
-    build_cria()
-    build_heraldo()
-    build_thot()
+    # OBSOLETO: sombra, cria y Thot ahora salen de tools/gen_creatures.py y el
+    # Heraldo de tools/gen_heraldo.py (pase de arte M9). No se ejecuta para
+    # no pisar los sprites nuevos.
+    print("usar tools/gen_creatures.py y tools/gen_heraldo.py")

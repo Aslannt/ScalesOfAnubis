@@ -18,8 +18,13 @@ func _ready() -> void:
 	_base = Node3D.new()
 	add_child(_base)
 	var stone := BuildingFactory._mat("stone")
-	_base.add_child(BuildingFactory._box(Vector3(1.3, 0.25, 1.3), stone, Vector3(0, 0.12, 0)))
-	_base.add_child(BuildingFactory._box(Vector3(1.4, 0.06, 1.4), BuildingFactory._solid_mat(Color(0.86, 0.66, 0.22)), Vector3(0, 0.27, 0)))
+	_base.add_child(BuildingFactory._box(Vector3(1.4, 0.12, 1.4), stone, Vector3(0, 0.06, 0)))
+	_base.add_child(BuildingFactory._box(Vector3(1.2, 0.18, 1.2), stone, Vector3(0, 0.21, 0)))
+	# filo dorado fino alrededor de la losa superior
+	var gold := BuildingFactory._solid_mat(Color(0.86, 0.66, 0.22))
+	for side in [-1, 1]:
+		_base.add_child(BuildingFactory._box(Vector3(1.22, 0.04, 0.04), gold, Vector3(0, 0.3, side * 0.6)))
+		_base.add_child(BuildingFactory._box(Vector3(0.04, 0.04, 1.22), gold, Vector3(side * 0.6, 0.3, 0)))
 	# anillo que late suave para que se note que es "construible"
 	_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()

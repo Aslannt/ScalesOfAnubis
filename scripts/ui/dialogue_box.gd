@@ -33,33 +33,31 @@ func _ready() -> void:
 	layer = 12
 	visible = false
 
-	_panel = Panel.new()
-	_panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_panel.offset_left = 20
-	_panel.offset_right = -20
-	_panel.offset_top = -74
-	_panel.offset_bottom = -10
-	add_child(_panel)
+	_panel = UIStyle.make_panel(self, Vector2(14, 270 - 72), Vector2(452, 64))
+	var frame := UIStyle.make_panel(_panel, Vector2(5, 5), Vector2(54, 54))
+	frame.add_theme_stylebox_override("panel", UIStyle.panel_style(Color(0.2, 0.15, 0.12, 1.0), UIStyle.GOLD_DARK))
 
 	_retrato = TextureRect.new()
-	_retrato.position = Vector2(6, 4)
-	_retrato.size = Vector2(36, 54)
-	_retrato.texture_filter = TextureRect.TEXTURE_FILTER_NEAREST
 	_retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_panel.add_child(_retrato)
+	_retrato.texture_filter = TextureRect.TEXTURE_FILTER_NEAREST
+	_retrato.position = Vector2(2, 2)
+	_retrato.size = Vector2(50, 50)
+	frame.add_child(_retrato)
 
-	_lbl_nombre = Label.new()
-	_lbl_nombre.position = Vector2(50, 4)
-	_lbl_nombre.add_theme_font_size_override("font_size", 13)
-	_lbl_nombre.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
-	_panel.add_child(_lbl_nombre)
+	_lbl_nombre = UIStyle.make_label(_panel, "", Vector2(66, 5), UIStyle.SMALL, Color(0.98, 0.78, 0.3))
 
-	_lbl_texto = Label.new()
-	_lbl_texto.position = Vector2(50, 24)
-	_lbl_texto.size = Vector2(380, 36)
-	_lbl_texto.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_panel.add_child(_lbl_texto)
+	_lbl_texto = UIStyle.make_label(_panel, "", Vector2(66, 18), UIStyle.SMALL, UIStyle.TEXT)
+	_lbl_texto.size = Vector2(376, 42)
+	_lbl_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_lbl_texto.add_theme_constant_override("line_spacing", 2)
+
+	_next_icon = UIStyle.make_label(_panel, "E", Vector2(438, 50), UIStyle.SMALL, UIStyle.GOLD)
+	_next_icon.visible = false
+
+
+var _next_icon: Label
+var _blink_t: float = 0.0
 
 
 func show_lines(raw_lines: Array, on_finished: Callable = Callable()) -> void:
@@ -80,7 +78,7 @@ func _start_line() -> void:
 	SFX.play("dialogue_blip")
 	var parts: PackedStringArray = String(_lines[_idx]).split(": ", true, 1)
 	if parts.size() == 2:
-		_lbl_nombre.text = parts[0]
+		_lbl_nombre.text = parts[0].to_upper()
 		_lbl_texto.text = ""
 		_full_text = parts[1]
 		_update_retrato(parts[0])
@@ -88,7 +86,7 @@ func _start_line() -> void:
 		_lbl_nombre.text = ""
 		_lbl_texto.text = ""
 		_full_text = parts[0]
-		_retrato.texture = null
+		_retrato.texture = load("res://assets/sprites/icons/feather.png")
 
 
 func _update_retrato(hablante: String) -> void:
@@ -105,6 +103,8 @@ var _full_text: String = ""
 func _process(delta: float) -> void:
 	if not visible:
 		return
+	_blink_t += delta
+	_next_icon.visible = not _typing and fmod(_blink_t, 0.8) < 0.5
 	if _typing:
 		_timer += delta
 		var target := int(_timer / CHAR_SPEED)

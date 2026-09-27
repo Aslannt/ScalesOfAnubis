@@ -23,6 +23,7 @@ const SCENARIOS := [
 	{"name": "16_ptahmose_menu", "tile": Vector2(6, 5.8), "phase": 1, "wide": false, "setup": "ptahmose"},
 	{"name": "17_resumen_amanecer", "tile": Vector2(13, 14), "phase": 0, "wide": false, "setup": "amanecer"},
 	{"name": "18_combate_noche", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "combate"},
+	{"name": "19_dialogo_meret", "tile": Vector2(24, 9.2), "phase": 1, "wide": false, "setup": "dialogo"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -142,6 +143,11 @@ func _setup(kind: String) -> void:
 			GameState.shift_heart(-10.0, "defender_aldea")
 			farm.get_node("DawnSummary").show_summary(2, [[Textos.t("amanecer_aldea_salvada"), Color(0.55, 0.9, 1.0)]])
 			await get_tree().create_timer(1.8).timeout
+		"dialogo":
+			for n in world_builder.npcs:
+				if n.npc_id == "meret":
+					n.interact()
+			await get_tree().create_timer(2.5).timeout
 		"combate":
 			for k in range(4):
 				nd.spawn("sombra" if k % 2 == 0 else "cria", "", "", player.global_position + Vector3(-2.5 + k * 1.6, 0, -2.0))
@@ -157,6 +163,8 @@ func _cleanup() -> void:
 	var dsum = farm.get_node("DawnSummary")
 	dsum.visible = false
 	dsum._open = false
+	var dl = get_tree().get_first_node_in_group("dialogue_box")
+	dl.visible = false
 	var cb = get_tree().get_first_node_in_group("choice_box")
 	if cb.visible:
 		cb._choose(-1)

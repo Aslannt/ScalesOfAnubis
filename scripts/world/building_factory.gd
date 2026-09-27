@@ -73,22 +73,65 @@ static func water_plane(size: Vector2, shore_x: float) -> MeshInstance3D:
 
 
 static func house(rng_seed: int = 0) -> Node3D:
+	## Casa de adobe revocada, como en las aldeas del Nilo: techo plano con
+	## parapeto, vigas asomando, escalera al techo y toldo de hojas de palma
+	## (se vivia y dormia en el techo). Antes era un bloque de ladrillo con
+	## una losa de tablas encima.
 	var root := Node3D.new()
-	root.name = "AdobeHouse"
-	var w := 4.0
-	var d := 3.6
-	var h := 2.6
-	root.add_child(_box(Vector3(w, h, d), _mat("adobe", Vector3(2, 1, 1)), Vector3(0, h * 0.5, 0)))
-	# techo (losa plana con viguetas de madera asomando)
-	root.add_child(_box(Vector3(w + 0.4, 0.25, d + 0.4), _mat("wood", Vector3(2, 1, 1)), Vector3(0, h + 0.12, 0)))
-	# entrada (hueco oscuro)
-	root.add_child(_box(Vector3(1.0, 1.7, 0.1), _solid_mat(Color(0.05, 0.04, 0.04)), Vector3(0, 0.85, d * 0.5 + 0.02)))
-	# ventana pequena
-	root.add_child(_box(Vector3(0.5, 0.5, 0.1), _solid_mat(Color(0.05, 0.04, 0.04)), Vector3(w * 0.5 - 0.9, h * 0.6, d * 0.5 + 0.02)))
-	var body := _collision_box(Vector3(w, h, d))
+	root.name = "CasaAdobe"
+	var rng := RandomNumberGenerator.new()
+	rng.seed = rng_seed + 11
+	var w := 3.6
+	var d := 3.2
+	var h := 2.3
+	var plaster := _mat("plaster", Vector3(2, 1, 1))
+	var plaster_top := _mat("plaster", Vector3(1, 1, 1))
+	var wood := _mat("wood")
+	var dark := _solid_mat(Color(0.07, 0.05, 0.05))
+	root.add_child(_box(Vector3(w, h, d), plaster, Vector3(0, h * 0.5, 0)))
+	# zocalo de barro mas oscuro
+	root.add_child(_box(Vector3(w + 0.06, 0.3, d + 0.06), _solid_mat(Color(0.55, 0.38, 0.22)), Vector3(0, 0.15, 0)))
+	# techo y parapeto
+	root.add_child(_box(Vector3(w + 0.1, 0.14, d + 0.1), plaster_top, Vector3(0, h + 0.07, 0)))
+	for side in [-1, 1]:
+		root.add_child(_box(Vector3(w + 0.1, 0.28, 0.12), plaster_top, Vector3(0, h + 0.28, side * (d * 0.5))))
+		root.add_child(_box(Vector3(0.12, 0.28, d + 0.1), plaster_top, Vector3(side * (w * 0.5), h + 0.28, 0)))
+	# vigas de palmera asomando bajo el techo
+	for i in range(5):
+		root.add_child(_box(Vector3(0.1, 0.1, 0.25), wood, Vector3(-w * 0.4 + i * (w * 0.2), h - 0.1, d * 0.5 + 0.1)))
+	# puerta con dintel pintado de azul
+	root.add_child(_box(Vector3(0.9, 1.6, 0.1), dark, Vector3(-0.5, 0.8, d * 0.5 + 0.02)))
+	root.add_child(_box(Vector3(1.2, 0.16, 0.14), _solid_mat(Color(0.18, 0.32, 0.6)), Vector3(-0.5, 1.68, d * 0.5 + 0.04)))
+	# ventanitas altas
+	for x in [0.7, 1.3]:
+		root.add_child(_box(Vector3(0.28, 0.28, 0.1), dark, Vector3(x, h - 0.6, d * 0.5 + 0.02)))
+	# escalera al techo por el costado
+	for i in range(5):
+		var sh := (i + 1) * (h / 5.0)
+		root.add_child(_box(Vector3(0.5, sh, 0.45), plaster, Vector3(w * 0.5 + 0.25, sh * 0.5, d * 0.5 - 0.3 - i * 0.45)))
+	# toldo de estera sobre la mitad del techo
+	for px in [-1.4, 0.0]:
+		for pz in [-1.2, 0.2]:
+			root.add_child(_box(Vector3(0.07, 1.1, 0.07), wood, Vector3(px, h + 0.6, pz)))
+	var mat := _mat("palm_mat", Vector3(2, 2, 1))
+	var awning := _box(Vector3(1.7, 0.05, 1.7), mat, Vector3(-0.7, h + 1.15, -0.5))
+	root.add_child(awning)
+	# cosas en el techo: vasija y cesta
+	var jar := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.14
+	cyl.bottom_radius = 0.2
+	cyl.height = 0.4
+	jar.mesh = cyl
+	jar.material_override = _solid_mat(Color(0.62, 0.36, 0.2))
+	jar.position = Vector3(1.1, h + 0.35, -0.9)
+	root.add_child(jar)
+	if rng.randf() < 0.6:
+		root.add_child(_box(Vector3(0.35, 0.22, 0.35), _mat("palm_mat"), Vector3(0.6, h + 0.25, 0.8)))
+	var body := _collision_box(Vector3(w + 0.6, h, d))
 	root.add_child(body)
 	var torch := Torch.new()
-	torch.position = Vector3(w * 0.5 - 0.1, 0, d * 0.5 + 0.3)
+	torch.position = Vector3(0.35, 0, d * 0.5 + 0.35)
 	root.add_child(torch)
 	return root
 
@@ -518,7 +561,7 @@ static func _pyramid_mesh(base: float, height: float, mat: Material) -> MeshInst
 
 static func build(tipo: String) -> Node3D:
 	match tipo:
-		"house": return house()
+		"house": return house(randi() % 100)
 		"temple": return temple()
 		"obelisk": return obelisk()
 		"tomb": return tomb()

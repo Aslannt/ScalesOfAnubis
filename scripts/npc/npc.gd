@@ -16,10 +16,10 @@ func _ready() -> void:
 	add_to_group("npcs")
 	sprite = AnimatedSprite3D.new()
 	sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite.pixel_size = 0.055
+	sprite.pixel_size = 0.052
 	sprite.shaded = true
 	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	sprite.position = Vector3(0, 0.85, 0)
+	sprite.position = Vector3(0, 0.84, 0)
 	add_child(sprite)
 	sprite.sprite_frames = SpritesheetLoader.build(sheet_path, layout_path, 6.0)
 	sprite.play("south_idle")

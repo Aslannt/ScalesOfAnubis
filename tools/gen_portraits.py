@@ -1,56 +1,26 @@
-"""Recorta un retrato (idle de frente) de cada hoja de personaje ya generada,
-para mostrarlo en la caja de dialogo."""
+"""Retratos de dialogo (busto) recortados de los sprites del pase de arte:
+cabeza y hombros del frame de frente, ampliados x5 sin suavizado."""
 import os
 from PIL import Image
 
-OUT = os.path.join("..", "assets", "sprites", "portraits")
-os.makedirs(OUT, exist_ok=True)
-
-CHAR_W, CHAR_H = 20, 30
-COMP_W, COMP_H = 20, 24
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "sprites")
+OUT = os.path.join(ROOT, "portraits")
 
 
-def crop_character(name):
-    path = os.path.join("..", "assets", "sprites", "characters", f"{name}.png")
-    img = Image.open(path)
-    frame = img.crop((0, 0, CHAR_W, CHAR_H))
-    frame = frame.resize((CHAR_W * 5, CHAR_H * 5), Image.NEAREST)
-    frame.save(os.path.join(OUT, f"{name}.png"))
-    print("wrote", f"{name}.png", frame.size)
-
-
-def crop_thot():
-    path = os.path.join("..", "assets", "sprites", "companion", "thot.png")
-    img = Image.open(path)
-    frame = img.crop((0, 0, COMP_W, COMP_H))
-    frame = frame.resize((COMP_W * 5, COMP_H * 5), Image.NEAREST)
-    frame.save(os.path.join(OUT, "thot.png"))
-    print("wrote thot.png", frame.size)
-
-
-def crop_codex_icons():
-    """Iconos de una sola etapa/frame para el codice (evita mostrar la hoja
-    de sprites entera encogida, que se veia como ruido)."""
-    icons_out = os.path.join("..", "assets", "sprites", "icons")
-
-    sombra = Image.open(os.path.join("..", "assets", "sprites", "enemies", "sombra.png"))
-    frame = sombra.crop((0, 0, 20, 24)).resize((20 * 4, 24 * 4), Image.NEAREST)
-    frame.save(os.path.join(icons_out, "codex_sombra.png"))
-
-    heraldo = Image.open(os.path.join("..", "assets", "sprites", "enemies", "heraldo.png"))
-    frame = heraldo.crop((0, 0, 48, 48)).resize((48 * 2, 48 * 2), Image.NEAREST)
-    frame.save(os.path.join(icons_out, "codex_heraldo.png"))
-
-    for crop_name in ["trigo", "papiro"]:
-        img = Image.open(os.path.join("..", "assets", "sprites", "crops", f"{crop_name}.png"))
-        frame = img.crop((16 * 3, 0, 16 * 4, 20)).resize((16 * 5, 20 * 5), Image.NEAREST)
-        frame.save(os.path.join(icons_out, f"codex_{crop_name}.png"))
-
-    print("wrote codex icons")
+def bust(sheet_path, frame_w, out_name, size=20):
+    img = Image.open(sheet_path).convert("RGBA").crop((0, 0, frame_w, 32))
+    bbox = img.getbbox()
+    top = bbox[1]
+    x0 = (frame_w - size) // 2
+    crop = img.crop((x0, top, x0 + size, top + size))
+    crop = crop.resize((size * 5, size * 5), Image.NEAREST)
+    crop.save(os.path.join(OUT, out_name))
+    print("wrote", out_name, crop.size)
 
 
 if __name__ == "__main__":
-    for n in ["player", "meret", "ptahmose", "iry"]:
-        crop_character(n)
-    crop_thot()
-    crop_codex_icons()
+    for n in ("player", "meret", "ptahmose", "iry"):
+        bust(os.path.join(ROOT, "characters", n + ".png"), 24, n + ".png")
+    t = Image.open(os.path.join(ROOT, "companion", "thot.png")).convert("RGBA").crop((0, 0, 24, 24))
+    t.resize((96, 96), Image.NEAREST).save(os.path.join(OUT, "thot.png"))
+    print("wrote thot.png")

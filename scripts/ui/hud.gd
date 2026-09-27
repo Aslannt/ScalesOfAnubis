@@ -59,6 +59,9 @@ var _hint_panel: Panel
 
 func _ready() -> void:
 	layer = 5
+	# sigue actualizandose en pausa para ocultar la pista de "[E]" durante
+	# dialogos y menus (antes quedaba visible detras de la caja)
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_root = Control.new()
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
