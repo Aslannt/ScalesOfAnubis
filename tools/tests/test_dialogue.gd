@@ -17,6 +17,7 @@ func _ready() -> void:
 	var player: Player = get_tree().get_first_node_in_group("player")
 	var wb = farm.get_node("WorldBuilder")
 	var dlg = get_tree().get_first_node_in_group("dialogue_box")
+	var choice = get_tree().get_first_node_in_group("choice_box")
 
 	for npc_id in ["meret", "ptahmose", "iry"]:
 		var npc = null
@@ -29,6 +30,14 @@ func _ready() -> void:
 		# dos conversaciones seguidas por NPC: intro y la siguiente
 		for vuelta in range(2):
 			await _tap_key(KEY_E)
+			if choice.visible:
+				# Ptahmose abre su menu de comercio: Esc lo cierra sin reabrirse
+				await _tap_key(KEY_ESCAPE)
+				await _frames(10)
+				if choice.visible or dlg.visible or get_tree().paused:
+					_fallos.append("%s: el menu no se cerro con Esc" % npc_id)
+				await get_tree().create_timer(0.35).timeout
+				continue
 			if not dlg.visible:
 				_fallos.append("%s: el dialogo no se abrio (vuelta %d)" % [npc_id, vuelta])
 				continue
