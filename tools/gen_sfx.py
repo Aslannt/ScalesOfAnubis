@@ -6,11 +6,24 @@ import numpy as np
 import wave
 
 SR = 22050
-OUT = os.path.join("..", "assets", "audio", "sfx")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "audio", "sfx")
 os.makedirs(OUT, exist_ok=True)
 
+# Mezcla: todos los efectos se normalizan a un pico de -12 dBFS (antes iban
+# al 100%, 32767, y sonaban demasiado fuertes: reporte de Deivid). La musica
+# queda un poco por encima (ver gen_music.py).
+PEAK_DBFS = -12.0
 
-def save_wav(path, samples):
+
+def save_wav(path, samples, peak_dbfs=PEAK_DBFS):
+    samples = np.asarray(samples, dtype=np.float64)
+    peak = np.max(np.abs(samples))
+    if peak > 1e-9:
+        samples = samples / peak * (10.0 ** (peak_dbfs / 20.0))
+    # micro-fundido al final para que ningun efecto termine con un "clic"
+    n_tail = min(len(samples), int(SR * 0.004))
+    if n_tail > 1:
+        samples[-n_tail:] *= np.linspace(1.0, 0.0, n_tail)
     samples = np.clip(samples, -1.0, 1.0)
     pcm = (samples * 32767).astype(np.int16)
     with wave.open(path, "w") as w:
@@ -92,11 +105,19 @@ def enemy_death():
     save_wav(os.path.join(OUT, "enemy_death.wav"), s)
 
 
+def lowpass(sig, width):
+    """Filtro pasa-bajos barato (media movil): quita el siseo del ruido."""
+    k = np.ones(width) / width
+    return np.convolve(sig, k, mode="same")
+
+
 def till():
-    s = mix(
-        noise(0.12, attack=0.001, decay=0.05, sustain=0.3, release=0.06),
-        tone(150, 90, 0.1, "square", attack=0.001, decay=0.04, sustain=0.2, release=0.05) * 0.5,
-    )
+    # Golpe de tierra grave y corto (antes era casi todo ruido blanco y
+    # molestaba al arar varias parcelas seguidas).
+    thump = tone(115, 42, 0.16, "sine", attack=0.002, decay=0.06, sustain=0.25, release=0.08)
+    body = tone(230, 80, 0.07, "sine", attack=0.001, decay=0.03, sustain=0.2, release=0.03) * 0.35
+    dirt = lowpass(noise(0.10, attack=0.001, decay=0.04, sustain=0.15, release=0.05), 18) * 1.6
+    s = mix(thump, body, dirt)
     save_wav(os.path.join(OUT, "till.wav"), s)
 
 

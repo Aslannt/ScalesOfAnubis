@@ -76,10 +76,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("dodge") and not _dodging and _dodge_cd_t <= 0.0 and _move_dir.length_squared() > 0.01:
 		_start_dodge()
 
-	if Input.is_action_just_pressed("attack") and GameTime.is_night() and not _attacking and not _dodging:
+	var input_locked := GameState.player_input_locked()
+	if not input_locked and Input.is_action_just_pressed("attack") and GameTime.is_night() and not _attacking and not _dodging:
 		_start_attack()
 
-	if Input.is_action_just_pressed("interact"):
+	if not input_locked and Input.is_action_just_pressed("interact"):
 		_try_interact()
 
 	if Input.is_action_just_pressed("tool_1"):

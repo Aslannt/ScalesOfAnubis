@@ -169,3 +169,24 @@ recomendados, con la base técnica ya lista para construirlos encima.
   `godot --headless --export-release "Windows Desktop" build/ScalesOfAnubis.exe`;
   lo importante es que el archivo exista en el disco para que abras el
   juego mañana con doble clic, no que viva en el historial de git.
+
+## Sesión en la nube (Linux) — bugs reportados por Deivid jugando
+- **Diálogo en bucle**: causa confirmada con una prueba automatizada
+  (`tools/tests/test_dialogue.tscn`) que falla sin el arreglo y pasa con
+  él. La caja de diálogo consumía la E en `_unhandled_input` y quitaba la
+  pausa, pero en ese mismo frame `player.gd` leía
+  `Input.is_action_just_pressed("interact")` y volvía a abrir la
+  conversación. Arreglo: `GameState.lock_player_input(0.25)` al cerrar un
+  diálogo; el jugador ignora interactuar/atacar mientras
+  `GameState.player_input_locked()` sea verdadero. Se eligió un bloqueo
+  corto por tiempo (y no "consumir" el input) porque `Input` es global y el
+  estado just_pressed no se puede borrar de forma fiable desde un nodo.
+- **Sonidos demasiado fuertes**: todos los SFX se normalizan en
+  `tools/gen_sfx.py::save_wav` a un pico de -12 dBFS (antes 0 dBFS). La
+  música se normaliza a -6 dBFS de pico en `tools/gen_music.py`, así queda
+  un poco por encima de los efectos. `till` rehecho: un golpe grave de
+  seno (115→42 Hz) con un poco de ruido filtrado pasa-bajos, en vez de ruido
+  blanco. `SFX.play()` aplica ±6 % de variación aleatoria de tono.
+- El panel "DEBUG teclado" que mencionaba CLAUDE_NUBE.md no existe en el
+  repositorio (se buscó "debug" en `scripts/` y `scenes/`): probablemente
+  fue una prueba local que nunca se commiteó. No hubo nada que borrar.

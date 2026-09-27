@@ -42,6 +42,21 @@ var crops_lost_tonight: int = 0
 var enemies_defeated_tonight: int = 0
 
 
+# Bloqueo breve de la tecla interactuar/atacar tras cerrar un dialogo: el
+# jugador lee Input.is_action_just_pressed en su propio proceso y, en el mismo
+# frame en que la caja de dialogo consume la E y quita la pausa, volvia a
+# abrir la conversacion (bug real reportado por Deivid: dialogo en bucle).
+var _input_lock_until_ms: int = 0
+
+
+func lock_player_input(segundos: float = 0.2) -> void:
+	_input_lock_until_ms = Time.get_ticks_msec() + int(segundos * 1000.0)
+
+
+func player_input_locked() -> bool:
+	return Time.get_ticks_msec() < _input_lock_until_ms
+
+
 func _ready() -> void:
 	_cargar_crops()
 	GameTime.night_started.connect(func():

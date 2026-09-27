@@ -6,7 +6,11 @@ import numpy as np
 import wave
 
 SR = 22050
-OUT = os.path.join("..", "assets", "audio", "music")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "audio", "music")
+
+# La musica queda un poco por encima de los efectos (SFX a -12 dBFS de pico,
+# ver gen_sfx.py): pico de -6 dBFS, que por ser continua se oye como fondo.
+PEAK_DBFS = -6.0
 os.makedirs(OUT, exist_ok=True)
 
 # Escala "egipcia" (doble menor armonica): tonica, 2m, 3M, 4, 5, b6, 7M
@@ -14,7 +18,11 @@ ROOT = 220.0  # A3
 SCALE_RATIOS = [1.0, 9/8, 5/4, 4/3, 3/2, 8/5, 15/8]
 
 
-def save_wav(path, samples):
+def save_wav(path, samples, peak_dbfs=PEAK_DBFS):
+    samples = np.asarray(samples, dtype=np.float64)
+    peak = np.max(np.abs(samples))
+    if peak > 1e-9:
+        samples = samples / peak * (10.0 ** (peak_dbfs / 20.0))
     samples = np.clip(samples, -1.0, 1.0)
     pcm = (samples * 32767).astype(np.int16)
     with wave.open(path, "w") as w:

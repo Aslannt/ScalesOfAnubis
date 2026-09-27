@@ -130,6 +130,7 @@ func _advance() -> void:
 	_idx += 1
 	if _idx >= _lines.size():
 		visible = false
+		GameState.lock_player_input(0.25)
 		get_tree().paused = false
 		var cb := _on_finished
 		_on_finished = Callable()

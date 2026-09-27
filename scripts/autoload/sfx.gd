@@ -18,13 +18,19 @@ func _ready() -> void:
 			_cache[n] = stream
 
 
-func play(nombre: String, volume_db: float = 0.0) -> void:
+## Variacion aleatoria de tono (+-6%) para que los efectos repetidos (arar
+## una fila de parcelas, golpes seguidos) no suenen a la misma grabacion.
+const PITCH_VARIATION := 0.06
+
+
+func play(nombre: String, volume_db: float = 0.0, pitch_variation: float = PITCH_VARIATION) -> void:
 	if not _cache.has(nombre):
 		return
 	var p := AudioStreamPlayer.new()
 	p.stream = _cache[nombre]
 	p.bus = "SFX"
 	p.volume_db = volume_db
+	p.pitch_scale = 1.0 + randf_range(-pitch_variation, pitch_variation)
 	add_child(p)
 	p.play()
 	p.finished.connect(p.queue_free)
