@@ -18,8 +18,8 @@ const SCENARIOS := [
 	{"name": "08_vista_general_dia", "tile": Vector2(14, 12), "phase": 1, "wide": true},
 	{"name": "12_anim_orilla", "tile": Vector2(8, 13), "phase": 1, "wide": false, "frames": 4, "ambient": true},
 	{"name": "13_anim_noche", "tile": Vector2(12, 18), "phase": 3, "wide": false, "frames": 3},
-	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": -12.0},
-	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": -12.0},
+	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
+	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
 
 var farm: Node3D

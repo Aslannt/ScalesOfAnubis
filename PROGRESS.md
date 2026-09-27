@@ -137,52 +137,26 @@ empaqueta, igual que `data/*.json`). Verificado: el log de errores del
 `.exe` real quedó en cero. El `build/ScalesOfAnubis.exe` actual ya tiene
 este fix. Detalle completo en DECISIONES.md.
 
-## PROMPT_PULIDO.md — en curso, sesión cortada por límite de tiempo
-Deivid renderizó el juego y encontró problemas reales que el chequeo
-headless no podía ver. Regla nueva ya aplicada: `tools/capture.gd` +
-`capture.tscn` (y `capture_menu.tscn`) abren el juego con ventana de verdad
-(GPU real, sin `--headless`) y guardan PNG en `shots/` — reviso esas
-capturas antes de cada commit visual desde ahora.
-
-**Hecho (commits ya aplicados):**
-- Punto 1: texturas de pasto/arena/necrópolis sin ruido de estática
-  (`tools/gen_terrain.py::organic_patches`).
-- Punto 4: la noche ya no se tiñe de rojo. Causa raíz real: no era la
-  paleta, era `Environment.fog_aerial_perspective`/`fog_sky_affect`
-  mezclando el color del cielo/sol sobre la niebla; puestos en 0. También
-  se corrigió que la transición día/noche tardaba toda la fase en vez de
-  ~4s. Ver DECISIONES.md para el detalle completo (vale la pena leerlo
-  antes de tocar `day_night_controller.gd` de nuevo).
-- Punto 2 (parcial): parcelas de cultivo con marco visible sin arar, 125
-  props nuevos (juncos/papiro denso, vasijas, cestas, mercado, pozo,
-  shaduf, cercas, rocas, flores, pasto alto), palmera rehecha (antes era
-  un palo con un splat verde), camino de tierra granja→aldea, anillo de
-  dunas en los bordes, pirámides lejanas más allá del anillo, templo con
-  pilonos.
-
-**Falta (seguir en este orden apenas se retome la sesión):**
-1. Confirmar visualmente que las pirámides lejanas se vean bien (se
-   agregaron pero no llegué a revisar la captura antes de cortar).
-2. Punto 3: shader de viento (pasto/juncos/palmera/cultivos), shader de
-   agua animada, partículas ambientales (polvo/luciérnagas/hojas),
-   sombras de nubes, pájaros/peces, idle bob + sombra circular + polvo al
-   caminar.
-3. Punto 5: HUD — barra de vida con marco/ícono/animación, panel de
-   fase del día en su propio lugar (hoy se superpone con la balanza),
-   slots con íconos para arma/amuleto en vez de texto plano.
-4. Punto 6: Thot debe orbitar detrás/arriba del jugador, nunca delante
-   (hoy orbita libremente y a veces tapa al jugador).
-5. Punto 7: menú principal — luna reposicionada para no tapar el título,
-   pirámides con sombreado, dunas en el suelo, título dorado con
-   contorno, estrellas que titilen, algo de movimiento.
-6. Punto 8: revisar el cielo diurno — probablemente ya se arregló solo al
-   corregir el punto 4 (las capturas ya muestran degradado celeste), pero
-   falta confirmarlo explícitamente como punto cerrado.
-7. Al terminar todos: re-exportar el .exe, y dejar en `shots/` un set
-   final (día, atardecer, noche, aldea, menú) para que Deivid las vea
-   desde el celular — **el build de `build/ScalesOfAnubis.exe` que existe
-   ahora mismo es el de ANTES de esta ronda de pulido visual**, todavía no
-   se re-exportó con estos cambios.
+## PROMPT_PULIDO.md — terminado (sesión en la nube)
+Todo verificado con capturas reales en **Forward+** (Vulkan por software en
+la nube, el mismo renderer de tu PC) antes de cada commit:
+- Punto 1 y 4 (sesión anterior): texturas sin estática, noche azul.
+- Pirámides lejanas: ahora con suelo de desierto debajo, 4 caras con luz
+  y sombra, piramidión dorado (antes flotaban como montañas grises).
+- Punto 2: campo de tierra negra del Nilo (más chico, ya no parece piso de
+  baldosas), pasto cálido y denso, palmeras fuera de las parcelas.
+- Punto 3: viento en pasto/juncos/papiros/palmeras/cultivos, Nilo animado
+  con espuma en la orilla, sombras de nubes, polvo de día, luciérnagas de
+  noche, hojas, ibis volando, peces que saltan, sombra circular +
+  respiración + polvo al caminar en los personajes.
+- Punto 5: HUD nuevo (vida con marco y barra fantasma, panel de fase propio,
+  slots con íconos, inventario, pista "[E] Arar" contextual).
+- Punto 6: Thot vuela detrás y arriba del jugador, nunca delante.
+- Punto 7: menú animado (estrellas, luna, nubes, arena, título dorado).
+- Punto 8: cielo diurno con degradado celeste→cálido y sin franja turquesa.
+- Bug de fondo encontrado: la luz ambiental se tomaba del cielo, que se
+  actualiza con retraso → la noche quedaba roja varios segundos después del
+  atardecer. Ahora el ambiente usa un color propio por fase.
 
 ## Sensación de combate (GDD 6.3: "feedback obligatorio")
 - **Hit-stop** real (breve congelamiento de `Engine.time_scale` al conectar

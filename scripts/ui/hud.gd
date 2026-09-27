@@ -217,6 +217,9 @@ func _build_fase() -> void:
 	_fase_icon = UIStyle.make_icon(p, ICONS + "phase_sun.png", Vector2(3, 3))
 	_lbl_dia = UIStyle.make_label(p, "", Vector2(23, 3), UIStyle.SMALL)
 	_lbl_fase = UIStyle.make_label(p, "", Vector2(23, 13), UIStyle.SMALL, UIStyle.TEXT_DIM)
+	var est := UIStyle.make_label(p, Textos.t("hud_estacion"), Vector2(60, 3), UIStyle.SMALL, Color(0.55, 0.85, 0.75))
+	est.size = Vector2(40, 10)
+	est.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var track := ColorRect.new()
 	track.color = Color(0.18, 0.14, 0.1)
 	track.position = Vector2(4, 27)
@@ -233,7 +236,7 @@ func _on_cycle_updated(_elapsed: float, _total: float, phase: int) -> void:
 	_lbl_dia.text = "%s %d" % [Textos.t("hud_dia"), GameState.current_day]
 	if phase != _last_phase:
 		_last_phase = phase
-		_lbl_fase.text = "%s · %s" % [GameTime.phase_name(), Textos.t("hud_estacion")]
+		_lbl_fase.text = GameTime.phase_name()
 		var icon := "phase_sun"
 		match phase:
 			GameTime.Phase.DAWN: icon = "phase_dawn"
