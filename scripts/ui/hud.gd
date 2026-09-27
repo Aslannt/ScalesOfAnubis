@@ -421,7 +421,7 @@ var _obj_box: VBoxContainer
 var _obj_last: String = ""
 var _obj_t: float = 0.0
 var _obj_done: Dictionary = {}
-const OBJ_W := 150.0
+const OBJ_W := 132.0
 
 
 func _build_objectives() -> void:
@@ -444,7 +444,10 @@ func _refresh_objectives(delta: float) -> void:
 	var sd = get_tree().get_first_node_in_group("story_director")
 	if sd == null:
 		return
-	var objs: Array = sd.objectives()
+	var all: Array = sd.objectives()
+	# como mucho 3 filas: primero lo pendiente, despues lo ya cumplido
+	var objs: Array = all.filter(func(o): return not o[1]) + all.filter(func(o): return o[1])
+	objs = objs.slice(0, 3)
 	var key := str(objs)
 	if key == _obj_last:
 		return

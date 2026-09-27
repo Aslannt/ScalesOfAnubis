@@ -297,6 +297,52 @@ def make_palm_mat():
     return img
 
 
+def make_roof_mud():
+    """Techo de barro apisonado con paja: mas oscuro que las paredes, asi
+    desde la camara alta se distingue el techo del muro."""
+    img = organic_patches(["ochre_dark", "soil", "ochre_dark"], seed=31, low_res=5)
+    px = img.load()
+    rng = np.random.RandomState(31)
+    for _ in range(40):
+        x, y = rng.randint(0, SIZE), rng.randint(0, SIZE)
+        for k in range(rng.randint(2, 5)):
+            px[(x + k) % SIZE, y] = c("grass_dry")
+    return img
+
+
+def make_thatch():
+    """Techo de hojas de palma: capas horizontales solapadas."""
+    img = Image.new("RGBA", (SIZE, SIZE))
+    px = img.load()
+    rng = np.random.RandomState(33)
+    base = [c("grass_dry"), c("ochre"), c("sand_dark")]
+    for y in range(SIZE):
+        row = (y // 6) % 3
+        for x in range(SIZE):
+            col = base[row]
+            k = 1.0 - (y % 6) * 0.07
+            if (x + (y // 6) * 3) % 5 == 0:
+                k *= 0.8
+            if rng.random() < 0.05:
+                k *= 0.85
+            px[x, y] = (int(col[0] * k), int(col[1] * k), int(col[2] * k), 255)
+    return img
+
+
+def make_pyramid_stone():
+    """Hiladas de bloques de caliza para las piramides."""
+    img = organic_patches(["sand_dark", "sand", "sand_light"], seed=35, low_res=4)
+    px = img.load()
+    for y in range(SIZE):
+        for x in range(SIZE):
+            course = y // 6
+            joint_x = (x + (course % 2) * 8) % 16 == 0
+            if y % 6 == 0 or joint_x:
+                r, g, b, a = px[x, y]
+                px[x, y] = (int(r * 0.72), int(g * 0.72), int(b * 0.72), a)
+    return img
+
+
 TEXTURES = {
     "sand": make_sand,
     "grass_nile": make_grass,
@@ -313,6 +359,9 @@ TEXTURES = {
     "field": make_field,
     "plaster": make_plaster,
     "palm_mat": make_palm_mat,
+    "roof_mud": make_roof_mud,
+    "thatch": make_thatch,
+    "pyramid_stone": make_pyramid_stone,
 }
 
 if __name__ == "__main__":
