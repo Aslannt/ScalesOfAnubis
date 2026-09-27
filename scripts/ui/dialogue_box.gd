@@ -79,10 +79,17 @@ func _start_line() -> void:
 	SFX.play("dialogue_blip")
 	var parts: PackedStringArray = String(_lines[_idx]).split(": ", true, 1)
 	if parts.size() == 2:
-		_lbl_nombre.text = parts[0].to_upper()
+		# "Meret (triste): texto" -> nombre Meret, retrato triste
+		var hablante := parts[0]
+		var emo := ""
+		var par := hablante.find(" (")
+		if par > 0 and hablante.ends_with(")"):
+			emo = hablante.substr(par + 2, hablante.length() - par - 3)
+			hablante = hablante.substr(0, par)
+		_lbl_nombre.text = hablante.to_upper()
 		_lbl_texto.text = ""
 		_full_text = parts[1]
-		_update_retrato(parts[0])
+		_update_retrato(hablante, emo)
 	else:
 		_lbl_nombre.text = ""
 		_lbl_texto.text = ""
@@ -90,10 +97,19 @@ func _start_line() -> void:
 		_retrato.texture = load("res://assets/sprites/icons/feather.png")
 
 
-func _update_retrato(hablante: String) -> void:
+func _update_retrato(hablante: String, emo: String = "") -> void:
 	var key := hablante.to_lower().strip_edges()
 	if PORTRAITS.has(key):
-		_retrato.texture = load(PORTRAITS[key])
+		var path: String = PORTRAITS[key]
+		if emo != "":
+			var alt := path.replace(".png", "_%s.png" % emo)
+			if ResourceLoader.exists(alt):
+				path = alt
+		_retrato.texture = load(path)
+		# pequeno salto del retrato al cambiar de expresion
+		_retrato.scale = Vector2(1.06, 1.06)
+		_retrato.pivot_offset = Vector2(25, 25)
+		create_tween().tween_property(_retrato, "scale", Vector2.ONE, 0.12)
 	else:
 		_retrato.texture = null
 

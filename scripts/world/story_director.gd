@@ -287,8 +287,21 @@ func _on_dawn() -> void:
 		dawn_summary.show_summary(GameState.current_day, extra)
 		await dawn_summary.closed
 	GameState.thot_once("amanecer", Dialogos.thot("amanecer"))
+	_thot_recuerda()
 	if night_of == 2:
 		GameState.thot(Dialogos.thot("aldea_salvada") if GameState.decisiones.get("noche2", "") == "aldea" else Dialogos.thot("robo"))
+
+
+## Cada amanecer (desde el dia 2) Thot cuenta un recuerdo suyo: mitos reales
+## y, poco a poco, por que la balanza de Nakht dudo.
+func _thot_recuerda() -> void:
+	var lista := Dialogos.thot_list("recuerdos")
+	var k: int = GameState.tutorial.get("recuerdo_idx", 0)
+	if GameState.current_day < 2 or k >= lista.size() or GameState.tutorial.get("recuerdo_dia", 0) == GameState.current_day:
+		return
+	GameState.tutorial["recuerdo_idx"] = k + 1
+	GameState.tutorial["recuerdo_dia"] = GameState.current_day
+	GameState.thot(String(lista[k]))
 
 
 func _on_boss_spawned(boss: Node) -> void:

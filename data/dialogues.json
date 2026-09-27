@@ -1,9 +1,9 @@
 {
   "meret": {
     "intro": [
-      "Meret: ¿Tú... caminas? Los muertos no deberían caminar.",
+      "Meret (sorpresa): ¿Tú... caminas? Los muertos no deberían caminar.",
       "Meret: Soy Meret, sacerdotisa de este templo. Aquí servimos a Maat, la diosa de la verdad y la justicia.",
-      "Meret: Maat juzga lo que haces, no si respiras. Quizá todavía haya algo bueno en ti.",
+      "Meret (feliz): Maat juzga lo que haces, no si respiras. Quizá todavía haya algo bueno en ti.",
       "Meret: Necesito lino para tejer vendas. Tráeme tres manojos y te ganarás mi confianza.",
       "Thot: El lino se siembra con la semilla 2. Tarda dos días en crecer: siémbralo hoy."
     ],
@@ -12,24 +12,24 @@
     ],
     "mision_completa": [
       "Meret: Lino de verdad. Con esto se tejen las vendas de los que se van.",
-      "Meret: Empiezo a pensar que no eres una amenaza, campesino. Empiezo, dije."
+      "Meret (feliz): Empiezo a pensar que no eres una amenaza, campesino. Empiezo, dije."
     ],
     "repeat": [
       "Meret: Que Maat te encuentre en equilibrio."
     ],
     "escarabajo": [
-      "Meret: Espera. Esta noche el aire huele a algo peor que sombras.",
+      "Meret (triste): Espera. Esta noche el aire huele a algo peor que sombras.",
       "Meret: Toma este escarabajo del corazón. Se ponía sobre el pecho de los difuntos para que el corazón no hablara en su contra.",
       "Meret: A ti te servirá de otra forma: si caes esta noche, te levantará una vez.",
       "Thot: Equípalo con Q. Y procura no necesitarlo."
     ],
     "defendiste": [
       "Meret: Anoche te vi pelear frente a nuestras casas. Perdiste parte de tu cosecha por nosotros.",
-      "Meret: Maat lo vio también. Eso pesa."
+      "Meret (feliz): Maat lo vio también. Eso pesa."
     ],
     "abandonaste": [
-      "Meret: Anoche las sombras entraron a la aldea. ¿Dónde estabas?",
-      "Meret: Ah, cuidando tu trigo. Claro."
+      "Meret (enojo): Anoche las sombras entraron a la aldea. ¿Dónde estabas?",
+      "Meret (enojo): Ah, cuidando tu trigo. Claro."
     ],
     "amistad": {
       "charla": [
@@ -53,10 +53,10 @@
         "Meret: Ya hablamos hoy, Nakht. Ve a tus campos; mañana tendrás más que contarme."
       ],
       "regalo_ama": [
-        "Meret: ¡Lino! Con esto se tejen las vendas sagradas. Lo guardaré en el santuario. Gracias, de verdad."
+        "Meret (feliz): ¡Lino! Con esto se tejen las vendas sagradas. Lo guardaré en el santuario. Gracias, de verdad."
       ],
       "regalo_gusta": [
-        "Meret: Papiro... servirá para copiar oraciones. Eres atento."
+        "Meret (feliz): Papiro... servirá para copiar oraciones. Eres atento."
       ],
       "regalo_normal": [
         "Meret: Gracias. Lo compartiré con quien lo necesite."
@@ -74,22 +74,22 @@
       ],
       "nivel2": [
         "Meret: Nakht... hay algo que no te he dicho.",
-        "Meret: Fui yo quien preparó tu cuerpo para el entierro. Te lavé con natrón, empecé a envolverte en lino...",
-        "Meret: Pero esa noche llegaron las sombras. Huí y te dejé a medio envolver, con los ritos sin terminar.",
-        "Meret: Quizás por eso tu corazón quedó sin decidir en la balanza. Por mi culpa.",
+        "Meret (triste): Fui yo quien preparó tu cuerpo para el entierro. Te lavé con natrón, empecé a envolverte en lino...",
+        "Meret (triste): Pero esa noche llegaron las sombras. Huí y te dejé a medio envolver, con los ritos sin terminar.",
+        "Meret (triste): Quizás por eso tu corazón quedó sin decidir en la balanza. Por mi culpa.",
         "Meret: Este amuleto de Maat estaba destinado a tu pecho. Llévalo ahora. Te dará fuerza."
       ],
       "nivel3": [
-        "Meret: Durante años dudé de Maat. Pensé que nos había abandonado, que la balanza era un cuento para niños.",
-        "Meret: Y entonces un muerto volvió a arar la tierra, a defender a extraños, a reconstruir un templo que ni siquiera era suyo.",
-        "Meret: Tú me devolviste la fe. Esta pluma es de mi primer día como sacerdotisa. Ahora es tuya."
+        "Meret (triste): Durante años dudé de Maat. Pensé que nos había abandonado, que la balanza era un cuento para niños.",
+        "Meret (sorpresa): Y entonces un muerto volvió a arar la tierra, a defender a extraños, a reconstruir un templo que ni siquiera era suyo.",
+        "Meret (feliz): Tú me devolviste la fe. Esta pluma es de mi primer día como sacerdotisa. Ahora es tuya."
       ],
       "templo_intro": [
         "Meret: El templo se cae a pedazos. Con cosechas y deben podríamos restaurarlo, parte por parte.",
         "Meret: Y créeme: Maat recompensa a quien levanta su casa."
       ],
       "templo_hecho_columnas": [
-        "Meret: ¡Las columnas vuelven a estar en pie! Siento el templo respirar otra vez.",
+        "Meret (feliz): ¡Las columnas vuelven a estar en pie! Siento el templo respirar otra vez.",
         "Meret: Maat te bendice: tu cuerpo aguantará más golpes."
       ],
       "templo_hecho_estatua": [
@@ -100,8 +100,8 @@
         "Meret: Tus campos recibirán la crecida de Maat más seguido."
       ],
       "templo_hecho_santuario": [
-        "Meret: El santuario brilla. Hace años que no veía esta luz.",
-        "Meret: Nakht... el templo está completo. Maat te mira con buenos ojos. Tu corazón es más liviano."
+        "Meret (sorpresa): El santuario brilla. Hace años que no veía esta luz.",
+        "Meret (feliz): Nakht... el templo está completo. Maat te mira con buenos ojos. Tu corazón es más liviano."
       ],
       "templo_falta": [
         "Meret: Aún no tienes lo necesario. Mira bien la lista: cosechas y deben."
@@ -113,7 +113,7 @@
   },
   "ptahmose": {
     "intro": [
-      "Ptahmose: ¡Un rostro nuevo en mi muelle! Soy Ptahmose, comerciante del río.",
+      "Ptahmose (feliz): ¡Un rostro nuevo en mi muelle! Soy Ptahmose, comerciante del río.",
       "Ptahmose: Te compro las cosechas y te vendo semillas. Y si te quedas un rato, te cuento historias de otras ciudades.",
       "Thot: Aquí se paga en 'deben': son las monedas de cobre de Egipto."
     ],
@@ -124,13 +124,13 @@
       "Ptahmose: Vuelve cuando tengas la bolsa llena de algo más que arena."
     ],
     "vender_exito": [
-      "Ptahmose: Buen trato. El río siempre da a quien sabe esperar."
+      "Ptahmose (feliz): Buen trato. El río siempre da a quien sabe esperar."
     ],
     "sin_dinero": [
-      "Ptahmose: Con esa bolsa no compras ni el aire del muelle."
+      "Ptahmose (enojo): Con esa bolsa no compras ni el aire del muelle."
     ],
     "compra_ok": [
-      "Ptahmose: Semillas del mejor limo de Kemet. Bueno, del segundo mejor."
+      "Ptahmose (feliz): Semillas del mejor limo de Kemet. Bueno, del segundo mejor."
     ],
     "rumores": [
       [
@@ -168,10 +168,10 @@
         "Ptahmose: ¡Ya me sacaste suficiente charla gratis por hoy! Vuelve mañana."
       ],
       "regalo_ama": [
-        "Ptahmose: ¡Papiro de primera! En Menfis me lo pagarían en plata. ¿Seguro que me lo regalas? ¡No te arrepientas!"
+        "Ptahmose (sorpresa): ¡Papiro de primera! En Menfis me lo pagarían en plata. ¿Seguro que me lo regalas? ¡No te arrepientas!"
       ],
       "regalo_gusta": [
-        "Ptahmose: Trigo. Honesto y dorado, como yo. Bueno, casi como yo."
+        "Ptahmose (feliz): Trigo. Honesto y dorado, como yo. Bueno, casi como yo."
       ],
       "regalo_normal": [
         "Ptahmose: Un regalo... ¡qué costumbre tan rara entre comerciantes! Gracias."
@@ -180,56 +180,56 @@
         "Ptahmose: Uno al día, amigo. Si no, voy a pensar que quieres algo."
       ],
       "nada_que_regalar": [
-        "Ptahmose: ¿Regalarme qué? ¿Aire? Tráeme cosechas."
+        "Ptahmose (enojo): ¿Regalarme qué? ¿Aire? Tráeme cosechas."
       ],
       "nivel1": [
-        "Ptahmose: Me caes bien, Nakht. Los vivos regatean; tú al menos trabajas.",
+        "Ptahmose (feliz): Me caes bien, Nakht. Los vivos regatean; tú al menos trabajas.",
         "Ptahmose: Desde hoy, precio de amigo en las semillas. No se lo cuentes a Iry, que me deja sin ganancia."
       ],
       "nivel2": [
-        "Ptahmose: Voy a contarte algo que no le he dicho a nadie. Ni a mi mujer.",
-        "Ptahmose: De joven... fui ladrón de tumbas. Entraba a las mastabas de noche y me llevaba amuletos, anillos, lo que brillara.",
-        "Ptahmose: Cuando vi a las criaturas de Ammit la primera noche, supe que venían por gente como yo.",
-        "Ptahmose: Toma estas monedas. Las gané honradamente. Casi todas."
+        "Ptahmose (triste): Voy a contarte algo que no le he dicho a nadie. Ni a mi mujer.",
+        "Ptahmose (triste): De joven... fui ladrón de tumbas. Entraba a las mastabas de noche y me llevaba amuletos, anillos, lo que brillara.",
+        "Ptahmose (triste): Cuando vi a las criaturas de Ammit la primera noche, supe que venían por gente como yo.",
+        "Ptahmose (feliz): Toma estas monedas. Las gané honradamente. Casi todas."
       ],
       "nivel3": [
-        "Ptahmose: Anoche volví a la necrópolis. Solo.",
-        "Ptahmose: Devolví el último amuleto que robé, uno con forma de escarabajo, a la tumba de donde lo saqué.",
-        "Ptahmose: Juraría que sentí a alguien suspirar de alivio. Quizás era yo.",
-        "Ptahmose: Desde hoy te compro las cosechas a mejor precio. Un comerciante honrado, ¿quién lo diría?"
+        "Ptahmose (triste): Anoche volví a la necrópolis. Solo.",
+        "Ptahmose (triste): Devolví el último amuleto que robé, uno con forma de escarabajo, a la tumba de donde lo saqué.",
+        "Ptahmose (sorpresa): Juraría que sentí a alguien suspirar de alivio. Quizás era yo.",
+        "Ptahmose (feliz): Desde hoy te compro las cosechas a mejor precio. Un comerciante honrado, ¿quién lo diría?"
       ]
     }
   },
   "iry": {
     "intro": [
-      "Iry: ¡Oye! ¿Es cierto que estuviste muerto? ¡Qué genial! Soy Iry.",
+      "Iry (sorpresa): ¡Oye! ¿Es cierto que estuviste muerto? ¡Qué genial! Soy Iry.",
       "Iry: Thot, ¿quién es Anubis? ¿Por qué tiene cabeza de perro?",
       "Thot: De chacal, Iry. Anubis es el dios que cuida a los muertos y los cementerios. Por eso lo vio a Nakht primero.",
-      "Iry: ¿Y ladra?",
-      "Thot: ...No, que yo sepa."
+      "Iry (sorpresa): ¿Y ladra?",
+      "Thot (sarcasmo): ...No, que yo sepa."
     ],
     "repeat": [
       "Iry: Cuando crezca quiero cuidar cultivos como tú. O ser escriba. Aún no decido."
     ],
     "dia2": [
-      "Iry: ¡Anoche vi sombras desde el techo! Thot, ¿qué son?",
+      "Iry (sorpresa): ¡Anoche vi sombras desde el techo! Thot, ¿qué son?",
       "Thot: El sheut. La sombra también es parte de una persona, según los egipcios. Estas son sombras sin dueño.",
-      "Iry: Qué miedo... pero qué interesante."
+      "Iry (triste): Qué miedo... pero qué interesante."
     ],
     "dia3": [
-      "Iry: Nakht... ¿nos conocíamos antes? Siento que te he visto junto al río.",
+      "Iry (triste): Nakht... ¿nos conocíamos antes? Siento que te he visto junto al río.",
       "Thot: ...",
-      "Iry: ¿Thot? ¿Por qué no dices nada? Tú siempre dices algo."
+      "Iry (sorpresa): ¿Thot? ¿Por qué no dices nada? Tú siempre dices algo."
     ],
     "senet_pedido": [
-      "Iry: Nakht... perdí mi ficha de senet jugando en la necrópolis. ¡Mi papá la talló para mí!",
+      "Iry (triste): Nakht... perdí mi ficha de senet jugando en la necrópolis. ¡Mi papá la talló para mí!",
       "Thot: El senet es un juego de mesa muy antiguo. Los egipcios decían que era como el viaje del alma después de morir.",
       "Iry: ¿Me la traes? Me da miedo volver allá solo.",
       "Thot: La necrópolis es el cementerio, al sur. Busca algo que brille."
     ],
     "senet_gracias": [
-      "Iry: ¡Mi ficha! ¡Gracias, gracias!",
-      "Iry: Cuando sea grande te voy a ganar al senet. Ya verás."
+      "Iry (feliz): ¡Mi ficha! ¡Gracias, gracias!",
+      "Iry (feliz): Cuando sea grande te voy a ganar al senet. Ya verás."
     ],
     "amistad": {
       "charla": [
@@ -253,33 +253,33 @@
         "Iry: ¡Ya jugamos hoy! Mañana te cuento otro secreto. Uno de verdad."
       ],
       "regalo_ama": [
-        "Iry: ¡¿Trigo?! ¡Mi mamá va a hacer pan de miel! ¡Eres el mejor muerto del mundo!"
+        "Iry (feliz): ¡¿Trigo?! ¡Mi mamá va a hacer pan de miel! ¡Eres el mejor muerto del mundo!"
       ],
       "regalo_gusta": [
-        "Iry: Uy, gracias. Voy a hacer un barquito con esto."
+        "Iry (feliz): Uy, gracias. Voy a hacer un barquito con esto."
       ],
       "regalo_normal": [
         "Iry: ¿Para mí? Lo voy a esconder en mi tesoro secreto."
       ],
       "ya_regalaste": [
-        "Iry: ¡Ya me diste un regalo hoy! Mi mamá dice que no sea ambicioso."
+        "Iry (feliz): ¡Ya me diste un regalo hoy! Mi mamá dice que no sea ambicioso."
       ],
       "nada_que_regalar": [
         "Iry: ¿Me ibas a regalar algo? No tienes nada... ¡No importa!"
       ],
       "nivel1": [
-        "Iry: Te voy a contar un secreto: quiero ser tu aprendiz. Toma, semillas de trigo. Las guardé para ti."
+        "Iry (feliz): Te voy a contar un secreto: quiero ser tu aprendiz. Toma, semillas de trigo. Las guardé para ti."
       ],
       "nivel2": [
-        "Iry: Nakht... mi papá fue a la necrópolis una noche a buscar a un perro perdido. Nunca volvió.",
-        "Iry: Todos dicen que Ammit se lo llevó. Yo no lo creo.",
-        "Iry: Desde mañana voy a regar tus cultivos al amanecer, antes de que despiertes. Así tienes más tiempo para pelear."
+        "Iry (triste): Nakht... mi papá fue a la necrópolis una noche a buscar a un perro perdido. Nunca volvió.",
+        "Iry (triste): Todos dicen que Ammit se lo llevó. Yo no lo creo.",
+        "Iry (feliz): Desde mañana voy a regar tus cultivos al amanecer, antes de que despiertes. Así tienes más tiempo para pelear."
       ],
       "nivel3": [
-        "Iry: Anoche lo vi. Un pájaro con cara de hombre, sentado en el techo. Tenía la sonrisa de mi papá.",
-        "Iry: Era su ba, ¿verdad? Me dijo que estaba bien. Que la balanza lo había encontrado justo.",
-        "Iry: Y me dijo algo para ti: \"El Heraldo teme a quien camina con el corazón liviano\".",
-        "Iry: No llores, Nakht. Los muertos simpáticos no lloran."
+        "Iry (sorpresa): Anoche lo vi. Un pájaro con cara de hombre, sentado en el techo. Tenía la sonrisa de mi papá.",
+        "Iry (feliz): Era su ba, ¿verdad? Me dijo que estaba bien. Que la balanza lo había encontrado justo.",
+        "Iry (sorpresa): Y me dijo algo para ti: \"El Heraldo teme a quien camina con el corazón liviano\".",
+        "Iry (feliz): No llores, Nakht. Los muertos simpáticos no lloran."
       ]
     }
   },
@@ -291,7 +291,7 @@
     "regado": "Bien. Crecerá durante el día y la noche.",
     "aldeanos": "La aldea está arriba a la derecha. Los que tienen un ! quieren hablarte.",
     "atardecer": "Se pone el sol. Tus herramientas se vuelven armas: prepárate.",
-    "noche1": "¡Ahí vienen! Clic para atacar, Espacio para esquivar.",
+    "noche1": "(sorpresa) ¡Ahí vienen! Clic para atacar, Espacio para esquivar.",
     "primer_kill": "Una sombra menos. Anotado.",
     "cultivo_perdido": "¡Las crías de Ammit van por tus cultivos! Protégelos.",
     "vida_baja": "Tu vida se apaga. Esquiva, retrocede, o equipa el Anj con Q.",
@@ -299,42 +299,65 @@
     "dia2": "Cosecha, vende a Ptahmose y usa el deben para defensas.",
     "defensa": "¿Ves esos pedestales de piedra junto al campo? Pulsa E en uno para construir una defensa.",
     "altar_d2": "Nadie vigila hoy el altar del templo. Tiene ofrendas de valor... Tomarlas te haría rico. Y a tu corazón, más pesado.",
-    "noche2": "¡Nakht! Unas sombras van hacia la aldea y otras hacia tus cultivos. No puedes estar en los dos sitios. ¿Qué vas a proteger?",
-    "aldea_atacada": "¡Están saqueando la aldea!",
+    "noche2": "(sorpresa) ¡Nakht! Unas sombras van hacia la aldea y otras hacia tus cultivos. No puedes estar en los dos sitios. ¿Qué vas a proteger?",
+    "aldea_atacada": "(sorpresa) ¡Están saqueando la aldea!",
     "aldea_salvada": "La aldea resiste. Tus cultivos... bueno. El trigo vuelve a crecer; la gente no.",
     "dia3": "Último día. Esta noche viene algo grande. Meret te espera en el templo.",
     "noche3": "Esta es la gran noche. Viene el heraldo de Ammit, su mensajero más fuerte. Aguanta.",
-    "jefe": "¡El Heraldo! Cabeza de cocodrilo, cuerpo de león, ancas de hipopótamo. Como su ama. Cuidado con su embestida.",
-    "jefe_rugido": "¡Está llamando a sus crías!",
+    "jefe": "(sorpresa) ¡El Heraldo! Cabeza de cocodrilo, cuerpo de león, ancas de hipopótamo. Como su ama. Cuidado con su embestida.",
+    "jefe_rugido": "(sorpresa) ¡Está llamando a sus crías!",
     "jefe_mitad": "¡Está herido y furioso! Sigue así.",
     "jefe_muerto": "Cayó. Ammit tendrá que esperar... por ahora.",
     "derrota": "Casi te devoran. Anubis te levantó otra vez, pero no será gratis.",
     "estatua": "Una estatua de Anubis. Él protege las necrópolis; hoy protege tu trigo.",
-    "brasero": "Fuego sagrado. A las sombras no les gusta la luz. A nadie le gusta quemarse, en realidad.",
+    "brasero": "(sarcasmo) Fuego sagrado. A las sombras no les gusta la luz. A nadie le gusta quemarse, en realidad.",
     "escarabajo_uso": "El escarabajo te devolvió el aliento. No cuentes con él dos veces esta noche.",
-    "robo": "Lo anoté. Todo queda anotado.",
-    "muro": "Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar.",
-    "cultivo_atacado": "¡Una cría se está comiendo tu cosecha! Mira la barra roja sobre la parcela: golpéala antes de que se vacíe.",
+    "robo": "(sarcasmo) Lo anoté. Todo queda anotado.",
+    "muro": "(sarcasmo) Adobe: barro, paja y sol. Así se construyó Egipto entero, salvo lo que se hizo de piedra para impresionar.",
+    "cultivo_atacado": "(sorpresa) ¡Una cría se está comiendo tu cosecha! Mira la barra roja sobre la parcela: golpéala antes de que se vacíe.",
     "corazon_explica": "¿Ves la balanza de arriba? Es tu corazón. Menos de 50 = liviano, bueno. Más de 50 = pesado, malo. Tus actos lo mueven.",
     "shabti": "¡Un shabti! Los egipcios enterraban estas figuritas para que trabajaran por ellos en el más allá. Van {n} de 5.",
-    "shabtis_todos": "¡Los cinco shabtis! Ptahmose pagaría bien... ya te lo pagó el destino. Y Maat lo nota.",
+    "shabtis_todos": "(sorpresa) ¡Los cinco shabtis! Ptahmose pagaría bien... ya te lo pagó el destino. Y Maat lo nota.",
     "senet_encontrado": "La ficha de senet de Iry. Llévasela: está en la aldea.",
-    "campamento_noche": "De noche no se descansa, Nakht. De noche se pelea.",
+    "campamento_noche": "(sarcasmo) De noche no se descansa, Nakht. De noche se pelea.",
     "ofrenda": "Una ofrenda a Maat. Tu corazón pesa un poco menos.",
     "misterio_d2": "Tu juicio... Hay algo en mi papiro de ese día que no me cuadra. Luego te cuento. Quizá.",
     "misterio_d3": "Nakht. Si tu corazón empató, no fue por casualidad. Pero no me corresponde decírtelo. Todavía.",
     "estado_pluma": "Mira tu balanza: estás más liviano que la pluma. Maat te sonríe. Aprovéchalo.",
-    "estado_equilibrio": "Vuelves al equilibrio. Ni santo ni monstruo. Lo cual, créeme, es lo más común en mis archivos.",
-    "estado_sombra": "Tu corazón se oscurece. Sí, pegas más fuerte. No, eso no es un cumplido.",
+    "estado_equilibrio": "(sarcasmo) Vuelves al equilibrio. Ni santo ni monstruo. Lo cual, créeme, es lo más común en mis archivos.",
+    "estado_sombra": "(sarcasmo) Tu corazón se oscurece. Sí, pegas más fuerte. No, eso no es un cumplido.",
     "estado_hambre": "Nakht... Ammit ya relame sus dientes. Ese poder que sientes es SU hambre. Piensa en el pesaje.",
-    "iry_riega": "Iry pasó al amanecer y regó {n} de tus cultivos. Ese niño te quiere más que a sus cebollas.",
+    "iry_riega": "(sarcasmo) Iry pasó al amanecer y regó {n} de tus cultivos. Ese niño te quiere más que a sus cebollas.",
     "templo_objetivo": "Meret puede restaurar el templo si le llevas cosechas y deben. Cada parte trae una bendición.",
     "amistad_explica": "Charla con los aldeanos cada día y hazles regalos. Los amigos cuentan secretos... y ayudan.",
     "estacion_peret": "Peret: la tierra sale del agua, negra y blanda. Los egipcios llamaban a su país Kemet, 'la tierra negra', por esto.",
-    "estacion_shemu": "Shemu: calor, cosecha y bolsillos llenos. Y el desierto, que también tiene hambre.",
+    "estacion_shemu": "(sarcasmo) Shemu: calor, cosecha y bolsillos llenos. Y el desierto, que también tiene hambre.",
     "estacion_akhet": "Akhet: el Nilo se desborda. Nadie trabaja la orilla en estos días; el río lo riega todo por ti. Ojo con lo que sale del agua.",
     "akhet_riego": "El agua alta llegó hasta tus campos: hoy no tienes que regar.",
-    "libre_inicio": "¿Seguimos? El Heraldo volverá cada vez que termine una estación, más fuerte. Y yo sigo anotando todo, claro."
+    "libre_inicio": "(sarcasmo) ¿Seguimos? El Heraldo volverá cada vez que termine una estación, más fuerte. Y yo sigo anotando todo, claro.",
+    "amb_necropolis": "La necrópolis. Aquí duermen los que ya pasaron por la balanza. Camina con respeto... y rápido.",
+    "amb_rio": "(sarcasmo) El Nilo. Da la vida, la comida y, de vez en cuando, un cocodrilo. Sobek manda saludos.",
+    "amb_templo": "El templo de Maat. Aquí se guarda la idea de que el mundo tiene un orden. Últimamente, con grietas.",
+    "amb_quieto": [
+      "(sarcasmo) ¿Meditando? Los campos no se riegan con pensamientos.",
+      "(sarcasmo) Si te quedas quieto mucho rato, alguien te va a confundir con una estatua. Y te pondrá ofrendas.",
+      "(sarcasmo) Anoto: 'Nakht contempla el horizonte'. Muy poético. Poco productivo."
+    ],
+    "amb_esquiva": "(sarcasmo) ¿Practicas para el festival de Opet? Porque de día no hay nada que esquivar.",
+    "amb_combo": "(sorpresa) ¡Diez golpes seguidos! Eso lo anoto con letra grande.",
+    "amb_rico": "(sarcasmo) Ptahmose sonríe. Eso casi nunca es buena señal para tu bolsillo. Hoy, por milagro, sí.",
+    "amb_50": "Cincuenta criaturas devueltas al Duat. Ammit debe estar escribiendo una queja formal.",
+    "amb_noche_larga": "(sarcasmo) La noche es larga, pero tú eres terco. Buena combinación.",
+    "recuerdos": [
+      "Thot recuerda: dicen que yo inventé la escritura. Cuando se la mostré al rey, él temió que la gente dejara de recordar por confiar en mis letras. Algo de razón tenía.",
+      "(sarcasmo) Thot recuerda: una vez le gané a la Luna jugando al senet. Me llevé cinco días de su luz y así el año tuvo 365. De nada.",
+      "Thot recuerda: cuando Set despedazó a Osiris, ayudé a Isis a encontrar las palabras para devolverle la vida. Las palabras también curan.",
+      "Thot recuerda: soy el escriba del juicio. Cuando pesan un corazón, yo anoto el resultado. Nunca me he equivocado. Salvo, quizás, una vez.",
+      "Thot recuerda: el ibis camina por el barro buscando lo que está escondido. Por eso llevo su cabeza. Busco lo que otros no ven.",
+      "(triste) Thot recuerda: tu pesaje, Nakht. Anoté 'empate' con una mano que temblaba. A mí nunca me tiembla la mano.",
+      "Thot recuerda: Anubis no me mandó solo a vigilarte. Me mandó a entender por qué la balanza dudó. Creo que ya lo sé: tu historia no estaba terminada de escribir.",
+      "(sarcasmo) Thot recuerda: me preguntas por qué sigo aquí si la orden ya se cumplió. Digamos que me gusta cómo escribes. Con faltas de ortografía, pero me gusta."
+    ]
   },
   "anubis": {
     "intro": [

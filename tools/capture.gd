@@ -40,6 +40,7 @@ const SCENARIOS := [
 	{"name": "37_menu_amistad", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "amistad"},
 	{"name": "38_akhet_crecida", "tile": Vector2(9, 12), "phase": 1, "wide": true, "setup": "akhet", "bark": true},
 	{"name": "39_shemu_calor", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "shemu"},
+	{"name": "40_meret_secreto", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "secreto"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -172,6 +173,12 @@ func _setup(kind: String) -> void:
 			GameState.current_day = 7 if kind == "akhet" else 4
 			farm.get_node("SeasonDirector")._apply_season(true)
 			await get_tree().create_timer(3.0).timeout
+		"secreto":
+			var dlg = get_tree().get_first_node_in_group("dialogue_box")
+			dlg.show_lines(Dialogos.data["meret"]["amistad"]["nivel2"])
+			dlg._advance()
+			dlg._advance()
+			await get_tree().create_timer(1.5).timeout
 		"templo":
 			for id in ["columnas", "estatua", "estandartes", "santuario"]:
 				GameState.temple.append(id)

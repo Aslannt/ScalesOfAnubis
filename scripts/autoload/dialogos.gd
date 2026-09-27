@@ -20,4 +20,13 @@ func lines(npc_id: String, key: String) -> Array:
 
 ## Comentario suelto de Thot (seccion "thot" de dialogues.json).
 func thot(key: String) -> String:
-	return String(data.get("thot", {}).get(key, ""))
+	var v = data.get("thot", {}).get(key, "")
+	if v is Array:
+		return String(v[randi() % v.size()]) if not v.is_empty() else ""
+	return String(v)
+
+
+## Lista de comentarios de Thot (p. ej. "recuerdos").
+func thot_list(key: String) -> Array:
+	var v = data.get("thot", {}).get(key, [])
+	return v if v is Array else [v]

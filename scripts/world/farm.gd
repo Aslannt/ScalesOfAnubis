@@ -44,6 +44,11 @@ func _ready() -> void:
 	add_child(seasons)
 	seasons.setup(world_builder, $DayNightController)
 
+	var remarks := ThotRemarks.new()
+	remarks.name = "ThotRemarks"
+	add_child(remarks)
+	remarks.setup(player, world_builder)
+
 	var life := VillageLife.new()
 	life.name = "VillageLife"
 	add_child(life)

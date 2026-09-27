@@ -9,6 +9,7 @@ extends CharacterBody3D
 ## - De dia 1/2/3 eligen semilla; de noche 1/2 eligen arma.
 
 signal died()
+signal dodged()
 
 @export var speed: float = 5.4
 @export var dodge_speed: float = 13.0
@@ -234,6 +235,7 @@ func _update_timers(delta: float) -> void:
 
 
 func _start_dodge() -> void:
+	dodged.emit()
 	_dodging = true
 	_invulnerable = true
 	_attacking = false
