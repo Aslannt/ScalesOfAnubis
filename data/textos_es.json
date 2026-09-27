@@ -85,5 +85,9 @@
   "gracias_volver": "[E] Volver al menú",
   "semilla_trigo": "Semillas de trigo",
   "semilla_lino": "Semillas de lino",
-  "semilla_papiro": "Semillas de papiro"
+  "semilla_papiro": "Semillas de papiro",
+  "codex_nueva": "Nueva entrada en el Libro de los Muertos: {n}. Tab para leerla.",
+  "codex_titulo": "LIBRO DE LOS MUERTOS",
+  "codex_cerrar": "[TAB] CERRAR",
+  "codex_vacia": "Esta página todavía está en blanco."
 }

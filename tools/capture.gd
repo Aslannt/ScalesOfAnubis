@@ -24,6 +24,7 @@ const SCENARIOS := [
 	{"name": "17_resumen_amanecer", "tile": Vector2(13, 14), "phase": 0, "wide": false, "setup": "amanecer"},
 	{"name": "18_combate_noche", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "combate"},
 	{"name": "19_dialogo_meret", "tile": Vector2(24, 9.2), "phase": 1, "wide": false, "setup": "dialogo"},
+	{"name": "25_codice", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "codice"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -143,6 +144,14 @@ func _setup(kind: String) -> void:
 			GameState.shift_heart(-10.0, "defender_aldea")
 			farm.get_node("DawnSummary").show_summary(2, [[Textos.t("amanecer_aldea_salvada"), Color(0.55, 0.9, 1.0)]])
 			await get_tree().create_timer(1.8).timeout
+		"codice":
+			for id in ["anubis", "thot", "maat", "ammit", "kemet", "cultivos"]:
+				Codex.unlock(id)
+			var cm = farm.get_node("CodexMenu")
+			cm.toggle()
+			cm._list.select(2)
+			cm._on_selected(2)
+			await get_tree().create_timer(0.4).timeout
 		"dialogo":
 			for n in world_builder.npcs:
 				if n.npc_id == "meret":
@@ -163,6 +172,9 @@ func _cleanup() -> void:
 	var dsum = farm.get_node("DawnSummary")
 	dsum.visible = false
 	dsum._open = false
+	var cmn = farm.get_node("CodexMenu")
+	if cmn.visible:
+		cmn.toggle()
 	var dl = get_tree().get_first_node_in_group("dialogue_box")
 	dl.visible = false
 	var cb = get_tree().get_first_node_in_group("choice_box")
