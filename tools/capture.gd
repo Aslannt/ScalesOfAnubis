@@ -137,10 +137,11 @@ func _setup(kind: String) -> void:
 	var nd = farm.get_node("NightDirector")
 	match kind:
 		"jefe":
-			var b = nd.spawn("jefe", "", "", player.global_position + Vector3(4.0, 0, -2.0))
-			await get_tree().create_timer(2.2).timeout
-			b._enter(Heraldo.S.CHARGE_WINDUP)
-			await get_tree().create_timer(0.4).timeout
+			var b = nd.spawn("jefe", "", "", player.global_position + Vector3(1.2, 0, -3.6))
+			await get_tree().create_timer(2.6).timeout
+			b._enter(Heraldo.S.ROAR)
+			player._start_attack()
+			await get_tree().create_timer(0.35).timeout
 		"defensas":
 			GameState.add_deben(200)
 			world_builder.defense_spots[0].build("estatua")

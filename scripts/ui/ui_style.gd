@@ -32,14 +32,23 @@ static func make_panel(parent: Node, pos: Vector2, size: Vector2) -> Panel:
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.add_theme_stylebox_override("panel", panel_style())
 	parent.add_child(p)
-	# esquinas doradas de 2x2 (detalle egipcio minimo)
-	for corner in [Vector2(0, 0), Vector2(size.x - 2, 0), Vector2(0, size.y - 2), Vector2(size.x - 2, size.y - 2)]:
+	# esquinas doradas de 2x2 (detalle egipcio minimo); se reubican si el
+	# panel cambia de tamano
+	var corners: Array = []
+	for i in range(4):
 		var r := ColorRect.new()
 		r.color = GOLD
-		r.position = corner
 		r.size = Vector2(2, 2)
 		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		p.add_child(r)
+		corners.append(r)
+	var place := func():
+		corners[0].position = Vector2(0, 0)
+		corners[1].position = Vector2(p.size.x - 2, 0)
+		corners[2].position = Vector2(0, p.size.y - 2)
+		corners[3].position = Vector2(p.size.x - 2, p.size.y - 2)
+	place.call()
+	p.resized.connect(place)
 	return p
 
 

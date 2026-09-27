@@ -6,10 +6,11 @@ extends CanvasLayer
 const PORTRAIT := "res://assets/sprites/portraits/thot.png"
 const CHAR_SPEED := 0.022
 const HOLD_MIN := 2.6
-## Debajo de la balanza, arriba al centro: no tapa la accion alrededor del
-## jugador ni el HUD de abajo.
-const PANEL_X := 124.0
-const PANEL_Y := 56.0
+## Arriba a la izquierda, bajo la vida: ni el centro (donde aparecen el jefe
+## y las criaturas, por encima del jugador) ni el HUD de abajo.
+const PANEL_X := 6.0
+const PANEL_Y := 46.0
+const PANEL_W := 212.0
 
 var _panel: Panel
 var _lbl: Label
@@ -23,12 +24,12 @@ var _showing := false
 func _ready() -> void:
 	layer = 8
 	add_to_group("thot_bark")
-	_panel = UIStyle.make_panel(self, Vector2(PANEL_X, PANEL_Y), Vector2(232, 42))
+	_panel = UIStyle.make_panel(self, Vector2(PANEL_X, PANEL_Y), Vector2(PANEL_W, 42))
 	_panel.add_theme_stylebox_override("panel", UIStyle.panel_style(Color(0.05, 0.07, 0.12, 0.9), Color(0.6, 0.72, 0.95)))
-	var face := UIStyle.make_icon(_panel, PORTRAIT, Vector2(3, 3), Vector2(30, 36))
+	var face := UIStyle.make_icon(_panel, PORTRAIT, Vector2(3, 3), Vector2(26, 30))
 	face.name = "Retrato"
-	_lbl = UIStyle.make_label(_panel, "", Vector2(36, 3), UIStyle.SMALL, Color(0.86, 0.92, 1.0))
-	_lbl.size = Vector2(192, 36)
+	_lbl = UIStyle.make_label(_panel, "", Vector2(32, 3), UIStyle.SMALL, Color(0.86, 0.92, 1.0))
+	_lbl.size = Vector2(PANEL_W - 36, 36)
 	_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_lbl.add_theme_constant_override("line_spacing", -1)
 	_panel.visible = false
@@ -54,6 +55,11 @@ func _next() -> void:
 	_full = _queue.pop_front()
 	_t = 0.0
 	_hold = HOLD_MIN + _full.length() * 0.035
+	# alto segun el texto (medido con el texto completo antes de escribirlo)
+	_lbl.text = _full
+	var lines := maxi(3, _lbl.get_line_count())
+	_panel.size.y = lines * 10 + 8
+	_lbl.size.y = lines * 10
 	_lbl.text = ""
 	_panel.visible = true
 	_panel.modulate.a = 1.0

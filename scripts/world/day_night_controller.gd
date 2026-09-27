@@ -29,8 +29,8 @@ const TARGETS := {
 		Color(0.66, 0.70, 0.76), Color(0.86, 0.84, 0.78), 0.32],   # DAY
 	2: [Color(1.0, 0.62, 0.36), 1.0, Color(0.22, 0.16, 0.36), Color(0.95, 0.55, 0.30), 0.55, 0.5,
 		Color(0.62, 0.48, 0.52), Color(0.80, 0.52, 0.40), 0.12],   # DUSK: naranja calido, sin saturar todo
-	3: [Color(0.55, 0.66, 1.0), 0.55, Color(0.03, 0.035, 0.10), Color(0.10, 0.10, 0.26), 0.55, 0.5,
-		Color(0.24, 0.28, 0.55), Color(0.08, 0.09, 0.22), 0.0],    # NIGHT: azul/violeta profundo, NUNCA rojo
+	3: [Color(0.55, 0.66, 1.0), 0.72, Color(0.03, 0.035, 0.10), Color(0.10, 0.10, 0.26), 0.68, 0.5,
+		Color(0.26, 0.30, 0.58), Color(0.08, 0.09, 0.22), 0.0],    # NIGHT: azul/violeta profundo, NUNCA rojo
 }
 
 var _prev_target: Array = TARGETS[3]
