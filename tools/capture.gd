@@ -107,6 +107,8 @@ func _run_scenario(s: Dictionary) -> void:
 		bk.clear()
 		bk._showing = false
 		bk._panel.visible = false
+	if not s.get("bark", false):
+		get_tree().get_first_node_in_group("combat_banner").hide_now()
 	var n: int = s.get("frames", 1)
 	for f in range(n):
 		var img := get_viewport().get_texture().get_image()
@@ -142,6 +144,7 @@ func _setup(kind: String) -> void:
 			var b = nd.spawn("jefe", "", "", player.global_position + Vector3(1.2, 0, -3.6))
 			await get_tree().create_timer(2.6).timeout
 			b._enter(Heraldo.S.ROAR)
+			get_tree().get_first_node_in_group("combat_banner").announce(Textos.t("oleada_jefe"))
 			player._start_attack()
 			await get_tree().create_timer(0.35).timeout
 		"defensas":
@@ -196,6 +199,11 @@ func _setup(kind: String) -> void:
 
 func _cleanup() -> void:
 	get_tree().paused = false
+	var bn = get_tree().get_first_node_in_group("combat_banner")
+	if bn:
+		bn.hide_now()
+		bn._combo.modulate.a = 0.0
+		bn._combo_n = 0
 	farm.get_node("HUD")._boss_panel.visible = false
 	for e in get_tree().get_nodes_in_group("enemies"):
 		e.queue_free()

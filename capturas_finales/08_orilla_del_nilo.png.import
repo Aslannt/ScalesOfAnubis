@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0pwwgdu0qyu"
-path="res://.godot/imported/01_menu.png-1b209b8343153529177aa055c870d62a.ctex"
+uid="uid://nipq07a2gi8o"
+path="res://.godot/imported/08_orilla_del_nilo.png-4d7cca802173800358b2d55d836fd1c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://capturas_finales/01_menu.png"
-dest_files=["res://.godot/imported/01_menu.png-1b209b8343153529177aa055c870d62a.ctex"]
+source_file="res://capturas_finales/08_orilla_del_nilo.png"
+dest_files=["res://.godot/imported/08_orilla_del_nilo.png-4d7cca802173800358b2d55d836fd1c2.ctex"]
 
 [params]
 

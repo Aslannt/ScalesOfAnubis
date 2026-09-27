@@ -14,6 +14,26 @@ capturas a 1920×1080, se ven bien desde el celular en GitHub).
 
 Cada decisión que tomé sin poder preguntarte está en `DECISIONES.md`.
 
+## Ronda 2 (después de que la probaste)
+Arreglé todo lo que reportaste. Detalle en `DECISIONES.md` → "Segunda ronda":
+- **Música**: no sonaba por un bug (loop de largo cero). Ahora hay un
+  soundtrack adaptativo "tipo Balatro" egipcio que sube de intensidad del día
+  a la noche sin cortarse, y no se detiene en los diálogos.
+- **Caída del mapa por el sur**: arreglada (muros invisibles en los bordes).
+- **Cultivos robados de la nada**: ahora las crías tardan 5 s con barra roja,
+  "!", alarma, aviso de Thot y flecha en el borde de pantalla.
+- **Historia**: intro nueva que explica todo en simple, panel de OBJETIVOS,
+  "!" sobre los aldeanos con algo nuevo, balanza con número.
+- **Más divertido**: monedas al matar, carteles de oleada, combo, embestidas,
+  campamento para saltar al atardecer, ofrendas, 5 shabtis escondidos y la
+  misión de Iry.
+- **Casas y pirámides** con techo, bordes y bloques.
+- **Intro animada**: tarjetas con paralaje, balanza que oscila de verdad,
+  sello de "¡EMPATE!", Anubis que respira, Thot que llega volando.
+
+Para traer los cambios: en `C:\Users\Aslan\Projects\ScalesOfAnubis`,
+`git pull` (ya estás en la rama `claude/claude-nube-md-jquijs`).
+
 ## Cómo jugar
 1. Abre el proyecto con **Godot 4.7.2** y exporta el `.exe` con el preset
    que ya existe: *Proyecto → Exportar… → Windows Desktop → Exportar
@@ -29,6 +49,7 @@ Duración aproximada: 16–20 minutos (día de 3 min, noche de 1 min 40 s).
 | Acción | Teclado y mouse | Mando |
 |---|---|---|
 | Moverse | WASD | Stick izq. / cruceta |
+| Descansar hasta el atardecer | E en el campamento (junto al campo) | A |
 | Interactuar (arar, sembrar, regar, cosechar, hablar, construir) | **E** | A |
 | Atacar (de noche, hacia el mouse) | Clic izq. | X o gatillo der. |
 | Apuntar | Mouse | Stick der. |

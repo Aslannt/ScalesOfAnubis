@@ -34,11 +34,24 @@ func _ready() -> void:
 	_combo.modulate.a = 0.0
 
 
+var _tw: Tween
+
+
+func hide_now() -> void:
+	if _tw:
+		_tw.kill()
+	_banner.modulate.a = 0.0
+	_sub.modulate.a = 0.0
+
+
 func announce(title: String, sub: String = "") -> void:
+	if _tw:
+		_tw.kill()
 	_banner.text = title
 	_sub.text = sub
 	_banner.scale = Vector2(1.8, 1.8)
 	var tw := create_tween()
+	_tw = tw
 	tw.set_parallel()
 	tw.tween_property(_banner, "modulate:a", 1.0, 0.15)
 	tw.tween_property(_banner, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

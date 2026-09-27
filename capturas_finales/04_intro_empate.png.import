@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0pwwgdu0qyu"
-path="res://.godot/imported/01_menu.png-1b209b8343153529177aa055c870d62a.ctex"
+uid="uid://exor858o1ikr"
+path="res://.godot/imported/04_intro_empate.png-59355a87a4e8dd345aa1123362bad33c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://capturas_finales/01_menu.png"
-dest_files=["res://.godot/imported/01_menu.png-1b209b8343153529177aa055c870d62a.ctex"]
+source_file="res://capturas_finales/04_intro_empate.png"
+dest_files=["res://.godot/imported/04_intro_empate.png-59355a87a4e8dd345aa1123362bad33c.ctex"]
 
 [params]
 

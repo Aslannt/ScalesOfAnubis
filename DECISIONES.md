@@ -329,3 +329,36 @@ recomendados, con la base técnica ya lista para construirlos encima.
   borra el guardado anterior, y al terminar la demo también se borra.
   Salir a mitad de un día pierde lo hecho ese día (se guarda solo al
   amanecer, como en muchos juegos de granja).
+
+## Segunda ronda: feedback de Deivid jugando en su PC
+- **Música muda (bug real)**: `music_director.gd` hacía
+  `stream.loop_mode = LOOP_FORWARD` sobre WAV importados con `loop_end = 0`,
+  así que el loop duraba cero muestras y no sonaba nada (tampoco el
+  ambiente ni el tema del menú). Ahora el loop se define en la importación
+  (`edit/loop_mode=2` en cada `.import`, loop de toda la pista). Además la
+  música seguía la pausa del árbol y se cortaba en cada diálogo: ahora el
+  director ignora la pausa. `tools/tests/test_audio.tscn` lo verifica.
+- **Soundtrack "tipo Balatro"**: `tools/gen_groove.py`. Imité lo que lo
+  hace adictivo (groove constante, bajo que camina, acordes a
+  contratiempo, un gancho corto que se repite, sintes desafinados con
+  wobble de cinta) con escala hijaz, darbuka y sistro. Tres capas del mismo
+  largo que suenan juntas (base / día / noche); el juego solo cambia sus
+  volúmenes, así que la canción nunca se corta al cambiar de fase.
+- **Caída del mapa**: el suelo con colisión solo cubría el mapa jugable y no
+  había bordes. Suelo 3× más grande y muros invisibles en los 4 lados.
+- **Robo de cultivos sin aviso**: las crías destruían un cultivo casi al
+  instante. Ahora tardan 5 s con barra roja y "!" sobre la parcela, alarma,
+  aviso de Thot y flecha "¡Cultivos!" en el borde de la pantalla.
+- **Historia incomprensible**: intro rehecha con tarjetas en lenguaje
+  simple (balanza, pluma de Maat, Aaru, Ammit, quién eres), juicio animado
+  y tarjeta de misión. Panel de OBJETIVOS en el HUD, "!" sobre aldeanos con
+  novedades, balanza con el número del peso en color, textos de Thot y
+  aldeanos que explican cada término la primera vez.
+- **Aburrido/lento**: jugador más rápido (5.4), monedas al matar, carteles
+  de oleada, combo con premio, embestidas de las sombras, más enemigos pero
+  más frágiles. De día: campamento para saltar al atardecer, ofrendas en el
+  altar (−2 de peso por cosecha, 3 por día), 5 shabtis escondidos y la
+  misión de la ficha de senet de Iry. Día de 165 s.
+- **Casas y pirámides "de cartón"**: esquinas y cornisas marcadas, techo de
+  palma a dos aguas o de barro más oscuro que el muro; pirámides con
+  hiladas de bloques y un tono por cara.
