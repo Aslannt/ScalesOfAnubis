@@ -30,6 +30,8 @@ var _lbl_corazon_flot: Label
 var _lbl_estado: Label
 var _vignette: TextureRect
 var _vig_t: float = 0.0
+var _hurt: TextureRect
+var _hurt_flash_t: float = 0.0
 var _balanza_panel: Panel
 
 # fase
@@ -164,6 +166,10 @@ func _on_health_changed(v: int, m: int) -> void:
 		tw.tween_property(_vida_panel, "position", base, 0.03)
 		_vida_icon.modulate = Color(3, 3, 3)
 		create_tween().tween_property(_vida_icon, "modulate", Color.WHITE, 0.25)
+		# destello rojo en los bordes de la pantalla
+		_hurt.modulate = Color(1, 0.15, 0.1, 0.55)
+		_hurt_flash_t = 0.35
+		create_tween().tween_property(_hurt, "modulate:a", 0.0, 0.35)
 	elif v > _vida_prev:
 		_bar_fill.color = Color(0.5, 0.9, 0.45)
 		create_tween().tween_property(_bar_fill, "color", Color(0.78, 0.17, 0.13), 0.4)
@@ -263,6 +269,14 @@ func _build_vignette() -> void:
 	_vignette.modulate = Color(1, 1, 1, 0)
 	_root.add_child(_vignette)
 	_root.move_child(_vignette, 0)
+	_hurt = TextureRect.new()
+	_hurt.texture = gt
+	_hurt.stretch_mode = TextureRect.STRETCH_SCALE
+	_hurt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_hurt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hurt.modulate = Color(1, 0.15, 0.1, 0.0)
+	_root.add_child(_hurt)
+	_root.move_child(_hurt, 1)
 
 
 func _on_heart_state(id: String, _anterior: String) -> void:
@@ -581,6 +595,13 @@ func _refresh_hint() -> void:
 
 
 func _process(delta: float) -> void:
+	_vig_t += delta
+	# vida baja: el borde late como un corazon
+	_hurt_flash_t = maxf(0.0, _hurt_flash_t - delta)
+	if _hurt_flash_t <= 0.0:
+		var low := GameState.health > 0 and GameState.health <= GameState.max_health * 0.3
+		var beat := pow(maxf(0.0, sin(_vig_t * 5.0)), 6.0)
+		_hurt.modulate = Color(1, 0.15, 0.1, (0.12 + beat * 0.3) if low else 0.0)
 	_refresh_slots()
 	_refresh_hint()
 	_refresh_objectives(delta)

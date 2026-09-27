@@ -9,6 +9,7 @@ const NOMBRES := [
 	"hit_enemy", "hit_player", "enemy_death", "till", "water", "harvest",
 	"ui_select", "dusk_transform", "coin", "heart_shift", "dodge", "dialogue_blip", "plant",
 	"swing", "swing_heavy", "slam", "roar", "charge_windup", "charge", "build", "bolt", "alarm", "crop_lost", "drum_hit",
+	"hit_hammer", "hit_staff", "hit_crit", "soul_release",
 ]
 
 

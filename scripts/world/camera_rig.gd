@@ -26,9 +26,19 @@ func set_target(node: Node3D) -> void:
 
 func shake(amount: float = 0.15, duration: float = 0.2) -> void:
 	# todo se suaviza a la mitad y con tope (antes mareaba)
-	amount = minf(amount * 0.5, 0.12)
+	amount = minf(amount * 0.5, 0.12) * float(Opciones.get_v("sacudida"))
 	_shake_amount = maxf(_shake_amount, amount)
 	_shake_t = maxf(_shake_t, duration)
+
+
+## Empujon breve de camara en una direccion (martillazo, remate): se siente
+## el peso del golpe sin marear como una sacudida.
+func kick(dir: Vector3, amount: float = 0.12) -> void:
+	dir.y = 0
+	_kick = dir.normalized() * amount * float(Opciones.get_v("sacudida"))
+
+
+var _kick := Vector3.ZERO
 
 
 func _process(delta: float) -> void:
@@ -36,6 +46,8 @@ func _process(delta: float) -> void:
 		return
 	var desired := target.global_position + offset
 	global_position = global_position.lerp(desired, clampf(smoothing * delta, 0.0, 1.0))
+	global_position += _kick
+	_kick = _kick.move_toward(Vector3.ZERO, delta * 1.6)
 
 	if _shake_t > 0.0:
 		_shake_t -= delta

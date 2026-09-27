@@ -267,20 +267,31 @@ func _start_attack() -> void:
 	var fv := _facing_vector()
 	attack_area.position = Vector3(fv.x, 0, fv.z) * (0.9 if weapon == "khopesh" else 1.1)
 	attack_area.monitoring = true
-	sprite.play("%s_attack" % _facing_group())
+	# cada arma su animacion: el martillo se levanta y cae en el cuadro del
+	# impacto (fase 5)
+	if weapon == "martillo":
+		sprite.play("%s_hammer" % _facing_group())
+		sprite.speed_scale = 1.35
+	else:
+		sprite.play("%s_attack" % _facing_group())
+		sprite.speed_scale = 1.4 if is_finisher else 1.6
 	# pequeno paso adelante con cada golpe
 	velocity += fv * (2.5 if weapon == "khopesh" else 1.0)
 	SFX.play("swing_heavy" if weapon == "martillo" else "swing", 0.0, 0.1)
-	_spawn_slash(fv, weapon, hit)
-	await get_tree().create_timer(0.1 if weapon == "martillo" else 0.06).timeout
+	if weapon != "martillo":
+		_spawn_slash(fv, weapon, hit)
+	await get_tree().create_timer(0.18 if weapon == "martillo" else 0.06).timeout
 	if weapon == "martillo":
+		_spawn_slash(fv, weapon, hit)
 		_hammer_impact(fv)
-	_resolve_attack_hits(dano, empuje, float(stats["aturde"]), is_finisher or weapon == "martillo")
+	var sfx := "hit_hammer" if weapon == "martillo" else ("hit_crit" if is_finisher else "")
+	_resolve_attack_hits(dano, empuje, float(stats["aturde"]), is_finisher or weapon == "martillo", sfx)
 
 
 func _fire_staff(dano: int) -> void:
 	_attack_t = float(WEAPON_STATS["baston"]["cooldown"])
-	sprite.play("%s_attack" % _facing_group())
+	sprite.play("%s_staff" % _facing_group())
+	sprite.speed_scale = 2.0
 	var dir := _aim_dir_to_mouse()
 	SFX.play("bolt", -2.0)
 	var b := StaffBolt.new()
@@ -348,6 +359,8 @@ class StaffBolt extends Node3D:
 			var d: Vector3 = e.global_position + Vector3(0, 0.8, 0) - global_position
 			if d.length() < 0.9:
 				_hits.append(e)
+				if "hit_sfx" in e:
+					e.hit_sfx = "hit_staff"
 				e.take_hit(damage, dir * 2.0)
 				var banner = get_tree().get_first_node_in_group("combat_banner")
 				if banner:
@@ -422,7 +435,14 @@ func _aim_at_mouse() -> void:
 		_update_facing(Vector2(aim.x, aim.z))
 
 
-func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool) -> void:
+## Vibracion del mando (solo si se esta jugando con mando).
+func rumble(weak: float, strong: float, secs: float) -> void:
+	if using_pad and bool(Opciones.get_v("vibracion")):
+		for pad in Input.get_connected_joypads():
+			Input.start_joy_vibration(pad, weak, strong, secs)
+
+
+func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool, sfx: String = "") -> void:
 	var hit_any := false
 	var fx_root := get_tree().current_scene
 	for body in attack_area.get_overlapping_bodies():
@@ -431,6 +451,8 @@ func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool) 
 			var dir: Vector3 = (body.global_position - global_position)
 			dir.y = 0
 			dir = dir.normalized() if dir.length() > 0.01 else _facing_vector()
+			if sfx != "" and "hit_sfx" in body:
+				body.hit_sfx = sfx
 			body.take_hit(dano, dir * empuje, aturde)
 			var banner = get_tree().get_first_node_in_group("combat_banner")
 			if banner:
@@ -440,6 +462,9 @@ func _resolve_attack_hits(dano: int, empuje: float, aturde: float, heavy: bool) 
 	if hit_any:
 		_hitstop(0.05 if heavy else 0.035)
 		var cam := get_viewport().get_camera_3d()
+		if heavy and cam and cam.has_method("kick"):
+			cam.kick(_facing_vector(), 0.1)
+		rumble(0.25 if heavy else 0.1, 0.45 if heavy else 0.15, 0.12 if heavy else 0.06)
 		if cam and cam.has_method("shake"):
 			cam.shake(0.2 if heavy else 0.1, 0.15)
 
@@ -590,6 +615,7 @@ func _update_animation() -> void:
 		sprite.offset.y = 0.0
 		return
 	var group := _facing_group()
+	sprite.speed_scale = 1.0
 	var hvel := Vector2(velocity.x, velocity.z).length()
 	if hvel > 0.3 and not _dodging:
 		sprite.play("%s_walk" % group)
@@ -690,6 +716,7 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, _stun: float = 0.0
 		return
 	_hurt_iframes = 0.45
 	GameState.take_damage(amount)
+	rumble(0.35, 0.6, 0.2)
 	_knock = knockback
 	SFX.play("hit_player")
 	CombatFX.spawn_damage_number(get_tree().current_scene, global_position + Vector3(0, 1.4, 0), amount, Color(1.0, 0.35, 0.3))

@@ -277,7 +277,48 @@ def drum_hit():
     save_wav(os.path.join(OUT, "drum_hit.wav"), boom + n, peak_dbfs=-9.0)
 
 
+def hit_hammer():
+    # golpe sordo y pesado: bombo grave + crujido de piedra
+    t = t_array(0.32)
+    f = 95 * np.exp(-t * 12) + 38
+    thud = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 9)
+    crunch = lowpass(noise(0.16, attack=0.001, decay=0.05, sustain=0.25, release=0.06), 3) * 0.7
+    out = thud.copy()
+    out[:len(crunch)] += crunch
+    save_wav(os.path.join(OUT, "hit_hammer.wav"), out, peak_dbfs=-10.0)
+
+
+def hit_staff():
+    # chispazo de heka: zumbido brillante que baja
+    s = mix(tone(1500, 380, 0.14, "sine", attack=0.001, decay=0.05, sustain=0.35, release=0.06),
+            tone(2300, 700, 0.09, "square", attack=0.001, decay=0.03, sustain=0.2, release=0.04) * 0.25,
+            noise(0.05, attack=0.001, decay=0.02, sustain=0.2, release=0.02) * 0.3)
+    save_wav(os.path.join(OUT, "hit_staff.wav"), s)
+
+
+def hit_crit():
+    # tercer golpe del combo: impacto + campanita de bronce
+    t = t_array(0.45)
+    bell = (np.sin(2 * np.pi * 1320 * t) + 0.5 * np.sin(2 * np.pi * 1980 * t)) * np.exp(-t * 9)
+    punch = tone(260, 90, 0.12, "square", attack=0.001, decay=0.05, sustain=0.3, release=0.05)
+    out = bell * 0.5
+    out[:len(punch)] += punch
+    save_wav(os.path.join(OUT, "hit_crit.wav"), out)
+
+
+def soul_release():
+    # la sombra se deshace: soplido que sube
+    t = t_array(0.5)
+    rng = np.random.RandomState(4)
+    n = lowpass(rng.uniform(-1, 1, len(t)), 5)
+    sweep = np.sin(2 * np.pi * np.cumsum(220 + 700 * t) / SR) * 0.25
+    env = np.minimum(t / 0.05, 1.0) * np.exp(-t * 5)
+    save_wav(os.path.join(OUT, "soul_release.wav"), (n * 0.8 + sweep) * env)
+
+
 if __name__ == "__main__":
+    for fn in (hit_hammer, hit_staff, hit_crit, soul_release):
+        fn()
     for fn in (drum_hit, alarm, crop_lost, swing, swing_heavy, slam, roar, charge_windup, charge, build, bolt):
         fn()
     plant()

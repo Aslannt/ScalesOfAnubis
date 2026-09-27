@@ -13,6 +13,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Opciones="*res://scripts/autoload/opciones.gd"
 Textos="*res://scripts/autoload/textos.gd"
 Dialogos="*res://scripts/autoload/dialogos.gd"
 SFX="*res://scripts/autoload/sfx.gd"

@@ -99,8 +99,49 @@ def cloth(name, y=0, x=0, spec=None):
     return rgb(name)
 
 
+# arma que se dibuja en los cuadros de ataque: khopesh (attack), martillo
+# (hammer) o cayado/baston de Heka (staff). Fase 5: antes las tres armas
+# mostraban el khopesh.
+WEAPON = "khopesh"
+WEAPON_OF = {"attack": "khopesh", "hammer": "martillo", "staff": "baston"}
+
+
+def _hammer(cv, handle, head):
+    """Mango (lista de puntos) y cabeza de piedra (x0, y0, x1, y1)."""
+    for (x, y) in handle:
+        cv.p(x, y, "ochre_dark")
+    x0, y0, x1, y1 = head
+    cv.r(x0, y0, x1, y1, "bone_dark")
+    cv.hline(x0, x1, y0, "bone")
+    cv.r(x1, y0, x1, y1, (130, 118, 96, 255))
+    cv.hline(x0, x1, y1, (120, 108, 88, 255))
+
+
+def _staff(cv, pts, glow=False):
+    """Cayado: puntos del mango (el ultimo es la punta de turquesa)."""
+    for (x, y) in pts[:-1]:
+        cv.p(x, y, "ochre")
+    tx, ty = pts[-1]
+    cv.p(tx, ty, "turquoise")
+    if glow:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            cv.p(tx + dx, ty + dy, "fire_yellow")
+        cv.p(tx, ty, "bone")
+
+
+def _line(a, b):
+    """Puntos de una linea de pixeles de a a b."""
+    (x0, y0), (x1, y1) = a, b
+    n = max(abs(x1 - x0), abs(y1 - y0), 1)
+    return [(round(x0 + (x1 - x0) * k / n), round(y0 + (y1 - y0) * k / n)) for k in range(n + 1)]
+
+
 # ------------------------------------------------------------- dibujo
 def draw(spec, facing, anim, i):
+    global WEAPON
+    WEAPON = WEAPON_OF.get(anim, "khopesh")
+    if anim in ("hammer", "staff"):
+        anim = "attack"
     cv = Canvas()
     child = spec.get("child", False)
     skin = spec["skin"]
@@ -292,6 +333,28 @@ def _khopesh(cv, pts):
 
 
 def _attack_arm_front(cv, atk, arm_top, skin, skin_d, back):
+    if WEAPON == "martillo":
+        if atk == 0:   # martillo en alto, sobre la cabeza
+            cv.r(17, arm_top - 4, 18, arm_top + 1, skin_d)
+            _hammer(cv, _line((18, arm_top - 5), (18, arm_top - 9)), (15, arm_top - 13, 21, arm_top - 10))
+        elif atk == 1:  # bajando
+            cv.r(17, arm_top + 1, 20, arm_top + 2, skin_d)
+            _hammer(cv, _line((20, arm_top + 1), (21, arm_top - 3)), (19, arm_top - 7, 23, arm_top - 4))
+        else:           # golpe contra el suelo
+            cv.r(16, arm_top + 4, 17, arm_top + 8, skin_d)
+            _hammer(cv, _line((16, arm_top + 9), (15, arm_top + 12)), (11, arm_top + 13, 17, arm_top + 16))
+        return
+    if WEAPON == "baston":
+        if atk == 0:   # cayado atras, cargando
+            cv.r(17, arm_top, 18, arm_top + 4, skin_d)
+            _staff(cv, _line((17, arm_top + 9), (21, arm_top - 9)))
+        elif atk == 1:  # estocada: la punta brilla
+            cv.r(17, arm_top + 2, 20, arm_top + 3, skin_d)
+            _staff(cv, _line((14, arm_top + 4), (23, arm_top + 1)), glow=True)
+        else:
+            cv.r(17, arm_top + 2, 18, arm_top + 6, skin_d)
+            _staff(cv, _line((19, arm_top + 12), (19, arm_top - 8)))
+        return
     if atk == 0:   # brazo arriba, hoja hacia atras
         cv.r(17, arm_top - 4, 18, arm_top + 1, skin_d)
         _khopesh(cv, [(18, arm_top - 5), (18, arm_top - 6), (19, arm_top - 7), (20, arm_top - 8), (21, arm_top - 9), (21, arm_top - 10), (20, arm_top - 11)])
@@ -380,6 +443,26 @@ def _side(cv, spec, top, body, kilt_y, leg_y, foot_y, stride, arm_swing, atk, sk
             cv.r(12 + (dx if k > arm_len // 2 else 0), arm_top + k, 13 + (dx if k > arm_len // 2 else 0), arm_top + k, skin)
         cv.p(12 + dx, arm_top + arm_len, skin_l)
         cv.p(13 + dx, arm_top + arm_len, skin_l)
+    elif WEAPON == "martillo":
+        if atk == 0:
+            cv.r(10, arm_top - 4, 11, arm_top + 1, skin)
+            _hammer(cv, _line((10, arm_top - 5), (9, arm_top - 9)), (5, arm_top - 13, 11, arm_top - 10))
+        elif atk == 1:
+            cv.r(13, arm_top, 17, arm_top + 1, skin)
+            _hammer(cv, _line((18, arm_top), (20, arm_top - 2)), (19, arm_top - 6, 23, arm_top - 2))
+        else:
+            cv.r(13, arm_top + 3, 15, arm_top + 6, skin)
+            _hammer(cv, _line((16, arm_top + 7), (18, arm_top + 10)), (17, arm_top + 11, 23, arm_top + 14))
+    elif WEAPON == "baston":
+        if atk == 0:
+            cv.r(10, arm_top - 2, 11, arm_top + 2, skin)
+            _staff(cv, _line((13, arm_top + 8), (6, arm_top - 9)))
+        elif atk == 1:
+            cv.r(13, arm_top + 1, 17, arm_top + 2, skin)
+            _staff(cv, _line((11, arm_top + 2), (23, arm_top + 1)), glow=True)
+        else:
+            cv.r(13, arm_top + 2, 15, arm_top + 4, skin)
+            _staff(cv, _line((16, arm_top + 11), (16, arm_top - 8)))
     elif atk == 0:
         cv.r(10, arm_top - 4, 11, arm_top + 1, skin)
         _khopesh(cv, [(10, arm_top - 5), (10, arm_top - 6), (9, arm_top - 7), (8, arm_top - 8), (7, arm_top - 9), (6, arm_top - 9), (5, arm_top - 8)])
@@ -393,7 +476,7 @@ def _side(cv, spec, top, body, kilt_y, leg_y, foot_y, stride, arm_swing, atk, sk
 
 ORDER = []
 for facing in ("south", "north", "east"):
-    for anim, n in (("idle", 2), ("walk", 4), ("attack", 3)):
+    for anim, n in (("idle", 2), ("walk", 4), ("attack", 3), ("hammer", 3), ("staff", 3)):
         for i in range(n):
             ORDER.append((facing, anim, i))
 
@@ -402,7 +485,9 @@ def build(name):
     spec = SPECS[name]
     frames, names = [], []
     for facing, anim, i in ORDER:
-        a = anim if (anim != "attack" or spec.get("weapon")) else "idle"
+        if anim in ("hammer", "staff") and not spec.get("weapon"):
+            continue
+        a = anim if (anim not in ("attack", "hammer", "staff") or spec.get("weapon")) else "idle"
         frames.append(draw(spec, facing, a, i % 2 if a == "idle" else i))
         names.append(f"{facing}_{anim}_{i}")
     sheet = Image.new("RGBA", (W * len(frames), H), (0, 0, 0, 0))

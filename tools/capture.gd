@@ -41,6 +41,8 @@ const SCENARIOS := [
 	{"name": "38_akhet_crecida", "tile": Vector2(9, 12), "phase": 1, "wide": true, "setup": "akhet", "bark": true},
 	{"name": "39_shemu_calor", "tile": Vector2(13, 14), "phase": 1, "wide": false, "setup": "shemu"},
 	{"name": "40_meret_secreto", "tile": Vector2(24, 9.4), "phase": 1, "wide": false, "setup": "secreto"},
+	{"name": "41_martillo", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "martillo"},
+	{"name": "42_baston", "tile": Vector2(14, 13), "phase": 3, "wide": false, "setup": "baston"},
 	{"name": "10_horizonte_piramides", "tile": Vector2(22, 3), "phase": 1, "wide": true, "pitch": 2.0},
 	{"name": "11_horizonte_atardecer", "tile": Vector2(22, 3), "phase": 2, "wide": true, "pitch": 2.0},
 ]
@@ -173,6 +175,17 @@ func _setup(kind: String) -> void:
 			GameState.current_day = 7 if kind == "akhet" else 4
 			farm.get_node("SeasonDirector")._apply_season(true)
 			await get_tree().create_timer(3.0).timeout
+		"martillo", "baston":
+			GameState.equipped_weapon = kind
+			player._update_facing(Vector2(1, 0))
+			for k in range(2):
+				var e = nd.spawn("sombra", "", "", player.global_position + Vector3(1.6, 0, k * 0.8 - 0.4))
+				e.max_health = 999
+				e.health = 999
+			await get_tree().create_timer(1.0).timeout
+			player._start_attack()
+			await get_tree().create_timer(0.2 if kind == "martillo" else 0.08).timeout
+			GameState.equipped_weapon = "khopesh"
 		"secreto":
 			var dlg = get_tree().get_first_node_in_group("dialogue_box")
 			dlg.show_lines(Dialogos.data["meret"]["amistad"]["nivel2"])

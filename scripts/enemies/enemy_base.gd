@@ -45,6 +45,9 @@ var _repath_t: float = 0.0
 ## Dificultad incremental: cada noche las criaturas comunes son mas duras
 ## (el jefe tiene sus propios numeros y lo apaga).
 var night_scaling := true
+## Sonido del proximo golpe recibido (lo fija quien pega: martillo, baston,
+## remate del combo). Vacio = golpe normal.
+var hit_sfx := ""
 var _slow_t: float = 0.0
 
 
@@ -270,8 +273,13 @@ func take_hit(amount: int, knockback: Vector3 = Vector3.ZERO, stun: float = 0.0)
 		_windup_t = -1.0
 		_contact_t = contact_cooldown * 0.5
 		sprite.scale = Vector3.ONE
-	SFX.play("hit_enemy")
+	SFX.play(hit_sfx if hit_sfx != "" else "hit_enemy")
+	hit_sfx = ""
 	if sprite:
+		# aplastamiento breve: el golpe se "siente" en el cuerpo
+		sprite.scale = Vector3(1.25, 0.8, 1.0)
+		var sq := create_tween()
+		sq.tween_property(sprite, "scale", Vector3.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		sprite.modulate = Color(4, 4, 4)
 		await get_tree().create_timer(0.07).timeout
 		if is_instance_valid(sprite) and not _dead:
@@ -320,7 +328,25 @@ func _fade_out() -> void:
 	collision_layer = 0
 	collision_mask = 0
 	remove_from_group("enemies")
+	# muerte: destello, estallido aplastado y el alma que sube deshaciendose
+	SFX.play("soul_release", -6.0)
+	sprite.modulate = Color(3, 3, 3)
 	var tw := create_tween()
-	tw.tween_property(sprite, "modulate", Color(0.4, 0.2, 0.6, 0.0), 0.35)
-	tw.parallel().tween_property(sprite, "position:y", sprite.position.y + 0.5, 0.35).set_ease(Tween.EASE_OUT)
+	tw.tween_property(sprite, "scale", Vector3(1.5, 0.55, 1.0), 0.06)
+	tw.tween_property(sprite, "scale", Vector3(0.6, 1.5, 1.0), 0.12)
+	tw.parallel().tween_property(sprite, "modulate", Color(0.4, 0.2, 0.6, 0.0), 0.3)
+	tw.parallel().tween_property(sprite, "position:y", sprite.position.y + 0.8, 0.3).set_ease(Tween.EASE_OUT)
 	tw.tween_callback(queue_free)
+	for k in range(5):
+		var wisp := Sprite3D.new()
+		wisp.texture = preload("res://assets/sprites/fx/dot.png")
+		wisp.pixel_size = 0.05
+		wisp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		wisp.shaded = false
+		wisp.modulate = Color(0.6, 0.4, 0.9, 0.9)
+		get_tree().current_scene.add_child(wisp)
+		wisp.global_position = global_position + Vector3(randf_range(-0.3, 0.3), 0.5, randf_range(-0.3, 0.3))
+		var wt := wisp.create_tween()
+		wt.tween_property(wisp, "global_position:y", wisp.global_position.y + randf_range(1.2, 2.2), randf_range(0.6, 0.9)).set_ease(Tween.EASE_OUT)
+		wt.parallel().tween_property(wisp, "modulate:a", 0.0, 0.9)
+		wt.tween_callback(wisp.queue_free)
