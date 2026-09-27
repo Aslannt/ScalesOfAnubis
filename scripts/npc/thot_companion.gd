@@ -49,7 +49,7 @@ func _ready() -> void:
 	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_nameplate.no_depth_test = true
 	_nameplate.pixel_size = 0.01
-	_nameplate.position.y = 0.75
+	_nameplate.position.y = 0.95
 	add_child(_nameplate)
 	var bark = get_tree().get_first_node_in_group("thot_bark")
 	if bark:

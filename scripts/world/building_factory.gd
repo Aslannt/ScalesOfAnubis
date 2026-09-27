@@ -72,90 +72,103 @@ static func water_plane(size: Vector2, shore_x: float) -> MeshInstance3D:
 	return mi
 
 
+static func _tinted(tex_name: String, uv_scale: Vector3, tint: Color) -> StandardMaterial3D:
+	var key := "%s|%s|%s" % [tex_name, uv_scale, tint]
+	if _cache.has(key):
+		return _cache[key]
+	var m := _mat(tex_name, uv_scale).duplicate() as StandardMaterial3D
+	m.albedo_color = tint
+	_cache[key] = m
+	return m
+
+
 static func house(rng_seed: int = 0) -> Node3D:
 	## Casa de adobe revocada, como en las aldeas del Nilo: techo plano con
-	## parapeto, vigas asomando, escalera al techo y toldo de hojas de palma
-	## (se vivia y dormia en el techo). Antes era un bloque de ladrillo con
-	## una losa de tablas encima.
+	## parapeto bajo, vigas de palmera asomando, escalera exterior al techo
+	## (alli se dormia en verano) y, segun la casa, un cuarto alto o un toldo
+	## de hojas de palma. Tercera ronda: fuera el techo de paja a dos aguas
+	## (no era egipcio y desde arriba se veia raro) y la cornisa ancha que
+	## parecia una tapa de carton.
 	var root := Node3D.new()
 	root.name = "CasaAdobe"
 	var rng := RandomNumberGenerator.new()
 	rng.seed = rng_seed + 11
 	var w := 3.6
 	var d := 3.2
-	var h := 2.3
-	var plaster := _mat("plaster", Vector3(2, 1, 1))
-	var plaster_top := _mat("plaster", Vector3(1, 1, 1))
+	var h := 2.2 + rng.randf_range(-0.1, 0.25)
+	# cada casa con su revoque: cal blanca, ocre claro o rosado
+	var tints := [Color(1, 1, 1), Color(1.0, 0.9, 0.74), Color(1.0, 0.86, 0.8), Color(0.95, 0.93, 0.86)]
+	var tint: Color = tints[rng.randi() % tints.size()]
+	var plaster := _tinted("plaster", Vector3(2, 1, 1), tint)
+	var plaster_small := _tinted("plaster", Vector3(1, 1, 1), tint * Color(1.04, 1.04, 1.04))
 	var wood := _mat("wood")
-	var dark := _solid_mat(Color(0.07, 0.05, 0.05))
+	var dark := _solid_mat(Color(0.09, 0.06, 0.05))
+	var paints := [Color(0.18, 0.32, 0.6), Color(0.6, 0.2, 0.14), Color(0.2, 0.45, 0.35)]
+	var paint := _solid_mat(paints[rng.randi() % paints.size()])
 	root.add_child(_box(Vector3(w, h, d), plaster, Vector3(0, h * 0.5, 0)))
-	# zocalo de barro mas oscuro
-	root.add_child(_box(Vector3(w + 0.06, 0.3, d + 0.06), _solid_mat(Color(0.55, 0.38, 0.22)), Vector3(0, 0.15, 0)))
-	# esquinas marcadas (pilastras claras) y cornisa con sombra debajo: los
-	# bordes se leen desde la camara alta (antes parecia una caja de carton)
-	var trim := _solid_mat(Color(0.93, 0.84, 0.66))
-	for sx in [-1, 1]:
-		for sz in [-1, 1]:
-			root.add_child(_box(Vector3(0.2, h, 0.2), trim, Vector3(sx * (w * 0.5 - 0.02), h * 0.5, sz * (d * 0.5 - 0.02))))
-	root.add_child(_box(Vector3(w + 0.34, 0.18, d + 0.34), _solid_mat(Color(0.52, 0.34, 0.2)), Vector3(0, h + 0.02, 0)))
-	# vigas de palmera asomando bajo el techo
+	# zocalo de barro mas oscuro (salpicado de la calle)
+	root.add_child(_box(Vector3(w + 0.04, 0.28, d + 0.04), _solid_mat(Color(0.56, 0.4, 0.25)), Vector3(0, 0.14, 0)))
+	# techo de barro apenas hundido y parapeto bajo del mismo revoque
+	root.add_child(_box(Vector3(w - 0.1, 0.06, d - 0.1), _mat("roof_mud", Vector3(2, 2, 1)), Vector3(0, h + 0.02, 0)))
+	var par_h := 0.3
+	for side in [-1, 1]:
+		root.add_child(_box(Vector3(w, par_h, 0.16), plaster_small, Vector3(0, h + par_h * 0.5, side * (d * 0.5 - 0.08))))
+		root.add_child(_box(Vector3(0.16, par_h, d - 0.32), plaster_small, Vector3(side * (w * 0.5 - 0.08), h + par_h * 0.5, 0)))
+	# linea de sombra bajo el parapeto: marca el borde sin "tapa"
+	root.add_child(_box(Vector3(w + 0.04, 0.06, d + 0.04), _solid_mat(tint * Color(0.72, 0.64, 0.55)), Vector3(0, h - 0.03, 0)))
+	# vigas de palmera asomando al frente
 	for i in range(5):
-		root.add_child(_box(Vector3(0.12, 0.12, 0.35), wood, Vector3(-w * 0.4 + i * (w * 0.2), h - 0.12, d * 0.5 + 0.12)))
-	var pitched := rng.randf() < 0.6
-	if pitched:
-		# techo de hojas de palma a dos aguas, con alero y cumbrera
-		var roof := MeshInstance3D.new()
-		var pm := PrismMesh.new()
-		pm.size = Vector3(w + 0.9, 1.2, d + 0.9)
-		roof.mesh = pm
-		roof.material_override = _mat("thatch", Vector3(2, 2, 1))
-		roof.position = Vector3(0, h + 0.7, 0)
-		root.add_child(roof)
-		root.add_child(_box(Vector3(0.14, 0.14, d + 1.0), wood, Vector3(0, h + 1.3, 0)))
-		# hastiales (triangulos de barro bajo el techo)
+		root.add_child(_box(Vector3(0.1, 0.1, 0.3), wood, Vector3(-w * 0.4 + i * (w * 0.2), h - 0.2, d * 0.5 + 0.1)))
+	var variant := rng.randi() % 3
+	if variant == 0:
+		# cuarto alto en la esquina de atras
+		var uw := w * 0.46
+		var ud := d * 0.46
+		var uh := 1.15
+		var ux := -w * 0.5 + uw * 0.5 + 0.08
+		var uz := -d * 0.5 + ud * 0.5 + 0.08
+		root.add_child(_box(Vector3(uw, uh, ud), plaster, Vector3(ux, h + uh * 0.5, uz)))
+		root.add_child(_box(Vector3(uw - 0.08, 0.05, ud - 0.08), _mat("roof_mud"), Vector3(ux, h + uh + 0.02, uz)))
 		for side in [-1, 1]:
-			var gable := MeshInstance3D.new()
-			var gm := PrismMesh.new()
-			gm.size = Vector3(w, 1.0, 0.08)
-			gable.mesh = gm
-			gable.material_override = plaster_top
-			gable.position = Vector3(0, h + 0.6, side * (d * 0.5 + 0.02))
-			root.add_child(gable)
-	else:
-		# techo plano de barro (mas oscuro que el muro) con parapeto y toldo
-		root.add_child(_box(Vector3(w + 0.1, 0.1, d + 0.1), _mat("roof_mud", Vector3(2, 2, 1)), Vector3(0, h + 0.16, 0)))
-		for side in [-1, 1]:
-			root.add_child(_box(Vector3(w + 0.1, 0.34, 0.14), trim, Vector3(0, h + 0.3, side * (d * 0.5))))
-			root.add_child(_box(Vector3(0.14, 0.34, d + 0.1), trim, Vector3(side * (w * 0.5), h + 0.3, 0)))
-		for px in [-1.4, 0.0]:
-			for pz in [-1.2, 0.2]:
-				root.add_child(_box(Vector3(0.07, 1.1, 0.07), wood, Vector3(px, h + 0.7, pz)))
-		var awning := _box(Vector3(1.8, 0.08, 1.8), _mat("thatch"), Vector3(-0.7, h + 1.25, -0.5))
-		awning.rotation.x = 0.12
+			root.add_child(_box(Vector3(uw, 0.18, 0.12), plaster_small, Vector3(ux, h + uh + 0.09, uz + side * (ud * 0.5 - 0.06))))
+			root.add_child(_box(Vector3(0.12, 0.18, ud), plaster_small, Vector3(ux + side * (uw * 0.5 - 0.06), h + uh + 0.09, uz)))
+		root.add_child(_box(Vector3(0.5, 0.85, 0.06), dark, Vector3(ux + 0.2, h + 0.43, uz + ud * 0.5 + 0.01)))
+		root.add_child(_box(Vector3(0.62, 0.1, 0.1), paint, Vector3(ux + 0.2, h + 0.9, uz + ud * 0.5 + 0.03)))
+	elif variant == 1:
+		# toldo de hojas de palma sobre cuatro palos
+		for px in [-1.3, 0.1]:
+			for pz in [-1.1, 0.3]:
+				root.add_child(_box(Vector3(0.07, 1.0, 0.07), wood, Vector3(px, h + 0.5, pz)))
+		var awning := _box(Vector3(1.75, 0.07, 1.75), _mat("thatch"), Vector3(-0.6, h + 1.02, -0.4))
+		awning.rotation.x = 0.08
 		root.add_child(awning)
+		root.add_child(_box(Vector3(1.2, 0.08, 0.7), _mat("palm_mat"), Vector3(-0.6, h + 0.08, -0.4)))
+	# vasijas y un canasto en el techo
+	for k in range(1 + rng.randi() % 2):
 		var jar := MeshInstance3D.new()
 		var cyl := CylinderMesh.new()
-		cyl.top_radius = 0.14
-		cyl.bottom_radius = 0.2
-		cyl.height = 0.4
+		cyl.top_radius = 0.12
+		cyl.bottom_radius = 0.18
+		cyl.height = 0.36
 		jar.mesh = cyl
 		jar.material_override = _solid_mat(Color(0.62, 0.36, 0.2))
-		jar.position = Vector3(1.1, h + 0.41, -0.9)
+		jar.position = Vector3(1.15 - k * 0.4, h + 0.2, 0.9)
 		root.add_child(jar)
-		# escalera al techo por el costado
-		for i in range(5):
-			var sh := (i + 1) * (h / 5.0)
-			root.add_child(_box(Vector3(0.5, sh, 0.45), plaster, Vector3(w * 0.5 + 0.25, sh * 0.5, d * 0.5 - 0.3 - i * 0.45)))
-	# puerta hundida con marco y dintel azul
-	root.add_child(_box(Vector3(1.1, 1.8, 0.08), trim, Vector3(-0.5, 0.9, d * 0.5 + 0.03)))
-	root.add_child(_box(Vector3(0.9, 1.6, 0.1), dark, Vector3(-0.5, 0.8, d * 0.5 + 0.05)))
-	root.add_child(_box(Vector3(1.3, 0.18, 0.18), _solid_mat(Color(0.18, 0.32, 0.6)), Vector3(-0.5, 1.72, d * 0.5 + 0.06)))
-	# ventanitas altas con alfeizar
-	for x in [0.7, 1.3]:
-		root.add_child(_box(Vector3(0.36, 0.36, 0.06), trim, Vector3(x, h - 0.6, d * 0.5 + 0.03)))
-		root.add_child(_box(Vector3(0.26, 0.26, 0.1), dark, Vector3(x, h - 0.6, d * 0.5 + 0.05)))
+	# escalera exterior al techo, pegada al costado derecho
+	for i in range(6):
+		var sh := (i + 1) * (h / 6.0)
+		root.add_child(_box(Vector3(0.55, sh, 0.4), plaster, Vector3(w * 0.5 + 0.27, sh * 0.5, d * 0.5 - 0.25 - i * 0.4)))
+	# puerta hundida: marco pintado, hueco oscuro y dintel de madera
+	root.add_child(_box(Vector3(1.0, 1.7, 0.06), paint, Vector3(-0.5, 0.85, d * 0.5 + 0.02)))
+	root.add_child(_box(Vector3(0.78, 1.52, 0.1), dark, Vector3(-0.5, 0.76, d * 0.5 + 0.03)))
+	root.add_child(_box(Vector3(1.2, 0.14, 0.16), wood, Vector3(-0.5, 1.76, d * 0.5 + 0.05)))
+	# ventanitas altas (rendijas contra el sol)
+	for x in [0.65, 1.25]:
+		root.add_child(_box(Vector3(0.3, 0.2, 0.06), dark, Vector3(x, h - 0.55, d * 0.5 + 0.02)))
+		root.add_child(_box(Vector3(0.38, 0.05, 0.1), plaster_small, Vector3(x, h - 0.67, d * 0.5 + 0.04)))
 	var body := _collision_box(Vector3(w + 0.6, h, d))
 	root.add_child(body)
+	root.add_to_group("occluders")
 	var torch := Torch.new()
 	torch.position = Vector3(0.35, 0, d * 0.5 + 0.35)
 	root.add_child(torch)
@@ -670,26 +683,42 @@ static func _pyramid_mesh(base: float, height: float, mat: Material, tiling: flo
 	return mi
 
 
-static func _tapered_box(bottom: Vector2, top: Vector2, h: float, mat: Material) -> MeshInstance3D:
+static func _tapered_box(bottom: Vector2, top: Vector2, h: float, mat: Material, tile_m: float = 0.0) -> MeshInstance3D:
 	## Caja con los lados inclinados (talud egipcio de mastabas y pilonos).
+	## tile_m > 0: UV en metros de mundo (bloques del mismo tamano en todas
+	## las caras) y un tono por cara en el color de vertice (el material debe
+	## usar vertex_color_use_as_albedo para que se note).
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var b := [Vector3(-bottom.x, 0, -bottom.y), Vector3(bottom.x, 0, -bottom.y), Vector3(bottom.x, 0, bottom.y), Vector3(-bottom.x, 0, bottom.y)]
 	var t := [Vector3(-top.x, h, -top.y), Vector3(top.x, h, -top.y), Vector3(top.x, h, top.y), Vector3(-top.x, h, top.y)]
 	var uvs := [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)]
+	# norte (atras) oscuro, este medio, sur (mira a la camara) claro, oeste medio
+	var tints := [Color(0.66, 0.64, 0.66), Color(0.86, 0.83, 0.8), Color(1.0, 0.98, 0.93), Color(0.78, 0.76, 0.76)]
 	for i in range(4):
 		var j := (i + 1) % 4
 		var quad := [b[i], b[j], t[j], t[i]]
 		var n: Vector3 = (b[j] - b[i]).cross(t[i] - b[i]).normalized()
 		if n.dot(Vector3((b[i] + b[j]).x, 0, (b[i] + b[j]).z)) < 0:
 			n = -n
+		var face_uv := []
+		if tile_m > 0.0:
+			var edge: Vector3 = (b[j] - b[i]).normalized()
+			var slant := Vector2(t[i].x - b[i].x, t[i].z - b[i].z).length()
+			var slope_len := sqrt(h * h + slant * slant)
+			for q in quad:
+				var along: float = (q - b[i]).dot(edge)
+				var up := 0.0 if q.y < 0.001 else slope_len
+				face_uv.append(Vector2(along / tile_m, (slope_len - up) / tile_m))
 		for k in [0, 1, 2, 0, 2, 3]:
 			st.set_normal(n)
-			st.set_uv(uvs[k] * Vector2(2, 1))
+			st.set_color(tints[i] if tile_m > 0.0 else Color.WHITE)
+			st.set_uv(face_uv[k] if tile_m > 0.0 else uvs[k] * Vector2(2, 1))
 			st.add_vertex(quad[k])
 	for k in [0, 2, 1, 0, 3, 2]:
 		st.set_normal(Vector3.UP)
-		st.set_uv(uvs[k])
+		st.set_color(Color(1.05, 1.03, 1.0) if tile_m > 0.0 else Color.WHITE)
+		st.set_uv(Vector2(t[k].x, t[k].z) / tile_m if tile_m > 0.0 else uvs[k])
 		st.add_vertex(t[k])
 	var mi := MeshInstance3D.new()
 	mi.mesh = st.commit()
@@ -697,13 +726,25 @@ static func _tapered_box(bottom: Vector2, top: Vector2, h: float, mat: Material)
 	return mi
 
 
+static func _shaded(tex_name: String) -> StandardMaterial3D:
+	var key := "shaded|" + tex_name
+	if _cache.has(key):
+		return _cache[key]
+	var m := _mat(tex_name).duplicate() as StandardMaterial3D
+	m.uv1_scale = Vector3.ONE
+	m.vertex_color_use_as_albedo = true
+	_cache[key] = m
+	return m
+
+
 static func mastaba() -> Node3D:
 	## Mastaba: tumba de techo plano y paredes en talud, con falsa puerta
 	## (la puerta por la que el ka salia a recibir ofrendas).
 	var root := Node3D.new()
 	root.name = "Mastaba"
-	var stone := _mat("plaster", Vector3(2, 1, 1))
-	root.add_child(_tapered_box(Vector2(2.2, 1.5), Vector2(1.8, 1.15), 1.9, stone))
+	root.add_child(_tapered_box(Vector2(2.2, 1.5), Vector2(1.8, 1.15), 1.9, _shaded("plaster"), 1.6))
+	# cornisa de piedra sobre el talud
+	root.add_child(_box(Vector3(3.7, 0.12, 2.4), _mat("stone"), Vector3(0, 1.93, 0)))
 	var dark := _solid_mat(Color(0.08, 0.06, 0.06))
 	var red := _solid_mat(Color(0.55, 0.2, 0.12))
 	# falsa puerta: marco rojo ocre y nicho oscuro
@@ -743,15 +784,24 @@ static func step_pyramid() -> Node3D:
 	## Piramide escalonada pequena (como la de Djoser en Saqqara, en chico).
 	var root := Node3D.new()
 	root.name = "PiramideEscalonada"
-	var stone := _mat("pyramid_stone", Vector3(3, 1, 1))
+	var stone := _shaded("pyramid_stone")
 	var y := 0.0
 	var half := 3.2
 	for i in range(4):
 		var h := 1.1
-		root.add_child(_tapered_box(Vector2(half, half), Vector2(half - 0.25, half - 0.25), h, stone))
-		root.get_child(root.get_child_count() - 1).position.y = y
+		var step := _tapered_box(Vector2(half, half), Vector2(half - 0.22, half - 0.22), h, stone, 1.1)
+		step.position.y = y
+		root.add_child(step)
 		y += h
 		half -= 0.75
+	# remate: pequeno bloque de caliza clara en la cima
+	var cap := _tapered_box(Vector2(0.55, 0.55), Vector2(0.2, 0.2), 0.5, stone, 1.1)
+	cap.position.y = y
+	root.add_child(cap)
+	# arena acumulada al pie (asienta la piramide en el suelo)
+	var drift := _tapered_box(Vector2(3.7, 3.7), Vector2(3.2, 3.2), 0.18, _shaded("necropolis_sand"), 2.0)
+	drift.position.y = -0.05
+	root.add_child(drift)
 	root.add_child(_collision_box(Vector3(6.4, 4.4, 6.4)))
 	return root
 
