@@ -559,6 +559,138 @@ static func _pyramid_mesh(base: float, height: float, mat: Material) -> MeshInst
 	return mi
 
 
+static func _tapered_box(bottom: Vector2, top: Vector2, h: float, mat: Material) -> MeshInstance3D:
+	## Caja con los lados inclinados (talud egipcio de mastabas y pilonos).
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var b := [Vector3(-bottom.x, 0, -bottom.y), Vector3(bottom.x, 0, -bottom.y), Vector3(bottom.x, 0, bottom.y), Vector3(-bottom.x, 0, bottom.y)]
+	var t := [Vector3(-top.x, h, -top.y), Vector3(top.x, h, -top.y), Vector3(top.x, h, top.y), Vector3(-top.x, h, top.y)]
+	var uvs := [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)]
+	for i in range(4):
+		var j := (i + 1) % 4
+		var quad := [b[i], b[j], t[j], t[i]]
+		var n: Vector3 = (b[j] - b[i]).cross(t[i] - b[i]).normalized()
+		if n.dot(Vector3((b[i] + b[j]).x, 0, (b[i] + b[j]).z)) < 0:
+			n = -n
+		for k in [0, 1, 2, 0, 2, 3]:
+			st.set_normal(n)
+			st.set_uv(uvs[k] * Vector2(2, 1))
+			st.add_vertex(quad[k])
+	for k in [0, 2, 1, 0, 3, 2]:
+		st.set_normal(Vector3.UP)
+		st.set_uv(uvs[k])
+		st.add_vertex(t[k])
+	var mi := MeshInstance3D.new()
+	mi.mesh = st.commit()
+	mi.material_override = mat
+	return mi
+
+
+static func mastaba() -> Node3D:
+	## Mastaba: tumba de techo plano y paredes en talud, con falsa puerta
+	## (la puerta por la que el ka salia a recibir ofrendas).
+	var root := Node3D.new()
+	root.name = "Mastaba"
+	var stone := _mat("plaster", Vector3(2, 1, 1))
+	root.add_child(_tapered_box(Vector2(2.2, 1.5), Vector2(1.8, 1.15), 1.9, stone))
+	var dark := _solid_mat(Color(0.08, 0.06, 0.06))
+	var red := _solid_mat(Color(0.55, 0.2, 0.12))
+	# falsa puerta: marco rojo ocre y nicho oscuro
+	root.add_child(_box(Vector3(0.9, 1.3, 0.08), red, Vector3(0, 0.75, 1.36)))
+	root.add_child(_box(Vector3(0.5, 1.0, 0.1), dark, Vector3(0, 0.62, 1.39)))
+	root.add_child(_box(Vector3(1.1, 0.14, 0.12), _solid_mat(Color(0.18, 0.32, 0.6)), Vector3(0, 1.45, 1.38)))
+	# mesa de ofrendas delante
+	root.add_child(_box(Vector3(0.6, 0.18, 0.4), _mat("stone"), Vector3(0, 0.09, 1.9)))
+	root.add_child(_collision_box(Vector3(4.2, 1.9, 3.0)))
+	return root
+
+
+static func stela() -> Node3D:
+	## Estela funeraria de punta redondeada.
+	var root := Node3D.new()
+	var stone := _mat("stone")
+	root.add_child(_box(Vector3(0.7, 1.1, 0.16), stone, Vector3(0, 0.55, 0)))
+	var top := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.35
+	cyl.bottom_radius = 0.35
+	cyl.height = 0.16
+	top.mesh = cyl
+	top.material_override = stone
+	top.rotation_degrees.x = 90
+	top.position = Vector3(0, 1.1, 0)
+	root.add_child(top)
+	# lineas de jeroglificos pintadas
+	for i in range(3):
+		root.add_child(_box(Vector3(0.44, 0.05, 0.02), _solid_mat(Color(0.3, 0.2, 0.15)), Vector3(0, 0.95 - i * 0.18, 0.09)))
+	root.add_child(_box(Vector3(0.2, 0.2, 0.02), _solid_mat(Color(0.18, 0.32, 0.6)), Vector3(0, 1.18, 0.09)))
+	root.add_child(_collision_box(Vector3(0.7, 1.2, 0.3)))
+	return root
+
+
+static func step_pyramid() -> Node3D:
+	## Piramide escalonada pequena (como la de Djoser en Saqqara, en chico).
+	var root := Node3D.new()
+	root.name = "PiramideEscalonada"
+	var stone := _mat("plaster", Vector3(2, 1, 1))
+	var y := 0.0
+	var half := 3.2
+	for i in range(4):
+		var h := 1.1
+		root.add_child(_tapered_box(Vector2(half, half), Vector2(half - 0.25, half - 0.25), h, stone))
+		root.get_child(root.get_child_count() - 1).position.y = y
+		y += h
+		half -= 0.75
+	root.add_child(_collision_box(Vector3(6.4, 4.4, 6.4)))
+	return root
+
+
+static func anubis_statue() -> Node3D:
+	## Estatua de Anubis echado sobre su cofre, custodiando la necropolis
+	## (decorativa: mismo arte que la defensa, mas grande).
+	var root := Node3D.new()
+	root.add_child(_box(Vector3(1.4, 0.4, 1.0), _mat("stone"), Vector3(0, 0.2, 0)))
+	var spr := Sprite3D.new()
+	spr.texture = load("res://assets/sprites/fx/jackal_statue.png")
+	spr.region_enabled = true
+	spr.region_rect = Rect2(0, 0, 32, 32)
+	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	spr.pixel_size = 0.065
+	spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	spr.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	spr.position.y = 0.4 + 1.04
+	root.add_child(spr)
+	root.add_child(_collision_box(Vector3(1.4, 1.2, 1.0)))
+	return root
+
+
+static func broken_column() -> Node3D:
+	var root := Node3D.new()
+	var col := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.33
+	cyl.bottom_radius = 0.4
+	cyl.height = randf_range(0.8, 1.8)
+	col.mesh = cyl
+	col.material_override = _mat("stone")
+	col.position.y = cyl.height * 0.5
+	col.rotation.z = randf_range(-0.08, 0.08)
+	root.add_child(col)
+	# tambor caido al lado
+	var drum := MeshInstance3D.new()
+	var cyl2 := CylinderMesh.new()
+	cyl2.top_radius = 0.36
+	cyl2.bottom_radius = 0.36
+	cyl2.height = 0.7
+	drum.mesh = cyl2
+	drum.material_override = _mat("stone")
+	drum.rotation_degrees = Vector3(0, randf_range(0, 180), 90)
+	drum.position = Vector3(0.9, 0.36, 0.3)
+	root.add_child(drum)
+	root.add_child(_collision_box(Vector3(0.8, 1.2, 0.8)))
+	return root
+
+
 static func build(tipo: String) -> Node3D:
 	match tipo:
 		"house": return house(randi() % 100)
@@ -581,5 +713,10 @@ static func build(tipo: String) -> Node3D:
 		"market_stall": return market_stall()
 		"well": return well()
 		"dune": return dune()
+		"mastaba": return mastaba()
+		"stela": return stela()
+		"step_pyramid": return step_pyramid()
+		"anubis_statue": return anubis_statue()
+		"broken_column": return broken_column()
 		"distant_pyramid": return distant_pyramid()
 	return Node3D.new()
