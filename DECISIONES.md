@@ -362,3 +362,55 @@ recomendados, con la base técnica ya lista para construirlos encima.
 - **Casas y pirámides "de cartón"**: esquinas y cornisas marcadas, techo de
   palma a dos aguas o de barro más oscuro que el muro; pirámides con
   hiladas de bloques y un tono por cara.
+
+## Tercera ronda: feedback de Deivid (noche 2, Thot, defensas, mundo vivo)
+- **Congelado en la noche 2 junto a la aldea**: no logré reproducir la
+  causa exacta, así que puse dos redes de seguridad: un vigilante en
+  `GameState` que quita la pausa si el juego queda pausado sin ningún menú
+  visible (o el tiempo queda frenado por un hit-stop) y un "desatascador"
+  que, si mantienes una dirección y no te mueves, te lleva al hueco libre
+  más cercano. Los fundidos a negro ahora avanzan aunque el juego esté en
+  pausa (antes un fundido podía quedarse a medias). Prueba:
+  `tools/tests/test_robustez.tscn`.
+- **Sacudidas extremas "desde la aldea" sin perder vida**: eran las muertes
+  de criaturas a manos de las defensas lejanas, que sacudían la cámara.
+  Ahora solo sacude si la muerte ocurre a menos de 4 m, y todas las
+  sacudidas van a la mitad con tope. Golpes y martillo más suaves.
+- **Enemigos y Heraldo trabados entre casas y tumbas**: navegación con
+  navmesh horneada en tiempo de ejecución (`NavigationRegion3D` a partir de
+  los colisionadores estáticos). Se vuelve a hornear al construir un muro.
+  El Heraldo, si igual se traba, atraviesa el obstáculo. Su embestida baja
+  de 22 a 18 y el golpe de área de 18 a 14.
+- **Thot**: habla menos (cola con 9 s de silencio entre comentarios, solo
+  los 2 más recientes esperan), su nombre sale en el cuadro y sobre su
+  cabeza, abre el pico al hablar. **Trasfondo**: Anubis le ordena en la
+  intro acompañarte como escriba y anotar cada acto para el pesaje final;
+  al amanecer el resumen trae "Thot anotó:" con lo que movió tu corazón.
+  El códice ya no comenta cada entrada nueva.
+- **Defensas con progreso**: `data/defenses.json`. Tres tipos con 3 niveles:
+  el día 1 solo hay muro y brasero básicos; la estatua de chacal y los
+  niveles 2 se revelan el día 2 y los niveles 3 ("super OP": estatua de dos
+  rayos, fuego de Ra azul que frena, muro de piedra con espinas de bronce)
+  el día 3. Lo bloqueado se ve como "??? · se revela el día N". Cada opción
+  del menú muestra su descripción antes de comprar. Sobre una defensa ya
+  construida puedes mejorarla o cambiarla por otro tipo (te devuelven la
+  mitad de lo invertido). Gemas azules en el pedestal muestran el nivel.
+- **Dificultad incremental**: cada noche las criaturas comunes tienen +35 %
+  de vida, +15 % de daño, +6 % de velocidad y dan una moneda más. El cartel
+  de la noche lo avisa. El jefe tiene sus propios números.
+- **Cultivos que cambiaban de golpe**: tras regar, la planta pasa por las
+  etapas y se estira poco a poco hasta el amanecer, con un "brote"
+  (estirón y hojitas) al cambiar de etapa. Madura (y se puede cosechar)
+  al amanecer, como antes.
+- **Casas y pirámide raras**: fuera el techo de paja a dos aguas (no era
+  egipcio y desde arriba se veía raro) y la cornisa ancha. Ahora techo
+  plano con parapeto bajo, revoque de distinto tono por casa, puerta con
+  marco pintado, escalera exterior y, según la casa, un cuarto alto o un
+  toldo de palma. Pirámide escalonada y mastabas con bloques del mismo
+  tamaño en todas las caras, un tono por cara, remate y arena al pie.
+- **Mundo vivo**: aldeanos que pasean alrededor de su lugar y se voltean a
+  mirarte; gatos (mau egipcio) que pasean y se apartan si corres; gansos
+  del Nilo en la orilla que picotean y huyen; humo de fogones de día; las
+  casas, el templo y las tumbas se vuelven translúcidas cuando te tapan.
+  Animales configurables en `data/map_layout.json` → `animales`; sprites
+  en `tools/gen_animals.py`.

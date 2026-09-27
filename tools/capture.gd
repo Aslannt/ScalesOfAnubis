@@ -19,7 +19,7 @@ const SCENARIOS := [
 	{"name": "12_anim_orilla", "tile": Vector2(8, 13), "phase": 1, "wide": false, "frames": 4, "ambient": true},
 	{"name": "13_anim_noche", "tile": Vector2(12, 18), "phase": 3, "wide": false, "frames": 3},
 	{"name": "14_jefe", "tile": Vector2(14, 22), "phase": 3, "wide": false, "setup": "jefe", "bark": true},
-	{"name": "15_defensas_noche", "tile": Vector2(16, 14), "phase": 3, "wide": false, "setup": "defensas"},
+	{"name": "15_defensas_noche", "tile": Vector2(17.2, 13.6), "phase": 3, "wide": false, "setup": "defensas"},
 	{"name": "16_ptahmose_menu", "tile": Vector2(6, 5.8), "phase": 1, "wide": false, "setup": "ptahmose"},
 	{"name": "16b_defensa_menu", "tile": Vector2(16, 14), "phase": 1, "wide": false, "setup": "defensa_menu"},
 	{"name": "17_resumen_amanecer", "tile": Vector2(13, 14), "phase": 0, "wide": false, "setup": "amanecer"},
@@ -156,7 +156,7 @@ func _setup(kind: String) -> void:
 			GameState.current_day = 3
 			world_builder.defense_spots[0].build("estatua", 3)
 			world_builder.defense_spots[1].build("brasero", 3)
-			world_builder.defense_spots[2].build("muro", 3)
+			world_builder.defense_spots[3].build("muro", 3)
 			for k in range(3):
 				nd.spawn("sombra", "", "", world_builder.defense_spots[0].global_position + Vector3(2.5 + k, 0, k - 1.0))
 			await get_tree().create_timer(1.6).timeout

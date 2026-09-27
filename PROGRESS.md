@@ -1,6 +1,6 @@
 # PROGRESS — Scales of Anubis (demo)
 
-_Última actualización: sesión en la nube (Linux), 2026-09-27._
+_Última actualización: sesión en la nube (Linux), 2026-09-27 (ronda 3)._
 
 ## Léeme primero
 La demo está **completa de principio a fin**: intro en el Duat → 3 días y 3
@@ -9,10 +9,31 @@ gracias. Todo lo que pedían `CLAUDE_NUBE.md` y `PROMPT_PULIDO.md` está hecho,
 y también la lista extra de `CLAUDE.md` (combate, claridad, mapa,
 cayado/bastón, muro de adobe, mando y guardado).
 
-**Mira primero la carpeta [`capturas_finales/`](capturas_finales/)** (23
+**Mira primero la carpeta [`capturas_finales/`](capturas_finales/)** (31
 capturas a 1920×1080, se ven bien desde el celular en GitHub).
 
 Cada decisión que tomé sin poder preguntarte está en `DECISIONES.md`.
+
+## Ronda 3 (lo último que reportaste)
+Detalle en `DECISIONES.md` → "Tercera ronda":
+- **Congelado en la noche 2**: redes de seguridad contra pausas huérfanas y
+  un desatascador si te quedas pegado; prueba automática nueva.
+- **Sacudidas "desde la aldea"**: eran las defensas matando criaturas
+  lejos; ya no sacuden. Golpes y martillo más suaves.
+- **Enemigos y Heraldo trabados**: ahora usan navmesh y rodean casas y
+  tumbas. El Heraldo pega un poco menos.
+- **Thot**: habla mucho menos y con calma, se ve su nombre, abre el pico al
+  hablar y tiene un porqué: Anubis lo manda a anotar todo lo que hagas
+  para el pesaje final. Al amanecer ves "Thot anotó:" con tus actos.
+- **Defensas con progreso**: explicación antes de comprar, 3 niveles por
+  tipo, lo futuro aparece como "???" hasta su día, y puedes mejorar o
+  cambiar una defensa ya construida (te devuelven la mitad).
+- **Cada noche más difícil**: criaturas con más vida, daño y velocidad.
+- **Cultivos**: crecen poco a poco después de regar, no de golpe.
+- **Casas y pirámide**: techo plano egipcio, variaciones por casa;
+  pirámide escalonada con bloques y sombreado por cara.
+- **Mundo vivo**: aldeanos que pasean y te miran, gatos, gansos del Nilo,
+  humo de fogones, y los edificios se vuelven translúcidos si te tapan.
 
 ## Ronda 2 (después de que la probaste)
 Arreglé todo lo que reportaste. Detalle en `DECISIONES.md` → "Segunda ronda":
@@ -31,8 +52,15 @@ Arreglé todo lo que reportaste. Detalle en `DECISIONES.md` → "Segunda ronda":
 - **Intro animada**: tarjetas con paralaje, balanza que oscila de verdad,
   sello de "¡EMPATE!", Anubis que respira, Thot que llega volando.
 
-Para traer los cambios: en `C:\Users\Aslan\Projects\ScalesOfAnubis`,
-`git pull` (ya estás en la rama `claude/claude-nube-md-jquijs`).
+Para traer los cambios, en Git Bash:
+```
+cd ~/Projects/ScalesOfAnubis
+git checkout -- "*.import"
+git pull
+```
+(la segunda línea descarta los `.import` que Godot reescribe solo al
+abrir el proyecto; si no hay, no hace nada). Te recomiendo **Nueva partida** para ver
+todo desde el principio (el guardado viejo también carga).
 
 ## Cómo jugar
 1. Abre el proyecto con **Godot 4.7.2** y exporta el `.exe` con el preset
@@ -75,10 +103,12 @@ Semillas de día: **1 trigo** (1 día), **2 lino** (2 días), **3 papiro**
   el borde de la pantalla indican de dónde vienen.
 - **Amanecer**: resumen (criaturas vencidas, cultivos perdidos, cambio en
   la balanza). Autoguardado.
-- **Día 2**: cosecha y vende. Construye defensas en los **pedestales**
-  junto al campo: estatua de chacal (dispara), brasero sagrado (quema en
-  área) o muro de adobe (bloquea). **Decisión 1**: el altar del templo
-  no tiene vigilancia.
+- **Defensas** (pedestales junto al campo y la aldea, E de día): el día 1
+  hay muro de adobe (bloquea) y brasero (quema en área); el día 2 se revela
+  la estatua de chacal (dispara) y los niveles 2; el día 3 los niveles 3.
+  E sobre una defensa construida para mejorarla o cambiarla.
+- **Día 2**: cosecha y vende; mejora tus defensas. **Decisión 1**: el
+  altar del templo no tiene vigilancia.
 - **Noche 2 — Decisión 2**: sombras van a saquear la aldea mientras crías
   atacan tus cultivos. No hay menú: la decisión es adónde vas. Meret
   reacciona al día siguiente.
@@ -136,6 +166,9 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
     y final.
   - `tools/tests/test_story.tscn` — intro y final hasta "gracias".
   - `tools/tests/test_save.tscn` — guardar y continuar.
+  - `tools/tests/test_robustez.tscn` — pausas huérfanas, desatascar al
+    jugador, criaturas que rodean el templo.
+  - `tools/tests/test_audio.tscn` — la música suena y hace loop.
   - Correr: `godot --headless --path . res://tools/tests/test_demo.tscn`
     o, con un build exportado: `juego.exe -- --autotest=demo`.
 
@@ -149,8 +182,8 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
   mismo.
 - El sprite de ataque muestra el khopesh con las tres armas (el arco o el
   proyectil sí cambian según el arma).
-- Los enemigos persiguen en línea recta (sin navmesh): con los muros de
-  adobe se deslizan por el costado, no los rodean de forma inteligente.
+- El congelamiento de la noche 2 no lo pude reproducir; quedó cubierto con
+  redes de seguridad, pero si vuelve a pasar dime qué estabas haciendo.
 - El guardado es al empezar cada día: si sales a mitad del día, retomas
   desde su comienzo.
 
@@ -160,9 +193,8 @@ bordón) para título, día, noche y jefe; ambientes de día y de noche.
    `data/crops.json` y `scripts/world/defense_spot.gd`, duración del día en
    `scripts/autoload/game_time.gd`).
 2. Escuchar la música y los efectos y retocar lo que no guste.
-3. Navegación con navmesh para que las criaturas rodeen muros y casas.
-4. Sprites de ataque distintos para martillo y bastón.
-5. Traducción al inglés: los textos ya están centralizados en
+3. Sprites de ataque distintos para martillo y bastón.
+4. Traducción al inglés: los textos ya están centralizados en
    `data/textos_es.json`, `data/dialogues.json` y `data/codex.json`.
 
 ## Estructura
